@@ -17,12 +17,16 @@
     <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
 
     <!-- estilos da página -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;
+     500;600&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
     <link rel="stylesheet" href="../assets/css/1241841.css">
+    <!-- CSS -->
 </head>
 
 <body>
     <!-- Navegação -->
-    <nav>
+    <nav class="bng-navbar">
         <!-- Logo e Nome -->
         <div>
             <img src="../assets/img/logo.png" alt="Logo da empresa">
@@ -30,56 +34,71 @@
         </div>
 
         <!-- Links centrais -->
-        <div>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="sobre_nos.html">Sobre Nós</a></li>
-                <li>
-                    <a href="servicos.html">Serviços</a>
-                    <ul>
-                        <li><a href="equipamentos.html">Equipamentos</a></li>
-                        <li><a href="localizacoes.html">Localizações</a></li>
-                        <li><a href="fornecedores.html">Fornecedores</a></li>
-                    </ul>
-                </li>
-            </ul>
+        <div class="container-navegacao">
+            <a href="index.html">HOME</a>
+            <a href="sobre_nos.html">SOBRE NÓS</a>
+
+            <div class="dropdown">
+                <a href="servicos.html" class="dropdown-trigger">SERVIÇOS</a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="equipamentos.html">Equipamentos</a></li>
+                    <li><a href="localizacoes.html">Localizações</a></li>
+                    <li><a href="fornecedores.html">Fornecedores</a></li>
+                </ul>
+            </div>
         </div>
 
         <!-- Área Cliente -->
-        <div>
-            <ul>
-                <li><a href="login.html" target="_blank">Entrar</a></li>
-            </ul>
+        <div class="nav-cliente">
+            <a href="login.html" target="_blank">ENTRAR</a>
         </div>
 
     </nav>
 
     <!-- Seção "Conteudo da pagina" -->
-    <section>
-        <div>
-            <h1>Inovação e Eficiência na Gestão de Equipamentos Médicos</h1>
-            <p>
-                A <strong>LusoHealth</strong> impulsiona a transformação digital no 
-                setor da saúde através de soluções inteligentes para a gestão hospitalar. 
-                O nosso sistema de inventário clínico foi desenvolvido para responder às 
-                exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e 
-                maior eficiência na gestão de equipamentos médicos.
-            </p>
-        </div>
+    <section class="hero-section">
+        <div class="hero-container">
 
+            <div class="hero-text">
+                <h1>Inovação e Eficiência na Gestão de Equipamentos Médicos</h1>
+                <p>
+                    A <strong>LusoHealth</strong> impulsiona a transformação digital no
+                    setor da saúde através de soluções inteligentes para a gestão hospitalar.
+                    O nosso sistema de inventário clínico foi desenvolvido para responder às
+                    exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e
+                    maior eficiência na gestão de equipamentos médicos.
+                </p>
+            </div>
+
+            <div>
+                <img class="hero-image" src="../assets/img/index_img01.png" alt="Equipamento Hospitalar">
+            </div>   
+            
+           <div class="hero-contacts">
+                <h2>Contactos</h2>
+                <div class="contacts-grid">
+                    <div class="contact-item">
+                        <span>☏</span>
+                        <p><strong>Telefone:</strong> 96X XXX XXX</p>
+                    </div>
+                    <div class="contact-item">
+                        <span>✉</span>
+                        <p><strong>E-mail:</strong> contacto@lusohealth.pt</p>
+                    </div>
+                </div>
+        </div>
     </section>
 
     <!-- Rodapé -->
-    <footer>
-        <div>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="sobre_nos.html">Sobre Nós</a></li>
-                <li><a href="servicos.html">Serviços</a></li>
-            </ul>
+    <footer class="bng-navbar">
+        <div class="container-navegacao">
+            <a href="index.html">Home</a>
+            <a href="sobre_nos.html">Sobre Nós</a>
+            <a href="servicos.html">Serviços</a>
         </div>
 
-        <div class="copyright-footer">
+        <div>
             Copyright 2026 © <strong>LusoHealth Portugal</strong>
             <!-- STRONG: negrito -->
         </div>
