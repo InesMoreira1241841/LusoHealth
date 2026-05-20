@@ -1,0 +1,130 @@
+<!DOCTYPE html> <!-- Informa ao navegador que este é um documento HTML5 -->
+
+<html lang="pt">
+<!-- <html> define o início do documento HTML -->
+<!-- lang="pt" indica que o idioma principal da página é português -->
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Define a codificação de caracteres para UTF-8, que 
+         suporta acentos e caracteres especiais usados em português -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Torna a página responsiva, ajustando-a para diferentes 
+         tamanhos de ecrã, especialmente em dispositivos móveis -->
+    <title>LusoHealth</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
+
+    <!-- estilos da página -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;
+     500;600&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="../assets/css/1241841.css">
+    <!-- CSS -->
+</head>
+
+<body>
+    <!-- Navegação -->
+    <nav class="bng-navbar">
+        <!-- Logo e Nome -->
+        <div>
+            <img src="../assets/img/logo.png" alt="Logo da empresa">
+            <h3>LusoHealth</h3>
+        </div>
+
+        <!-- Links centrais -->
+        <div class="container-navegacao">
+            <a href="index.html">HOME</a>
+            <a href="sobre_nos.html">SOBRE NÓS</a>
+
+            <div class="dropdown">
+                <a href="servicos.html" class="dropdown-trigger">SERVIÇOS</a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="equipamentos.html">Equipamentos</a></li>
+                    <li><a href="localizacoes.html">Localizações</a></li>
+                    <li><a href="fornecedores.html">Fornecedores</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Área Cliente -->
+        <div class="nav-cliente">
+            <a href="login.html" target="_blank">ENTRAR</a>
+        </div>
+
+    </nav>
+
+    <!-- Main -->
+    <main>
+        <div class="about-container">
+            
+            <section class="academic-context">
+                <h1>Sobre o Projeto</h1>
+                <p>
+                    O <strong>LusoHealth</strong> é um sistema web desenvolvido no âmbito da 
+                    unidade curricular de <strong>Sistemas de Informação e Bases de Dados 
+                    Aplicados à Saúde (SIBDAS)</strong>, integrada no curso de Licenciatura 
+                    em <strong>Engenharia Biomédica</strong> do <a href="https://www.isep.ipp.pt" 
+                    target="_blank" class="isep-link">Instituto Superior de Engenharia do 
+                    Porto (ISEP)</a>.
+                </p>
+                <p>
+                    Este projeto tem como objetivo principal o desenvolvimento de uma plataforma 
+                    inteligente para o inventário clínico hospitalar, otimizando a rastreabilidade, 
+                    gestão de fornecedores e controlo de criticidade de equipamentos médicos 
+                    essenciais ao ecossistema de saúde.
+                </p>
+            </section>
+
+            <section class="author-section">
+                <h2>Autor do Projeto</h2>
+                
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <img src="../assets/img/sobre_nos_img01.png" alt="Foto do Autor">
+                    </div>
+                    
+                    <div class="profile-info">
+                        <h3>Inês Moreira</h3>
+                        <p class="profile-role">Estudante de Engenharia Biomédica</p>
+                        
+                        <div class="profile-details">
+                            <div class="detail-line">
+                                <span>✩</span> <strong>Número:</strong> 1241841
+                            </div>
+                            <div class="detail-line">
+                                <span>✩</span> <strong>E-mail:</strong> 
+                                <a href="mailto:1241841@isep.ipp.pt">1241841@isep.ipp.pt</a>
+                            </div> 
+                            <div class="detail-line">
+                                <span>✩</span> <strong>LinkedIn:</strong>
+                                <a href="https://pt.linkedin.com/in/inês-moreira-b1256238b" 
+                                target="_blank" class="btn-linkedin"> <span>Conectar no LinkedIn</span></a>
+                            </div>
+                            <div class="detail-line">
+                                <span>✩</span> <strong>Instituição:</strong> ISEP
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bng-navbar">
+        <div class="container-navegacao">
+            <a href="index.html">Home</a>
+            <a href="sobre_nos.html">Sobre Nós</a>
+            <a href="servicos.html">Serviços</a>
+        </div>
+
+        <div>
+            Copyright 2026 © <strong>LusoHealth Portugal</strong>
+            <!-- STRONG: negrito -->
+        </div>
+    </footer>
+</body>
+
+</html>
