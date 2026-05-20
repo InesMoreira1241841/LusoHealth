@@ -16,15 +16,15 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
 
-     <!-- Google Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,
-    700;1,400&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,700;1,400&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome (local) -->
     <link rel="stylesheet" href="assets/fontawesome/all.min.css">
-  
+
     <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/1241841.css">
 </head>
@@ -62,40 +62,28 @@
 
     </nav>
 
-    <!-- Seção "Conteudo da pagina" -->
-    <section class="hero-section">
-        <div class="hero-container">
+    <!-- Main -->
+    <main>
+        <section id="contacto">
+            <h2>Fale Connosco</h2>
+            <p>Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos. 
+                Desenvolvido para responder às reais exigências da Engenharia Biomédica, o 
+                LusoHealth é o parceiro ideal para monitorizar a criticidade e conformidade das 
+                suas tecnologias de saúde.</p>
 
-            <div class="hero-text">
-                <h1>Inovação e Eficiência na Gestão de Equipamentos Médicos</h1>
-                <p>
-                    A <strong>LusoHealth</strong> impulsiona a transformação digital no
-                    setor da saúde através de soluções inteligentes para a gestão hospitalar.
-                    O nosso sistema de inventário clínico foi desenvolvido para responder às
-                    exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e
-                    maior eficiência na gestão de equipamentos médicos.
-                </p>
-            </div>
+            <form id="contactForm">
+                <label for="nome"><strong>Nome:</strong></label>
+                <input type="text" id="nome" name="nome" required>
 
-            <div>
-                <img class="hero-image" src="../assets/img/index_img01.png" alt="Equipamento Hospitalar">
-            </div>   
-            
-           <div class="hero-contacts">
-                <h2>Contactos</h2>
-                <div class="contacts-grid">
-                    <div class="contact-item">
-                        <span>☏</span>
+                <label for="email"><strong>E-mail:</strong></label>
+                <input type="email" id="email" name="email" required>
 
-                        <p><strong>Telefone:</strong> 96X XXX XXX</p>
-                    </div>
-                    <div class="contact-item">
-                        <span>✉</span>
-                        <p><strong>E-mail:</strong> contacto@lusohealth.pt</p>
-                    </div>
-                </div>
-        </div>
-    </section>
+                <label for="mensagem"><strong>Mensagem</strong></label>
+                <textarea id="mensagem" name="mensagem" rows="4" required></textarea> 
+                <button type="submit">Enviar Mensagem</button>
+            </form>
+        </section>
+    </main>
 
     <!-- Rodapé -->
     <footer class="bng-navbar">

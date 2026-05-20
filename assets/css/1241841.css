@@ -195,6 +195,7 @@ main {
 .hero-image {
     display: flex;
     justify-content: center;
+    border-radius: 2.5%;
     align-items: center;}
 
 .hero-image img {
