@@ -8,9 +8,15 @@
     box-sizing: border-box; /* Garante que a largura e altura dos elementos incluam a borda */}
 
 /* Títulos herdam a fonte Montserrat e cores contrastantes */
-h1, h2, h3 {
+h1, h3 {
     font-family: 'Montserrat', sans-serif;
     color: #1E293B;}
+
+h2 {
+    font-size: 1.8em;
+    color: #0F4C81;
+    text-align: center;
+    margin-bottom: 25px;}
 
 /* Body define as regras padrão para TODO o texto normal do site */
 body {
@@ -212,13 +218,7 @@ main {
     width: 100%;
     margin-top: 20px;
     padding-top: 40px;
-    border-top: 1px solid #2BB673; /* Cria uma linha divisória */
-}
-
-.hero-contacts h2 {
-    font-size: 1.8em;
-    color: #0F4C81;
-    margin-bottom: 25px;}
+    border-top: 1px solid #2BB673; /* Cria uma linha divisória */}
 
 /* Coloca o Telefone e o E-mail lado a lado */
 .contacts-grid {
@@ -286,13 +286,6 @@ main {
     color: #0F4C81;
     border-bottom-style: solid;
     background-color: rgba(43, 182, 115, 0.05);}
-
-/* --- SECÇÃO: AUTOR DO PROJETO --- */
-.author-section h2 {
-    font-size: 1.8em;
-    color: #0F4C81;
-    text-align: center;
-    margin-bottom: 25px;}
 
 /* Design do Cartão de Perfil */
 .profile-card {
@@ -379,3 +372,82 @@ main {
     background-color: #004182; /* Azul mais escuro no hover */
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(0, 119, 181, 0.3);}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                        FORMULÁRIO                                        */
+#contacto form {
+    display: flex; /* Usa layout flexível */
+    flex-direction: column; /* Organiza os elementos na vertical */
+    max-width: 500px; /* Limita a largura do formulário */ 
+    margin: 30px auto 0 auto; /* Centraliza horizontalmente */
+    background-color: #ffffff; /* Fundo branco estilo 'card' para destacar do gradiente */
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.06);}
+
+#contacto label {
+    font-family: 'Montserrat', sans-serif; /* Fonte dos títulos para as labels */
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #0F4C81; 
+    margin-top: 5px;
+    margin-bottom: 8px;
+    text-align: left; /* Garante alinhamento à esquerda */}
+
+#contacto input, #contacto textarea {
+    font-family: 'Inter', sans-serif; /* Fonte de leitura para os campos */
+    font-size: 0.95em;
+    padding: 12px; 
+    margin-bottom: 20px; 
+    border: 1px solid #CBD5E1; 
+    border-radius: 6px; 
+    color: #334155;
+    background-color: #F8FAFC; /* Fundo ligeiramente acinzentado para o campo */
+    transition: all 0.3s ease; /* Transição suave para o efeito de clique */}
+
+/* Efeito dinâmico quando o utilizador clica para escrever no campo (Focus) */
+#contacto input:focus, #contacto textarea:focus {
+    outline: none;
+    border-color: #2BB673; /* A borda fica verde ao clicar */
+    background-color: #ffffff; /* O fundo passa a branco */
+    box-shadow: 0 0 0 3px rgba(43, 182, 115, 0.15); /* Brilho verde suave à volta */}
+
+/* Limita o redimensionamento da caixa de mensagem para não partir o layout */
+#contacto textarea {
+    resize: vertical;
+    min-height: 120px;}
+
+#contacto button {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #2BB673; /* Botão verde principal */
+    color: #ffffff !important; 
+    font-size: 1em;
+    font-weight: 600;
+    padding: 14px 20px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    margin-top: 10px;
+    box-shadow: 0 4px 14px rgba(43, 182, 115, 0.25); /* Sombra no botão */
+    transition: all 0.3s ease;}
+
+#contacto button:hover {
+    background-color: #23945d; /* Verde mais escuro ao passar o rato */
+    transform: translateY(-2px); /* Pequeno efeito de flutuar */
+    box-shadow: 0 6px 20px rgba(43, 182, 115, 0.35);
+}
+
+#contacto button:active {
+    transform: translateY(0); /* Efeito de clique físico */
+}
+
+#contacto p {
+    text-align: center;
+    font-size: 1.05em;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 20px;
+    margin-bottom: 35px;
+    max-width: 1000px;}
+
+#contacto label {text-align: center;}
