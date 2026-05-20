@@ -17,6 +17,15 @@ body {
     font-family: 'Inter', sans-serif;
     color: #64748B;}
 
+/* Configuração geral do bloco Main */
+main {
+    background: linear-gradient(135deg, #F8FAFC 0%, #EAF0F8 100%); /* Fundo suave em degradê */
+    padding: 60px 20px;
+    min-height: calc(100vh - 70px - 70px); /* Garante que ocupa o ecrã todo entre o topo e o rodapé */
+    display: flex;
+    justify-content: center;
+    align-items: center;}
+
 /* ---------------------------------------------------------------------------------------- */
 /*                                          NAVBAR                                          */
 
@@ -229,3 +238,143 @@ body {
 .contact-item span {font-size: 1.3em;}
 
 .contact-item p {font-size: 1em; color: #475569;}
+
+/* ---------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------- */
+/*                            PÁGINA SOBRE NÓS (ESTILOS DA MAIN)                            */
+
+/* Container centralizado */
+.about-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Distância entre as duas secções */}
+
+/* --- SECÇÃO: CONTEXTO ACADÉMICO --- */
+.academic-context {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(15, 76, 129, 0.05); /* Sombra muito leve */
+    text-align: center;}
+
+.academic-context h1 {
+    font-size: 2.4em;
+    color: #0F4C81;
+    margin-bottom: 20px;}
+
+.academic-context p {
+    font-size: 1.05em;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 20px;}
+
+.academic-context p:last-child {margin-bottom: 0; /* Remove a margem do último parágrafo */}
+
+/* Link especial para o ISEP */
+.isep-link {
+    color: #2BB673;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px dashed #2BB673; /* Linha tracejada estilizada */
+    transition: all 0.2s ease;}
+
+.isep-link:hover {
+    color: #0F4C81;
+    border-bottom-style: solid;
+    background-color: rgba(43, 182, 115, 0.05);}
+
+/* --- SECÇÃO: AUTOR DO PROJETO --- */
+.author-section h2 {
+    font-size: 1.8em;
+    color: #0F4C81;
+    text-align: center;
+    margin-bottom: 25px;}
+
+/* Design do Cartão de Perfil */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.08);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    max-width: 650px;
+    margin: 0 auto;
+    border-left: 5px solid #2BB673; /* Linha de destaque verde da tua marca */}
+
+/* Foto de Perfil */
+.profile-avatar {flex-shrink: 0; /*Impede que a foto seja esmagada ou deformada quando 
+    o ecrã encolhe. Garante que ela mantém sempre o seu tamanho redondo original. */} 
+
+.profile-avatar img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%; /* Foto redonda */
+    object-fit: cover;  /* Não deixa a imagem distorcer */
+    border: 3px solid #DCE6F2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);}
+
+/* Bloco de informações do cartão */
+.profile-info {flex-grow: 1;}
+
+.profile-info h3 {
+    font-size: 1.6em;
+    color: #0F4C81;
+    margin-bottom: 4px;}
+
+.profile-role {
+    font-size: 0.95em;
+    color: #2BB673;
+    font-weight: 600;
+    margin-bottom: 20px;}
+
+/* Linhas de detalhes (Número, Email, etc) */
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;}
+
+.detail-line {
+    font-size: 0.95em;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;}
+
+/* Estilização dos ícones (as estrelinhas) */
+.detail-line span {
+    color: #2BB673;
+    font-size: 1.1em;}
+
+.detail-line a {
+    color: #0F4C81;
+    text-decoration: none;
+    font-weight: 500;}
+
+.detail-line a:hover {
+    color: #2BB673;
+    text-decoration: underline;}
+
+/* --- BOTÃO LINKEDIN --- */
+.btn-linkedin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0077B5; /* Azul oficial do LinkedIn */
+    color: #ffffff !important; /* Força o texto a ser branco */
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 0.85em;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 119, 181, 0.2);}
+
+.btn-linkedin:hover {
+    background-color: #004182; /* Azul mais escuro no hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 119, 181, 0.3);}
