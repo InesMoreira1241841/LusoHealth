@@ -16,15 +16,14 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
 
-    <!-- Google Fonts -->
+     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,700;1,400&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,700;1,400&display=swap" rel="stylesheet"> 
 
     <!-- Font Awesome (local) -->
     <link rel="stylesheet" href="../assets/fontawesome/all.min.css">
-
+  
     <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/1241841.css">
 </head>
@@ -62,29 +61,53 @@
 
     </nav>
 
-    <!-- Main -->
-    <main>
-        <section id="contacto">
-            <h2>Fale Connosco</h2>
-
-            <p>Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos. 
-                Desenvolvido para responder às reais exigências da Engenharia Biomédica, o 
-                LusoHealth é o parceiro ideal para monitorizar a criticidade e conformidade das 
-                suas tecnologias de saúde.</p>
-
-                <form id="contactForm">
-                <label for="nome"><strong>Nome</strong></label>
-                <input type="text" id="nome" name="nome" required>
-
-                <label for="email"><strong>E-mail</strong></label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="mensagem"><strong>Mensagem</strong></label>
-                <textarea id="mensagem" name="mensagem" rows="4" required></textarea> 
-                <button type="submit">Enviar Mensagem</button>
-            </form>
+    <!-- Seção "Conteudo da pagina" -->
+    <section class="hero-section">
+        <main>
+    <div class="services-container">
+        
+        <section class="services-intro">
+            <h1>Serviços de Gestão Hospitalar</h1>
+            <p>
+                A plataforma <strong>LusoHealth</strong> disponibiliza módulos integrados para a otimização, 
+                rastreabilidade e controlo rigoroso do inventário clínico do ecossistema de saúde.
+            </p>
         </section>
-    </main>
+
+        <section class="services-grid">
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-stethoscope"></i>
+                </div>
+                <h3>Gestão de Equipamentos</h3>
+                <p>Consulte o inventário de dispositivos médicos, monitorize índices de criticidade clínica e aceda ao histórico de manutenção preventiva.</p>
+                <a href="equipamentos.html" class="btn-service">Aceder ao Módulo</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-hospital"></i>
+                </div>
+                <h3>Rastreabilidade de Localizações</h3>
+                <p>Mapeie a distribuição dos ativos por blocos operatórios, enfermarias e serviços de urgência, garantindo uma rápida resposta clínica.</p>
+                <a href="localizacoes.html" class="btn-service">Aceder ao Módulo</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+                </div>
+                <h3>Controlo de Fornecedores</h3>
+                <p>Gerencie contactos de fabricantes, contratos de assistência técnica e monitorize os prazos de garantias dos equipamentos essenciais.</p>
+                <a href="fornecedores.html" class="btn-service">Aceder ao Módulo</a>
+            </div>
+
+        </section>
+
+    </div>
+</main>
+    </section>
 
     <!-- Rodapé -->
     <footer class="bng-navbar">

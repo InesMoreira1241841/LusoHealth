@@ -8,15 +8,23 @@
     box-sizing: border-box; /* Garante que a largura e altura dos elementos incluam a borda */}
 
 /* Títulos herdam a fonte Montserrat e cores contrastantes */
-h1, h3 {
+h1 {
     font-family: 'Montserrat', sans-serif;
-    color: #1E293B;}
+    font-size: 2.8em;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: #0F4C81;}
 
-h2 {
+    h2 {
     font-size: 1.8em;
     color: #0F4C81;
     text-align: center;
-    margin-bottom: 25px;}
+    margin-bottom: 25px;} 
+
+h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #1E293B;}
 
 /* Body define as regras padrão para TODO o texto normal do site */
 body {
@@ -32,7 +40,7 @@ main {
     justify-content: center;
     align-items: center;}
 
-/* ---------------------------------------------------------------------------------------- */
+     /* ---------------------------------------------------------------------------------------- */
 /*                                          NAVBAR                                          */
 
 .bng-navbar {
@@ -120,17 +128,17 @@ main {
     opacity: 0;     /* Começa invisível */
     visibility: hidden; /* Escondido para não ser clicável enquanto invisível */           
     position: absolute;          
-    top: 120%;                   
+    top: 100%;                   
     left: 50%;
-    transform: translateX(-50%); /* Move o elemento metade da sua própria largura para a esquerda */
+    transform: translateX(-50%) translateY(10px); /* Move o elemento metade da sua própria largura para a esquerda */
     background-color: #ffffff;   
-    min-width: 100px;            
+    min-width: 160px;            
     box-shadow: 0px 10px 25px rgba(15, 76, 129, 0.12);
     border-radius: 8px;          
     padding: 8px 0;
     list-style: none;            
     z-index: 1000; /* Garante que o menu flutuante fica sempre por cima de tudo */
-    transition: all 0.3s ease; /* Controla a suavidade da animação */}
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease; /* Controla a suavidade da animação */}
 
 /* Itens de dentro do Dropdown */
 .dropdown-menu li a {
@@ -155,7 +163,7 @@ main {
 .dropdown:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;
-    top: 100%; /* Sobe suavemente para a posição correta */}
+    transform: translateX(-50%) translateY(0);}
 
 /* ---------------------------------------------------------------------------------------- */
 /*                                       HERO SECTION                                       */
@@ -181,12 +189,6 @@ main {
 
 /* Como estão empilhados, ambos passam a ocupar 100% da largura útil */
 .hero-text, .hero-image {width: 100%;}
-
-.hero-text h1 {
-    font-size: 2.8em;
-    line-height: 1.2;
-    margin-bottom: 20px;
-    color: #0F4C81;}
 
 .hero-text p {
     font-size: 1.05em;
@@ -260,11 +262,6 @@ main {
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(15, 76, 129, 0.05); /* Sombra muito leve */
     text-align: center;}
-
-.academic-context h1 {
-    font-size: 2.4em;
-    color: #0F4C81;
-    margin-bottom: 20px;}
 
 .academic-context p {
     font-size: 1.05em;
@@ -375,6 +372,11 @@ main {
 
 /* ---------------------------------------------------------------------------------------- */
 /*                                        FORMULÁRIO                                        */
+#contacto {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;}
+
 #contacto form {
     display: flex; /* Usa layout flexível */
     flex-direction: column; /* Organiza os elementos na vertical */
@@ -390,15 +392,14 @@ main {
     font-size: 0.9em;
     font-weight: 600;
     color: #0F4C81; 
-    margin-top: 5px;
+    margin-top: 12px;
     margin-bottom: 8px;
     text-align: left; /* Garante alinhamento à esquerda */}
 
 #contacto input, #contacto textarea {
     font-family: 'Inter', sans-serif; /* Fonte de leitura para os campos */
     font-size: 0.95em;
-    padding: 12px; 
-    margin-bottom: 20px; 
+    padding: 12px;
     border: 1px solid #CBD5E1; 
     border-radius: 6px; 
     color: #334155;
@@ -427,7 +428,7 @@ main {
     border: none; 
     border-radius: 6px; 
     cursor: pointer; 
-    margin-top: 10px;
+    margin-top: 20px;
     box-shadow: 0 4px 14px rgba(43, 182, 115, 0.25); /* Sombra no botão */
     transition: all 0.3s ease;}
 
@@ -437,17 +438,15 @@ main {
     box-shadow: 0 6px 20px rgba(43, 182, 115, 0.35);
 }
 
-#contacto button:active {
-    transform: translateY(0); /* Efeito de clique físico */
-}
+#contacto button:active {transform: translateY(0); /* Efeito de clique físico */}
 
 #contacto p {
     text-align: center;
     font-size: 1.05em;
     line-height: 1.7;
     color: #475569;
-    margin-bottom: 20px;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     max-width: 1000px;}
 
 #contacto label {text-align: center;}
+
