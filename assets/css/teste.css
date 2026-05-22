@@ -1,0 +1,525 @@
+/* ---------------------------------------------------------------------------------------- */
+/*                                       REGRAS GERAIS                                      */
+
+/* * - seletor universal (aplica-se a todos os elementos HTML da página) */
+* {
+    margin: 0; /* Remove todas as margens padrão */
+    padding: 0; /* Remove os preenchimentos internos padrão */
+    box-sizing: border-box; /* Garante que a largura e altura dos elementos incluam a borda */}
+
+/* Títulos herdam a fonte Montserrat e cores contrastantes */
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.8em;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: #0F4C81;}
+
+h2 {
+    font-size: 1.8em;
+    color: #0F4C81;
+    text-align: center;
+    margin-bottom: 25px;} 
+
+h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #1E293B;}
+
+P {font-size: 1.05em; color: #475569;}
+
+/* Body define as regras padrão para TODO o texto normal do site */
+body {
+    font-family: 'Inter', sans-serif;
+    color: #64748B;}
+
+/* Configuração geral do bloco Main */
+main {
+    background: linear-gradient(135deg, #F8FAFC 0%, #EAF0F8 100%); /* Fundo suave em degradê */
+    padding: 50px 10px;
+    min-height: calc(80vh - 70px - 70px); /* Garante que ocupa o ecrã todo entre o topo e o rodapé */
+    display: flex;
+    justify-content: center;
+    align-items: center;}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                          NAVBAR                                          */
+
+.bng-navbar {
+    background-color: #DCE6F2;
+    display: flex; /* Alinha os elementos em linha */
+    align-items: center;/* Centraliza os itens verticalmente */
+    justify-content: space-between;/* Distribui os itens igualmente */
+    padding: 12px 40px;/* Adiciona espaçamento interno */
+    box-shadow: 0 2px 10px rgba(15, 76, 129, 0.08);}
+
+.bng-navbar div { /* Alinha o grupo do Logo verticalmente */
+    display: flex;
+    align-items: center;}
+
+.bng-navbar img {
+    height: 42px; /* Ajusta a altura do logo */
+    margin-right: 12px;/* Adiciona espaço entre o logo e o texto */}
+
+.bng-navbar h3 {
+    font-size: 1.35em; 
+    color: #0F4C81;
+    font-weight: 700;}
+
+/* Estilos para os links centrais da navegação */
+.container-navegacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;}
+
+.container-navegacao a { /* Estilo base para todos os links normais da navbar */
+    font-size: 0.95em; /* Tamanho da fonte dos links */
+    font-weight: 500;
+    text-decoration: none; /* Remove o sublinhado */
+    color: #0F4C81; /* Define a cor dos links */
+    position: relative;
+    padding: 8px 0;
+    transition: color 0.2s ease;}
+
+/* Efeito da linha a surgir por baixo no hover (Underline Animado) */
+.container-navegacao a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #2BB673;
+    transition: width 0.3s ease;}
+
+.container-navegacao a:hover {color: #2BB673; /* Muda a cor ao passar o mouse */} 
+
+.container-navegacao a:hover::after {width: 100%; /* A linha estica até 100% no hover */}
+
+ /* Área do Cliente (Botão Entrar) */
+.nav-cliente a {
+    color: #2BB673; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+    font-size: 0.95em; /* Tamanho da fonte */
+    font-weight: 600;
+    padding: 8px 20px; /* Espaçamento interno */
+    border: 2px solid #2BB673;
+    border-radius: 6px; /* Bordas arredondadas */
+    transition: all 0.3s ease; /* Efeito suave na transição */}
+
+.nav-cliente a:hover {/* Efeito ao passar o mouse */
+    background-color: #2BB673; /* Cor de fundo ao passar o mouse */
+    color: #DCE6F2;
+    box-shadow: 0 4px 12px rgba(43, 182, 115, 0.2); /* Sombra verde brilhante ao passar o rato */} 
+
+/* ---------------------------------------------------------------------------------------- */
+/*                             SISTEMA DROPDOWN (MENU SUSPENSO)                             */
+
+.dropdown {
+    position: relative;
+    display: inline-block;}
+
+/* Remove a necessidade de regras de margem cegas aqui, pois o 'gap' resolve */
+.dropdown .dropdown-trigger {
+    display: block;
+}
+/* Menu Flutuante com Animação de Fade-in */
+.dropdown-menu {
+    display: block;    
+    opacity: 0;     /* Começa invisível */
+    visibility: hidden; /* Escondido para não ser clicável enquanto invisível */           
+    position: absolute;          
+    top: 100%;                   
+    left: 50%;
+    transform: translateX(-50%) translateY(10px); /* Move o elemento metade da sua própria largura para a esquerda */
+    background-color: #ffffff;   
+    min-width: 160px;            
+    box-shadow: 0px 10px 25px rgba(15, 76, 129, 0.12);
+    border-radius: 8px;          
+    padding: 8px 0;
+    list-style: none;            
+    z-index: 1000; /* Garante que o menu flutuante fica sempre por cima de tudo */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease; /* Controla a suavidade da animação */}
+
+/* Itens de dentro do Dropdown */
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: left;            
+    color: #0F4C81; /* Garante que os sublinks começam com a cor correta */
+    transition: all 0.2s;}
+
+/* Remove o efeito da linha de baixo especificamente dentro do dropdown */
+.dropdown-menu li a::after {display: none;}
+
+/* Hover específico para os itens de dentro do dropdown */
+.dropdown-menu li a:hover {
+    background-color: #DCE6F2;   
+    color: #0F4C81;
+    padding-left: 24px; /* Pequeno efeito do texto a mover-se para a direita */}
+
+/* Mostra o menu ao passar o rato */
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                       HERO SECTION                                       */
+
+.hero-section {
+    background-color: #F5F9FC;
+    padding: 100px 40px; /* Aumentado para dar espaço em relação à navbar */
+    min-height: 80vh; /* Define uma altura mínima fixa proporcional ao ecrã */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1; /* Mantém o conteúdo numa camada abaixo do menu dropdown */}
+
+.hero-container {
+    max-width: 800px; /* Reduzido o tamanho máximo para o texto não ficar demasiado esticado */
+    width: 100%;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    text-align: center; /* Centraliza todos os textos */
+    gap: 30px; /* Espaço entre o bloco de texto e a imagem em baixo */}
+
+/* Como estão empilhados, ambos passam a ocupar 100% da largura útil */
+.hero-text, .hero-image {width: 100%;}
+
+.hero-text p {
+    line-height: 1.6;
+    margin-bottom: 35px;
+    max-width: 700px;
+    margin-left: auto;  /* Alinha o parágrafo ao centro */
+    margin-right: auto; /* Alinha o parágrafo ao centro */}
+
+/* Configuração da Imagem que agora está em baixo */
+.hero-image {
+    display: flex;
+    justify-content: center;
+    border-radius: 2.5%;
+    align-items: center;}
+
+.hero-image img {
+    max-width: 100%;     
+    height: auto;        
+    max-height: 280px; /* Ajustado para não empurrar o footer demasiado para baixo */
+    border-radius: 15px; 
+    box-shadow: 0 15px 30px rgba(15, 76, 129, 0.1);}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                         CONTACTOS                                        */
+
+.hero-contacts {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 40px;
+    border-top: 1px solid #2BB673; /* Cria uma linha divisória */}
+
+/* Coloca o Telefone e o E-mail lado a lado */
+.contacts-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap; /* Caso o ecrã seja pequeno, eles empilham-se automaticamente */}
+
+.contact-item {
+    background-color: #ffffff; 
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(15, 76, 129, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 12px;}
+
+.contact-item span {font-size: 1.3em;}
+
+/* ---------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------- */
+/*                            PÁGINA SOBRE NÓS (ESTILOS DA MAIN)                            */
+
+/* Container centralizado */
+.about-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Distância entre as duas secções */}
+
+/* --- SECÇÃO: CONTEXTO ACADÉMICO --- */
+.academic-context {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(15, 76, 129, 0.05); /* Sombra muito leve */
+    text-align: center;}
+
+.academic-context p {
+    line-height: 1.7;
+    margin-bottom: 20px;}
+
+.academic-context p:last-child {margin-bottom: 0; /* Remove a margem do último parágrafo */}
+
+/* Link especial para o ISEP */
+.isep-link {
+    color: #2BB673;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px dashed #2BB673; /* Linha tracejada estilizada */
+    transition: all 0.2s ease;}
+
+.isep-link:hover {
+    color: #0F4C81;
+    border-bottom-style: solid;
+    background-color: rgba(43, 182, 115, 0.05);}
+
+/* Design do Cartão de Perfil */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.08);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    max-width: 650px;
+    margin: 0 auto;
+    border-left: 5px solid #2BB673; /* Linha de destaque verde da tua marca */}
+
+/* Foto de Perfil */
+.profile-avatar {flex-shrink: 0; /*Impede que a foto seja esmagada ou deformada quando 
+    o ecrã encolhe. Garante que ela mantém sempre o seu tamanho redondo original. */} 
+
+.profile-avatar img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%; /* Foto redonda */
+    object-fit: cover;  /* Não deixa a imagem distorcer */
+    border: 3px solid #DCE6F2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);}
+
+/* Bloco de informações do cartão */
+.profile-info {flex-grow: 1;}
+
+.profile-info h3 {
+    font-size: 1.6em;
+    color: #0F4C81;
+    margin-bottom: 4px;}
+
+.profile-role {
+    font-size: 0.95em;
+    color: #2BB673;
+    font-weight: 600;
+    margin-bottom: 20px;}
+
+/* Linhas de detalhes (Número, Email, etc) */
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;}
+
+.detail-line {
+    font-size: 0.95em;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;}
+
+/* Estilização dos ícones (as estrelinhas) */
+.detail-line span {
+    color: #2BB673;
+    font-size: 1.1em;}
+
+.detail-line a {
+    color: #0F4C81;
+    text-decoration: none;
+    font-weight: 500;}
+
+.detail-line a:hover {
+    color: #2BB673;
+    text-decoration: underline;}
+
+/* --- BOTÃO LINKEDIN --- */
+.btn-linkedin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0077B5; /* Azul oficial do LinkedIn */
+    color: #ffffff !important; /* Força o texto a ser branco */
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 0.85em;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 119, 181, 0.2);}
+
+.btn-linkedin:hover {
+    background-color: #004182; /* Azul mais escuro no hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 119, 181, 0.3);}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                        FORMULÁRIO                                        */
+#contacto {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;}
+
+#contacto form {
+    display: flex; /* Usa layout flexível */
+    flex-direction: column; /* Organiza os elementos na vertical */
+    max-width: 500px; /* Limita a largura do formulário */ 
+    margin: 30px auto 0 auto; /* Centraliza horizontalmente */
+    background-color: #ffffff; /* Fundo branco estilo 'card' para destacar do gradiente */
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.06);}
+
+#contacto label {
+    font-family: 'Montserrat', sans-serif; /* Fonte dos títulos para as labels */
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #0F4C81; 
+    margin-top: 12px;
+    margin-bottom: 8px;
+    text-align: left; /* Garante alinhamento à esquerda */}
+
+#contacto input, #contacto textarea {
+    font-family: 'Inter', sans-serif; /* Fonte de leitura para os campos */
+    font-size: 0.95em;
+    padding: 12px;
+    border: 1px solid #CBD5E1; 
+    border-radius: 6px; 
+    color: #334155;
+    background-color: #F8FAFC; /* Fundo ligeiramente acinzentado para o campo */
+    transition: all 0.3s ease; /* Transição suave para o efeito de clique */}
+
+/* Efeito dinâmico quando o utilizador clica para escrever no campo (Focus) */
+#contacto input:focus, #contacto textarea:focus {
+    outline: none;
+    border-color: #2BB673; /* A borda fica verde ao clicar */
+    background-color: #ffffff; /* O fundo passa a branco */
+    box-shadow: 0 0 0 3px rgba(43, 182, 115, 0.15); /* Brilho verde suave à volta */}
+
+/* Limita o redimensionamento da caixa de mensagem para não partir o layout */
+#contacto textarea {
+    resize: vertical;
+    min-height: 120px;}
+
+#contacto button {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #2BB673; /* Botão verde principal */
+    color: #ffffff !important; 
+    font-size: 1em;
+    font-weight: 600;
+    padding: 14px 20px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    margin-top: 20px;
+    box-shadow: 0 4px 14px rgba(43, 182, 115, 0.25); /* Sombra no botão */
+    transition: all 0.3s ease;}
+
+#contacto button:hover {
+    background-color: #23945d; /* Verde mais escuro ao passar o rato */
+    transform: translateY(-2px); /* Pequeno efeito de flutuar */
+    box-shadow: 0 6px 20px rgba(43, 182, 115, 0.35);
+}
+
+#contacto button:active {transform: translateY(0); /* Efeito de clique físico */}
+
+#contacto p {
+    text-align: center;
+    line-height: 1.7;
+    margin-bottom: 25px;
+    max-width: 1000px;}
+
+#contacto label {text-align: center;}
+
+/* ---------------------------------------------------------------------------------------- */
+/*                                         SERVIÇOS                                         */
+/* Introdução / Cabeçalho da Secção */
+.services-intro {
+    text-align: center;
+    margin-bottom: 50px;}
+
+.services-intro p {
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;}
+
+/* Grelha de Cards (Módulos) */
+.services-grid {
+    display: flex;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 25px 0; /* Espaçamento entre as colunas */
+    margin-top: 20px;}
+
+/* Cada Bloco/Card de Serviço */
+.service-card {
+    display: table-cell;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 35px 25px;
+    text-align: center;
+    vertical-align: top;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;}
+
+/* Efeito Hover moderno nos Cards */
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(11, 60, 93, 0.1);
+    border-color: #328cc1;}
+
+/* Estilização dos Ícones */
+.service-icon {
+    width: 70px;
+    height: 70px;
+    background-color: #eef6fb; /* Fundo azul muito suave */
+    margin: 0 auto 20px auto;
+    border-radius: 50%;
+    line-height: 70px; /* Centra o ícone verticalmente */
+    text-align: center;}
+
+.service-icon i {font-size: 1.8rem; color: #328cc1; /* Cor do ícone */}
+
+/* Títulos dentro dos Cards */
+.service-card h3 {
+    color: #0b3c5d;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;}
+
+/* Texto Descritivo nos Cards */
+.service-card p {
+    line-height: 1.5;
+    margin-bottom: 25px;
+    min-height: 70px; /* Garante que os botões ficam alinhados mesmo com textos diferentes */}
+
+/* Botão de Acesso ao Módulo */
+.btn-service {
+    display: inline-block;
+    background-color: #0b3c5d;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, transform 0.1s ease;}
+
+.btn-service:hover {
+    background-color: #328cc1;
+    color: #ffffff;}

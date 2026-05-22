@@ -31,71 +31,102 @@
 
 <body>
     <!-- Navegação -->
-    <nav class="bng-navbar">
-        <!-- Logo e Nome -->
-        <div>
-            <img src="../assets/img/logo.png" alt="Logo da empresa">
-            <h3>LusoHealth</h3>
-        </div>
+    <nav class="barra-navegacao" aria-label="Navegação principal">
 
-        <!-- Links centrais -->
-        <div class="container-navegacao">
-            <a href="index.html">HOME</a>
-            <a href="sobre_nos.html">SOBRE NÓS</a>
+        <div class="conteudo-navegacao">
+            <!-- Logo e Nome -->
+            <a href="index.html" class="marca-navegacao" aria-label="Página inicial LusoHealth">
+                <img src="../assets/img/logo.png" alt="Logótipo da LusoHealth">
+                <span>LusoHealth</span>
+            </a>
 
-            <div class="dropdown">
-                <a href="servicos.html" class="dropdown-trigger">SERVIÇOS <i class="fa-solid fa-chevron-down"></i></a>
 
-                <ul class="dropdown-menu">
-                    <li><a href="equipamentos.html">Equipamentos</a></li>
-                    <li><a href="localizacoes.html">Localizações</a></li>
-                    <li><a href="fornecedores.html">Fornecedores</a></li>
-                </ul>
+            <!-- Links centrais -->
+            <ul class="links-navegacao">
+
+                <li><a href="index.html">HOME</a></li>
+
+                <li><a href="sobre_nos.html">SOBRE NÓS</a></li>
+
+                <li class="dropdown">
+                    <a href="servicos.html" class="dropdown-trigger">
+                        SERVIÇOS
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="equipamentos.html">Equipamentos</a></li>
+                        <li><a href="localizacoes.html">Localizações</a></li>
+                        <li><a href="fornecedores.html">Fornecedores</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="formulario.html">FALE CONNOSCO</a></li>
+            </ul>
+
+
+            <!-- Área Cliente -->
+            <div class="cliente-navegacao">
+                <a href="login.html">ENTRAR</a>
             </div>
-            <a href="formulario.html">FALE CONNOSCO</a>
-        </div>
-
-        <!-- Área Cliente -->
-        <div class="nav-cliente">
-            <a href="login.html">ENTRAR</a>
         </div>
 
     </nav>
 
     <!-- Main -->
     <main>
-        <section id="contacto">
-            <h2>Fale Connosco</h2>
+        <section class="secao-formulario">
+    
+            <div class="conteudo-formulario">
+    
+                <h1>Fale Connosco</h1>
+    
+                <p class="descricao-formulario">
+                    Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos.
+                    Desenvolvido para responder às reais exigências da Engenharia Biomédica, o
+                    LusoHealth é o parceiro ideal para monitorizar a criticidade e conformidade das
+                    suas tecnologias de saúde.
+                </p>
+    
+                <form class="formulario-contacto">
 
-            <p>Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos. 
-                Desenvolvido para responder às reais exigências da Engenharia Biomédica, o 
-                LusoHealth é o parceiro ideal para monitorizar a criticidade e conformidade das 
-                suas tecnologias de saúde.</p>
+                    <div class="campo-form">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+    
+                    <div class="campo-form">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+    
+                    <div class="campo-form">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" rows="4" required></textarea>
+                        <!-- Campo de texto multilinha (para escrever texto longo) -->
+                    </div>
 
-                <form id="contactForm">
-                <label for="nome"><strong>Nome</strong></label>
-                <input type="text" id="nome" name="nome" required>
+                    <button type="submit" class="botao-formulario">
+                        Enviar Mensagem
+                    </button>
 
-                <label for="email"><strong>E-mail</strong></label>
-                <input type="email" id="email" name="email" required>
+                </form>
 
-                <label for="mensagem"><strong>Mensagem</strong></label>
-                <textarea id="mensagem" name="mensagem" rows="4" required></textarea> 
-                <button type="submit">Enviar Mensagem</button>
-            </form>
+            </div>
+
         </section>
     </main>
 
     <!-- Rodapé -->
-    <footer class="bng-navbar">
-        <div class="container-navegacao">
+    <footer class="rodape" aria-label="Rodapé">
+        <div class="links-rodape">
             <a href="index.html">Home</a>
             <a href="sobre_nos.html">Sobre Nós</a>
             <a href="servicos.html">Serviços</a>
             <a href="formulario.html">Fale Connosco</a>
         </div>
 
-        <div>
+        <div class="copyright-rodape">
             Copyright 2026 © <strong>LusoHealth Portugal</strong>
             <!-- STRONG: negrito -->
         </div>

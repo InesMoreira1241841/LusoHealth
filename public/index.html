@@ -16,99 +16,128 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
 
-     <!-- Google Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,700;1,400&display=swap" rel="stylesheet"> 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@500;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome (local) -->
     <link rel="stylesheet" href="../assets/fontawesome/all.min.css">
-  
+
     <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/1241841.css">
 </head>
 
 <body>
     <!-- Navegação -->
-    <nav class="bng-navbar">
-        <!-- Logo e Nome -->
-        <div>
-            <img src="../assets/img/logo.png" alt="Logo da empresa">
-            <h3>LusoHealth</h3>
-        </div>
+    <nav class="barra-navegacao" aria-label="Navegação principal">
 
-        <!-- Links centrais -->
-        <div class="container-navegacao">
-            <a href="index.html">HOME</a>
-            <a href="sobre_nos.html">SOBRE NÓS</a>
+        <div class="conteudo-navegacao">
+            <!-- Logo e Nome -->
+            <a href="index.html" class="marca-navegacao" aria-label="Página inicial LusoHealth">
+                <img src="../assets/img/logo.png" alt="Logótipo da LusoHealth">
+                <span>LusoHealth</span>
+            </a>
 
-            <div class="dropdown">
-                <a href="servicos.html" class="dropdown-trigger">SERVIÇOS <i class="fa-solid fa-chevron-down"></i></a>
 
-                <ul class="dropdown-menu">
-                    <li><a href="equipamentos.html">Equipamentos</a></li>
-                    <li><a href="localizacoes.html">Localizações</a></li>
-                    <li><a href="fornecedores.html">Fornecedores</a></li>
-                </ul>
+            <!-- Links centrais -->
+            <ul class="links-navegacao">
+
+                <li><a href="index.html">HOME</a></li>
+
+                <li><a href="sobre_nos.html">SOBRE NÓS</a></li>
+
+                <li class="dropdown">
+                    <a href="servicos.html" class="dropdown-trigger">
+                        SERVIÇOS
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="equipamentos.html">Equipamentos</a></li>
+                        <li><a href="localizacoes.html">Localizações</a></li>
+                        <li><a href="fornecedores.html">Fornecedores</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="formulario.html">FALE CONNOSCO</a></li>
+            </ul>
+
+            <!-- Área Cliente -->
+            <div class="cliente-navegacao">
+                <a href="login.html">ENTRAR</a>
             </div>
-            <a href="formulario.html">FALE CONNOSCO</a>
         </div>
-
-        <!-- Área Cliente -->
-        <div class="nav-cliente">
-            <a href="login.html">ENTRAR</a>
-        </div>
-
     </nav>
 
-    <!-- Seção "Conteudo da pagina" -->
-    <section class="hero-section">
-        <div class="hero-container">
+    <main>
 
-            <div class="hero-text">
-                <h1>Inovação e Eficiência na Gestão de Equipamentos Médicos</h1>
-                <p>
-                    A <strong>LusoHealth</strong> impulsiona a transformação digital no
-                    setor da saúde através de soluções inteligentes para a gestão hospitalar.
-                    O nosso sistema de inventário clínico foi desenvolvido para responder às
-                    exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e
-                    maior eficiência na gestão de equipamentos médicos.
-                </p>
-            </div>
+        <!-- Seção "Conteudo da pagina" -->
+        <section class="conteudo-principal">
+            <div class="conteudo-inicial">
 
-            <div>
-                <img class="hero-image" src="../assets/img/index_img01.png" alt="Equipamento Hospitalar">
-            </div>   
-            
-           <div class="hero-contacts">
-                <h2>Contactos</h2>
-                <div class="contacts-grid">
-                    <div class="contact-item">
-                        <span>☏</span>
-
-                        <p><strong>Telefone:</strong> 96X XXX XXX</p>
-                    </div>
-                    <div class="contact-item">
-                        <span>✉</span>
-                        <p><strong>E-mail:</strong> contacto@lusohealth.pt</p>
-                    </div>
+                <div class="texto-inicial">
+                    <h1>Inovação e Eficiência na Gestão de Equipamentos Médicos</h1>
+                    <p>
+                        A <strong>LusoHealth</strong> impulsiona a transformação digital no
+                        setor da saúde através de soluções inteligentes para a gestão hospitalar.
+                        O nosso sistema de inventário clínico foi desenvolvido para responder às
+                        exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e
+                        maior eficiência na gestão de equipamentos médicos.
+                    </p>
                 </div>
+
+                <div class="conteudo-imagem">
+                    <img class="imagem-inicial" src="../assets/img/index_img01.png" alt="Equipamento Hospitalar">
+                </div>
+
+                <section class="contactos" aria-label="Informações de contacto">
+
+                    <h2>Contactos</h2>
+
+                    <div class="grelha-contactos">
+
+                        <address class="cartao-contacto">
+                            <span aria-hidden="true">☏</span>
+                            <p>
+                                <strong>Telefone:</strong>
+                                <a href="tel:+35196XXXXXXX">
+                                    96X XXX XXX
+                                </a>
+                            </p>
+                        </address>
+
+                        <address class="cartao-contacto">
+                            <span aria-hidden="true">✉</span>
+                            <p>
+                                <strong>E-mail:</strong>
+                                <a href="mailto:contacto@lusohealth.pt">
+                                    contacto@lusohealth.pt
+                                </a>
+                            </p>
+                        </address>
+
+                    </div>
+
+                </section>
             </div>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <!-- Rodapé -->
-    <footer class="bng-navbar">
-        <div class="container-navegacao">
+    <footer class="rodape" aria-label="Rodapé">
+        <div class="links-rodape">
             <a href="index.html">Home</a>
             <a href="sobre_nos.html">Sobre Nós</a>
             <a href="servicos.html">Serviços</a>
             <a href="formulario.html">Fale Connosco</a>
         </div>
 
-        <div>
+        <div class="copyright-rodape">
             Copyright 2026 © <strong>LusoHealth Portugal</strong>
-            <!-- STRONG: negrito -->
         </div>
     </footer>
 </body>
