@@ -62,18 +62,20 @@ p {font-size: 1.05rem; color: var(--cinzento-texto);}
 ----------------------------------------------------------------- */
 main {
     min-height: calc(100vh - 140px); /* Altura mínima = altura do ecrã menos 140px */
-    display: flex; /* Ativa o layout flexível */
-    justify-content: center;
-    align-items: center;
+    display: block; /* Faz o elemento comportar-se como bloco (nova linha e largura total) */
     padding: 60px 20px; /* 60px em cima/baixo e 20px nos lados */
 }
 /* container geral da página */
 .conteudo-inicial {
     max-width: 1100px; /* Largura máx */
     width: 100%; /* Ocupa 100% da largura disponível */
+
     display: flex; /* Ativa o layout flexível */
     flex-direction: column; /* Organiza os elementos na vertical (coluna) */
     gap: 40px; /* Espaço de 40px entre elementos */
+
+    margin: auto; /* centra horizontalmente */
+    text-align: center;
 }
 
 /* -----------------------------------------------------------------
@@ -256,7 +258,9 @@ main {
 --------------------------------------------------------------------
    1. HERO / SECÇÃO PRINCIPAL
 ----------------------------------------------------------------- */
-.secao-inicial {width: 100%; /* Ocupa 100% da largura disponível */}
+.secao-inicial {
+    width: 100%; /* Ocupa 100% da largura disponível */
+}
 .texto-inicial {
     text-align: center;
     max-width: 800px; /* Largura máx */
@@ -566,6 +570,114 @@ main {
     transition: all 0.2s ease; /* Anima todas as mudanças em 0,2s de forma suave */
 }
 .botao-servico:hover {
+    background-color: #0F4C81;
+    transform: scale(1.03); /* Aumenta ligeiramente o tamanho (3%) */
+}
+
+/* -----------------------------------------------------------------
+   EQUIPAMENTOS.html
+----------------------------------------------------------------- */
+
+/* -----------------------------------------------------------------
+   1. INVENTÁRIO 
+----------------------------------------------------------------- */
+.conteudo-inventario {
+    padding: 50px 30px; /* 50px em cima/baixo e 30px nos lados */
+}
+
+.cabecalho-inventario {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.cabecalho-inventario h2 {
+    color: #0F4C81;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.cabecalho-inventario p {
+    max-width: 700px;
+    margin: 0 auto; /* Centra horizontalmente o elemento */
+    color: #64748B;
+    line-height: 1.6;
+}
+
+/* -----------------------------------------------------------------
+   2. TABELA 
+----------------------------------------------------------------- */
+.tabela-responsiva {
+    overflow-x: auto; /* Permite scroll horizontal quando o conteúdo é mais largo que o elemento */
+}
+
+.tabela-inventario {
+    width: 100%;
+    border-collapse: collapse; /* Junta as bordas da tabela numa só (sem espaços entre células) */
+    background: white;
+    border-radius: 12px;
+    overflow: hidden; /* Esconde o conteúdo que ultrapassa os limites do elemento */
+    box-shadow: 0 10px 25px rgba(15, 76, 129, 0.08);
+}
+
+.tabela-inventario th {
+    background-color: #0F4C81;
+    color: white;
+    text-align: left;
+    padding: 14px; /* Espaço interno de 14px em todos os lados */
+    font-weight: 600; /* Texto com peso semi-negrito */
+}
+
+.tabela-inventario td {
+    padding: 14px; /* Espaço interno de 14px em todos os lados */
+    border-bottom: 1px solid #E2E8F0; /* Cria uma linha inferior de 1px cinzenta clara e sólida */
+}
+
+.tabela-inventario tr:hover {background-color: #F1F7FB;}
+
+/* -----------------------------------------------------------------
+   3. BADGES (CRITICIDADE)
+----------------------------------------------------------------- */
+.badge {
+    padding: 4px 10px; /* 4px em cima/baixo e 10px nos lados */
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600; /* Texto com peso semi-negrito */
+}
+
+.badge-alta {background-color: #FEE2E2; color: #B91C1C;}
+
+.badge-media {background-color: #FEF3C7; color: #92400E;}
+
+.badge-critica {background-color: #DCFCE7; color: #166534;}
+
+/* -----------------------------------------------------------------
+   4. ESTADOS
+----------------------------------------------------------------- */
+.estado-operacional {
+    color: #2BB673;
+    font-weight: 600; /* Texto com peso semi-negrito */
+}
+
+.estado-manutencao {
+    color: #F59E0B;
+    font-weight: 600; /* Texto com peso semi-negrito */
+}
+
+/* -----------------------------------------------------------------
+   5. BOTÕES
+----------------------------------------------------------------- */
+.botao-acao {
+    background-color: #2BB673;
+    color: white;
+    border: none;
+    padding: 8px 14px; /* 8px em cima/baixo e 14px nos lados */
+    border-radius: 8px;
+    cursor: pointer; /* Muda o cursor para mãozinha ao passar o rato */
+    font-weight: 600; /* Texto com peso semi-negrito */
+    transition: 0.2s; /* Anima mudanças em 0,2s */
+}
+
+.botao-acao:hover {
     background-color: #0F4C81;
     transform: scale(1.03); /* Aumenta ligeiramente o tamanho (3%) */
 }
