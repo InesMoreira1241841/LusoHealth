@@ -1,0 +1,169 @@
+<!DOCTYPE html> <!-- Informa ao navegador que este é um documento HTML5 -->
+
+<html lang="pt">
+<!-- <html> define o início do documento HTML -->
+<!-- lang="pt" indica que o idioma principal da página é português -->
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Define a codificação de caracteres para UTF-8, que 
+         suporta acentos e caracteres especiais usados em português -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Torna a página responsiva, ajustando-a para diferentes 
+         tamanhos de ecrã, especialmente em dispositivos móveis -->
+    <title>LusoHealth</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="../assets/fontawesome/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/1241841.css">
+</head>
+
+<body>
+    <!-- Navegação -->
+    <nav class="barra-navegacao" aria-label="Navegação principal">
+
+        <div class="conteudo-navegacao">
+            <!-- Logo e Nome -->
+            <a href="index.html" class="marca-navegacao" aria-label="Página inicial LusoHealth">
+                <img src="../assets/img/logo.png" alt="Logótipo da LusoHealth">
+                <span>LusoHealth</span>
+            </a>
+
+
+            <!-- Links centrais -->
+            <ul class="links-navegacao">
+
+                <li><a href="index.html">HOME</a></li>
+
+                <li><a href="sobre_nos.html">SOBRE NÓS</a></li>
+
+                <li class="dropdown">
+                    <a href="servicos.html" class="dropdown-trigger">
+                        SERVIÇOS
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="equipamentos.html">Equipamentos</a></li>
+                        <li><a href="localizacoes.html">Localizações</a></li>
+                        <li><a href="fornecedores.html">Fornecedores</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="formulario.html">FALE CONNOSCO</a></li>
+            </ul>
+
+            <!-- Área Cliente -->
+            <div class="cliente-navegacao">
+                <a href="login.html">ENTRAR</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="conteudo-inventario" aria-label="Título Inventário">
+
+            <div class="cabecalho-inventario">
+                <h2 id="titulo-inventario">Inventário Clínico: Localizações</h2>
+                <p>Gestão e monitorização dos blocos, pisos e salas clínicas da instituição.</p>
+            </div>
+
+            <div class="tabela-responsiva">
+                <table class="tabela-inventario">
+
+                    <caption>Inventário clínico de equipamentos médicos ativos</caption>
+                    <!-- Serve para dar um título a uma tabela -->
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Cód. Sala</th>
+                            <th scope="col">Edifício / Piso</th>
+                            <th scope="col">Nome do Espaço</th>
+                            <th scope="col">Capacidade</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Ações</th>
+
+                            <!-- scope="col": Define <th> como cabeçalho de coluna -->
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>#LOC-A101</td>
+                            <td>Edifício Principal - Piso 1</td>
+                            <td><strong>Bloco Operatório A</strong></td>
+                            <td>5 Pessoas</td>
+                            <td><span class="estado-operacional" aria-label="Disponível">● Disponível</span></td>
+                            <td>
+                                <button class="botao-acao" type="button">
+                                    Ver Dispositivos
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>#LOC-URG02</td>
+                            <td>Ala de Urgências - Piso 0</td>
+                            <td><strong>Triagem Geral</strong></td>
+                            <td>2 Pessoas</td>
+                            <td><span class="estado-operacional" aria-label="Disponível">● Disponível</span></td>
+                            <td>
+                                <button class="botao-acao" type="button">
+                                    Ver Dispositivos
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>#LOC-UCI05</td>
+                            <td>Bloco Crítico - Piso 2</td>
+                            <td><strong>UCI - Box 5</strong></td>
+                            <td>1 Pessoa</td>
+                            <td><span class="estado-manutencao" aria-label="Disponível">▲ Higienização</span></td>
+                            <td>
+                                <button class="botao-acao" type="button">
+                                    Ver Dispositivos
+                                </button>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="rodape" aria-label="Rodapé">
+        <div class="links-rodape">
+            <a href="index.html">Home</a>
+            <a href="sobre_nos.html">Sobre Nós</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="formulario.html">Fale Connosco</a>
+        </div>
+
+        <div class="copyright-rodape">
+            Copyright 2026 © <strong>LusoHealth Portugal</strong>
+        </div>
+    </footer>
+</body>
+
+</html>
