@@ -1,0 +1,18 @@
+/* --- ESTILOS EXTRA PARA O LOGIN --- */
+.text-success-custom {
+    color: #2e7d32 !important;
+}
+
+.bg-success-light {
+    background-color: #e8f5e9 !important;
+}
+
+.btn-success-custom {
+    background-color: #4caf50 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn-success-custom:hover {
+    background-color: #388e3c !important;
+}
