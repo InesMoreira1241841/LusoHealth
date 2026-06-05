@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LusoHealth</title>
+
+    <link rel="stylesheet" href="../assets/fontawesome/all.min.css"> 
+
+    <!-- Bootstrap CSS & custom CSS -->
+    <link rel="stylesheet" href="../public/assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/1241841.css">
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Bootstrap JS and custom JS -->
+    <script src="../public/assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <div class="container-fluid mt-5"> 
+    <!-- Usa toda a largura e adiciona margem superior -->
+
+    <div class="row justify-content-center"> 
+    <!-- Centra o conteúdo horizontalmente -->
+
+        <div class="col-lg-5 col-md-6 col-sm-8 col-10"> 
+        <!-- Define larguras diferentes para ecrãs grandes, médios, pequenos e extra pequenos -->
+
+            <!-- Borda à volta do formulário --> 
+            <div class="card p-4"> 
+            <!-- Dá padding (espaçamento interno) em todos os lados -->
+ 
+                <div class="d-flex align-items-center justify-content-center my-4"> 
+            <!-- d-flex: Usa Flexbox para alinhar os itens na horizontal
+                 align-items-center: Alinha verticalmente ao centro
+                 justify-content-center: Alinha horizontalmente ao centro
+                 my-4: Adiciona margem vertical (em cima e em baixo) -->
+
+                    <!-- Imagem LusoHealth + texto --> 
+                    <img src="../assets/img/logo.png">
+                    <h2><strong>LusoHealth</strong></h2>
+                </div> 
+             
+                <div class="row"> 
+                    <div class="col"> 
+                        <!-- Formulário --> 
+                        <form action="" method="post">
+                        
+                            <div class="mb-3">
+                            <!-- mb-3: Dá uma margem inferior de tamanho 3 -->
+                                <!-- Utilizador -->
+                                <label for="email" class="form-label">Utilizador</label> 
+                                <input type="email" name="email" id="email" class="form-control"> 
+                            </div>
+                        
+                            <div class="mb-3">
+                            <!-- mb-3: Dá uma margem inferior de tamanho 3 -->
+                                <!-- Password -->
+                                <label for="password" class="form-label">Password</label> 
+                                <input type="password" name="password" id="password" class="form-control"> 
+                            </div>
+                        
+                            <div class="mb-3 text-center">
+                            <!-- mb-3: Dá uma margem inferior de tamanho 3 -->
+                                <!-- Submit -->
+                                <button type="submit" class="btn btn-secondary px-4">
+                                <!--
+                                    btn: Aplica estilo padrão de botão
+                                    btn-secondary: Dá uma cor cinza escura ao botão
+                                    px-4: Dá padding horizontal (espaço interno nas laterais)
+                                -->
+                                    Entrar <i class="fa-solid fa-right-to-bracket ms-2"></i> 
+                                    <!--
+                                        fa-solid fa-right-to-bracket: Ícone de login/sair (Font Awesome)
+                                        ms-2: Margem à esquerda do ícone (margin start 2)
+                                    -->
+                                </button>
+                                
+                            </div>
+                        
+                            <div class="alert alert-danger p-2 text-center">
+                            <!--
+                                alert: Define que é um alerta Bootstrap
+                                alert-danger: Dá cor vermelha, indicando erro ou perigo
+                                p-2: Aplica padding (espaço interno) de tamanho 2
+                            -->
+
+                                <!-- Erros -->
+                                Erro: Utilizador não registado 
+                            </div>
+                        
+                        </form>
+                    </div> 
+                </div> 
+             
+            </div> 
+             
+        </div> 
+    </div> 
+</div> 
+</body>
+
+</html>

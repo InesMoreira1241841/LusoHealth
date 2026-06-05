@@ -1,0 +1,149 @@
+/* ---------------------------------------- NAV-BAR ---------------------------------------- */
+
+/* Definições para o Header */
+.custom-header {
+    background-color: #e8f5e9; /* Cor de fundo */
+    border-bottom: 3px solid #c8e6c9; /* Linha de divisão */
+}
+
+/* Título da Marca */
+.brand-title {
+    color: #2e7d32; /* Cor */
+    font-size: 1.4rem; /* Tamanho de letra */
+    letter-spacing: 0.5px; /* Espaço entre letras */
+}
+
+/* Links de Navegação */
+.custom-nav-link {
+    color: #4caf50 !important; /* Cor */
+    position: relative; /* Posiciona o elemento relativamente à posição original */
+    padding: 12px 0 !important; /* Espaçamento em cima/baixo, zero nos lados para a linha ajustar ao texto */
+    transition: color 0.3s ease; /* Mudança suave da cor em 0,3 s */
+}
+
+/* Criar a linha invisível por baixo do link (Estado Inicial) */
+.custom-nav-link::after {
+    content: ''; /* Cria conteúdo vazio (muito usado com ::before e ::after) */
+    position: absolute; 
+    /* permite colocar o elemento numa posição exata, usando top, bottom, left e right, 
+    relativamente ao elemento pai (se ele tiver position: relative) */
+    width: 100%; /* Largura total do elemento pai */
+    height: 3px; /* Espessura da linha */
+    bottom: 4px; /* Fica a 4 px da parte inferior */
+    left: 0; /* Alinha à esquerda */
+    background-color: #2e7d32; /* Cor da linha */
+    transform: scaleX(0); /* Começa com tamanho zero (invisível) */
+    transform-origin: bottom center; /* A linha vai abrir a partir do centro */
+    transition: transform 0.3s ease; /* Animação suave de expansão */
+}
+
+/* O que acontece quando se passa o rato (Hover) */
+.custom-nav-link:hover {
+    color: #1b5e20 !important; /* O texto fica ligeiramente mais escuro */
+}
+
+/* Ativar a linha no Hover */
+.custom-nav-link:hover::after {
+    transform: scaleX(1); /* A linha expande para 100% da largura do texto */
+}
+
+/* Botão ENTRAR */
+.btn-login-custom {
+    background-color: #4caf50; /* Base em verde */
+    color: white !important; /* Cor */
+    border: none; /* Remove a borda */
+    transition: transform 0.2s ease, background-color 0.3s ease; /* Anima transformação e cor suavemente */
+}
+
+/* Efeito de clique/hover no botão */
+.btn-login-custom:hover {
+    background-color: #388e3c; /* Cor de fundo */
+    transform: scale(1.05); /* Dá um pequeno pulo ao passar o rato */
+}
+
+/* ------------------------------ CONFIGURAÇÕES GLOBAIS DO MAIN ------------------------------ */
+.text-success-custom {
+    color: #2e7d32 !important; /* Verde base */
+}
+
+.border-success-custom {
+    border-color: #4caf50 !important; /* Define a cor da borda e força prioridade máxima */
+}
+
+.btn-success-custom {
+    background-color: #4caf50; /* Cor de fundo */
+    color: white !important; /* Texto branco */
+    border: none; /* Sem borda */
+    transition: all 0.3s ease; /* Anima mudanças suavemente (0,3 s) */
+}
+.btn-success-custom:hover {
+    background-color: #388e3c; /* Cor de fundo */
+    transform: translateY(-2px); /* Sobe 2 px */
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25) !important; /* Sombra verde suave */
+}
+
+/* Botão Contorno Verde para os Módulos */
+.btn-outline-success-custom {
+    color: #4caf50; /* Texto verde */
+    border: 2px solid #4caf50; /* Borda verde */
+    transition: all 0.3s ease; /* Aanima tudo suavemente (0,3 s) */
+}
+.btn-outline-success-custom:hover {
+    background-color: #4caf50; /* Cor de fundo */
+    color: white !important; /* Texto branco */
+    transform: translateY(-1px); /* Sobe 1 px */
+}
+
+/* Cantos e Linhas */
+.rounded-4 {
+    border-radius: 16px !important; /* Cantos arredondados (16 px) */
+}
+
+.border-bottom-custom {
+    border-bottom: 2px dashed #c8e6c9 !important; /* Linha de divisão */
+}
+
+.border-smooth {
+    border-color: #e0e0e0 !important; /* Borda cinzenta clara */
+}
+
+.bg-success-light {
+    background-color: #e8f5e9 !important; /* Cor de fundo */
+}
+
+/* Ícones redondos nos Serviços e Contactos */
+.icon-circle-main {
+    width: 55px; /* Largura fixa */
+    height: 55px; /* Altura fixa */
+    display: flex; /* Ativa flexbox */
+    align-items: center; /* Centro verticalmente */
+    justify-content: center; /* Centro horizontalmente */
+    border-radius: 50%; /* Forma circular */
+    font-size: 1.3rem; /* Tamanho do texto / ícone */
+}
+
+/* Efeito Flutuante Fofinho nos 3 Cartões de Serviços */
+.card-hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Anima suavemente movimento e sombra (0,3 s) */
+}
+.card-hover-effect:hover {
+    transform: translateY(-5px); /* Sobre 5 px */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important; /* Sombra suave */
+}
+
+/* Controlos de Largura Elegantes */
+.max-width-600 {
+    max-width: 600px; /* Largura máxima */
+}
+.style-form-width {
+    max-width: 550px; /* Largura máxima */
+}
+
+/* ------------------------------ CONFIGURAÇÕES DO RODAPÉ ------------------------------ */
+.text-success-custom {
+    color: #2e7d32 !important; /* Garante que o texto do copyright usa o verde na marca */
+}
+
+.text-muted {
+    color: #6c757d !important; /* Cor cinzenta suave para o resto do texto */
+}

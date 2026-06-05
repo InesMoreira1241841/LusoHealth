@@ -45,12 +45,12 @@
             <!-- Links centrais -->
             <ul class="links-navegacao">
 
-                <li><a href="index.html">HOME</a></li>
+                <li><a href="../public/index.html">HOME</a></li>
 
-                <li><a href="sobre_nos.html">SOBRE NÓS</a></li>
+                <li><a href="../public/sobre_nos.html">SOBRE NÓS</a></li>
 
                 <li class="dropdown">
-                    <a href="servicos.html" class="dropdown-trigger">
+                    <a href="../public/servicos.html" class="dropdown-trigger">
                         SERVIÇOS
                         <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                     </a>
@@ -62,12 +62,12 @@
                     </ul>
                 </li>
 
-                <li><a href="formulario.html">FALE CONNOSCO</a></li>
+                <li><a href="../public/formulario.html">FALE CONNOSCO</a></li>
             </ul>
 
             <!-- Área Cliente -->
             <div class="cliente-navegacao">
-                <a href="login.html">ENTRAR</a>
+                <a href="../login/login.html">ENTRAR</a>
             </div>
         </div>
     </nav>
@@ -77,8 +77,9 @@
         <section class="conteudo-inventario" aria-label="Título Inventário">
 
             <div class="cabecalho-inventario">
-                <h2 id="titulo-inventario">Inventário Clínico: Localizações</h2>
-                <p>Gestão e monitorização dos blocos, pisos e salas clínicas da instituição.</p>
+                <h2 id="titulo-inventario">Inventário Clínico: Equipamentos</h2>
+                <p>Consulte e monitorize o estado, criticidade e localização dos dispositivos médicos ativos na
+                    LusoHealth.</p>
             </div>
 
             <div class="tabela-responsiva">
@@ -89,10 +90,10 @@
 
                     <thead>
                         <tr>
-                            <th scope="col">Cód. Sala</th>
-                            <th scope="col">Edifício / Piso</th>
-                            <th scope="col">Nome do Espaço</th>
-                            <th scope="col">Capacidade</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Equipamento</th>
+                            <th scope="col">Criticidade</th>
+                            <th scope="col">Localização</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Ações</th>
 
@@ -103,40 +104,40 @@
                     <tbody>
 
                         <tr>
-                            <td>#LOC-A101</td>
-                            <td>Edifício Principal - Piso 1</td>
-                            <td><strong>Bloco Operatório A</strong></td>
-                            <td>5 Pessoas</td>
-                            <td><span class="estado-operacional" aria-label="Disponível">● Disponível</span></td>
+                            <td>#EQ-0104</td>
+                            <td><strong>Eletrocardiógrafo Digital</strong></td>
+                            <td><span class="badge badge-alta">Alta</span></td>
+                            <td>Bloco Operatório A</td>
+                            <td><span class="estado-operacional" aria-label="Operacional">● Operacional</span></td>
                             <td>
                                 <button class="botao-acao" type="button">
-                                    Ver Dispositivos
+                                    Ver Detalhes
                                 </button>
                             </td>
                         </tr>
 
                         <tr>
-                            <td>#LOC-URG02</td>
-                            <td>Ala de Urgências - Piso 0</td>
-                            <td><strong>Triagem Geral</strong></td>
-                            <td>2 Pessoas</td>
-                            <td><span class="estado-operacional" aria-label="Disponível">● Disponível</span></td>
+                            <td>#EQ-0215</td>
+                            <td><strong>Monitor de Sinais Vitais</strong></td>
+                            <td><span class="badge badge-media">Média</span></td>
+                            <td>Serviço de Urgência</td>
+                            <td><span class="estado-operacional" aria-label="Operacional">● Operacional</span></td>
                             <td>
                                 <button class="botao-acao" type="button">
-                                    Ver Dispositivos
+                                    Ver Detalhes
                                 </button>
                             </td>
                         </tr>
 
                         <tr>
-                            <td>#LOC-UCI05</td>
-                            <td>Bloco Crítico - Piso 2</td>
-                            <td><strong>UCI - Box 5</strong></td>
-                            <td>1 Pessoa</td>
-                            <td><span class="estado-manutencao" aria-label="Disponível">▲ Higienização</span></td>
+                            <td>#EQ-0302</td>
+                            <td><strong>Ventilador Volumétrico</strong></td>
+                            <td><span class="badge badge-critica">Crítica</span></td>
+                            <td>Unidade de Cuidados Intensivos</td>
+                            <td><span class="estado-manutencao" aria-label="Em manutenção">▲ Em Manutenção</span></td>
                             <td>
                                 <button class="botao-acao" type="button">
-                                    Ver Dispositivos
+                                    Ver Detalhes
                                 </button>
                             </td>
                         </tr>
