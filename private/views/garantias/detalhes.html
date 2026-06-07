@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LusoHealth</title>
+    <link rel="stylesheet" href="../../assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/fontawesome/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/1241841.css">
+</head>
+
+<body class="bg-page-light">
+
+    <header class="container-fluid bg-white border-bottom p-3 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-6 d-flex align-items-center">
+                <i class="fa-solid fa-microscope fa-2xl me-3 icon-brand-clinical"></i>
+                <h3 class="mb-0 fw-bold text-dark">LusoHealth <span class="fs-6 text-muted fw-normal">| Gestão de Inventário</span></h3>
+            </div>
+
+            <div class="col-6 text-end">
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-light border dropdown-toggle p-2 rounded-pill fw-medium d-flex align-items-center gap-2 ms-auto"
+                        type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user-gear text-success"></i>
+                        <span>Engenharia Biomédica</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-light-subtle mt-2 custom-card-rounded"
+                        aria-labelledby="userMenu">
+                        <li><h6 class="dropdown-header small text-uppercase fw-bold text-muted">Utilizador Atual</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-menu-item text-danger d-flex align-items-center gap-2 px-3 py-2 text-decoration-none small"
+                                href="../../login.html">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span class="fw-medium">Terminar Sessão</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid mt-4">
+        <div class="row g-4">
+            <aside class="col-md-3 col-lg-2">
+                <div class="bg-white p-3 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                    <h6 class="fw-bold text-muted small text-uppercase px-2 mb-3">Navegação</h6>
+                    <nav class="nav flex-column gap-1">
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="../../index.html"><i
+                                class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../equipamentos/equipamentos.html"><i class="fa-solid fa-heart-pulse me-2"></i>Equipamentos</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../localizacoes/localizacoes.html"><i class="fa-solid fa-hospital-user me-2"></i>Localizações</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../fornecedores/fornecedores.html"><i class="fa-solid fa-truck-field me-2"></i>Fornecedores</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../documentos/documentos.html"><i class="fa-solid fa-file-pdf me-2"></i>Documentação</a>
+                        <a class="nav-link fw-bold px-3 py-2 rounded-3 text-success bg-success-subtle"
+                            href="contratos.html"><i class="fa-solid fa-file-contract me-2"></i>Garantias</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="col-md-9 col-lg-10">
+                <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                        <div>
+                            <span class="text-uppercase font-monospace text-muted small">Contrato de Manutenção</span>
+                            <h2 class="fw-bold text-dark m-0">SLA-ZOLL-045</h2>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="contratos.html" class="btn btn-light border btn-sm rounded-pill px-3 fw-medium">
+                                <i class="fa-solid fa-arrow-left me-2"></i>Voltar
+                            </a>
+                            <a href="editar.html" class="btn btn-success btn-sm rounded-pill px-3 fw-medium shadow-sm">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Renovar / Editar
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 small text-secondary">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light border rounded-3 h-100">
+                                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-circle-info text-success me-2"></i>Dados da Cobertura</h6>
+                                <div class="mb-2"><strong>Tipo de Cobertura:</strong> SLA Manutenção Total</div>
+                                <div class="mb-2"><strong>Entidade Responsável:</strong> Zoll Medical Portugal</div>
+                                <div class="mb-2"><strong>Data de Início:</strong> <span class="font-monospace">01/01/2024</span></div>
+                                <div class="mb-2"><strong>Data de Fim (Expiração):</strong> <span class="font-monospace text-danger fw-bold">01/01/2026</span></div>
+                                <div>
+                                    <strong>Estado Atual:</strong>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-2 px-2 py-0.5 fw-bold ms-1">
+                                        <i class="fa-solid fa-circle-exclamation me-1"></i> Expirado
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light border rounded-3 h-100">
+                                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-heart-pulse text-success me-2"></i>Dispositivo Médico Beneficiário</h6>
+                                <div class="mb-2"><strong>Código Inventário:</strong> <span class="badge bg-white text-dark border font-monospace">#INV-1102</span></div>
+                                <div class="mb-2"><strong>Equipamento:</strong> Desfibrilhador Zoll R Series</div>
+                                <div class="mb-2"><strong>Número de Série:</strong> <span class="font-monospace">SN-ZLL992104</span></div>
+                                <div><strong>Localização Atual:</strong> Bloco Operatório - Sala 2</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 bg-light border rounded-3">
+                                <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-gavel text-success me-2"></i>Termos do SLA e Cláusulas Ativas</h6>
+                                <p class="mb-0 text-dark-emphasis lh-base">
+                                    Contrato SLA de cobertura total contra danos acidentais. Inclui substituição preventiva de baterias a cada 24 meses e equipa técnica no local num prazo máximo de 4 horas após a abertura do chamado crítico. Inclui calibrações anuais com emissão de certificados de metrologia em conformidade com as normas ISO 13485.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/1241841.js"></script>
+</body>
+
+</html>

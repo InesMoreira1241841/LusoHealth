@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LusoHealth</title>
+    <link class="rtl" rel="stylesheet" href="../../assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/fontawesome/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/1241841.css">
+</head>
+
+<body class="bg-page-light">
+
+    <header class="container-fluid bg-white border-bottom p-3 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-6 d-flex align-items-center">
+                <i class="fa-solid fa-microscope fa-2xl me-3 icon-brand-clinical"></i>
+                <h3 class="mb-0 fw-bold text-dark">LusoHealth <span class="fs-6 text-muted fw-normal">| Gestão de
+                        Inventário</span></h3>
+            </div>
+
+            <div class="col-6 text-end">
+                <div class="dropdown d-inline-block">
+                    <button
+                        class="btn btn-light border dropdown-toggle p-2 rounded-pill fw-medium d-flex align-items-center gap-2 ms-auto"
+                        type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user-gear text-success"></i>
+                        <span>Engenharia Biomédica</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-light-subtle mt-2 custom-card-rounded"
+                        aria-labelledby="userMenu">
+                        <li>
+                            <h6 class="dropdown-header small text-uppercase fw-bold text-muted">Utilizador Atual</h6>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-menu-item text-danger d-flex align-items-center gap-2 px-3 py-2 text-decoration-none small"
+                                href="../../login.html">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span class="fw-medium">Terminar Sessão</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid mt-4">
+        <div class="row g-4">
+            <aside class="col-md-3 col-lg-2">
+                <div
+                    class="bg-white p-3 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                    <h6 class="fw-bold text-muted small text-uppercase px-2 mb-3">Navegação</h6>
+                    <nav class="nav flex-column gap-1">
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="../../index.html"><i
+                                class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../equipamentos/equipamentos.html"><i class="fa-solid fa-heart-pulse me-2"></i>Equipamentos</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../localizacoes/localizacoes.html"><i
+                                class="fa-solid fa-hospital-user me-2"></i>Localizações</a>
+                        <a class="nav-link fw-bold px-3 py-2 rounded-3 text-success bg-success-subtle"
+                            href="../fornecedores/fornecedores.html"><i
+                                class="fa-solid fa-truck-field me-2"></i>Fornecedores</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../documentacao/documentos.html"><i
+                                class="fa-solid fa-file-pdf me-2"></i>Documentação</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../garantias/contratos.html"><i
+                                class="fa-solid fa-file-contract me-2"></i>Garantias</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="col-md-9 col-lg-10">
+                <div
+                    class="bg-white p-4 shadow-sm border border-light-subtle d-flex align-items-center justify-content-center main-container-height custom-card-rounded">
+
+                    <div class="text-center p-4 bg-danger-subtle border border-danger-subtle rounded-4 shadow-sm mx-auto"
+                        style="max-width: 550px;">
+                        <i class="fa-solid fa-building-circle-xmark text-danger fa-3xl mb-3"></i>
+                        <h4 class="fw-bold text-danger">Remover Fornecedor do Sistema?</h4>
+
+                        <p class="text-muted small my-3 lh-base">
+                            Tem a certeza que deseja excluir a entidade <strong>Dräger Portugal Lda.</strong>? Esta
+                            operação quebrará os links de suporte de todos os ventiladores e incubadoras associados na
+                            base de dados do hospital.
+                        </p>
+
+                        <form action="fornecedores.html" method="POST" class="mt-4">
+                            <input type="hidden" id="id_fornecedor_eliminar" name="id_fornecedor" value="1">
+
+                            <div class="d-flex gap-2 justify-content-center">
+                                <a href="fornecedores.html" class="btn btn-light border rounded-pill px-4 fw-medium">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 fw-medium shadow-sm">
+                                    Confirmar Eliminação
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/1241841.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LusoHealth</title>
+    <link rel="stylesheet" href="../../assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/fontawesome/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/1241841.css">
+</head>
+
+<body class="bg-page-light">
+
+    <header class="container-fluid bg-white border-bottom p-3 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-6 d-flex align-items-center">
+                <i class="fa-solid fa-microscope fa-2xl me-3 icon-brand-clinical"></i>
+                <h3 class="mb-0 fw-bold text-dark">LusoHealth <span class="fs-6 text-muted fw-normal">| Gestão de
+                        Inventário</span></h3>
+            </div>
+
+            <div class="col-6 text-end">
+                <div class="dropdown d-inline-block">
+                    <button
+                        class="btn btn-light border dropdown-toggle p-2 rounded-pill fw-medium d-flex align-items-center gap-2 ms-auto"
+                        type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user-gear text-success"></i>
+                        <span>Engenharia Biomédica</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-light-subtle mt-2 custom-card-rounded"
+                        aria-labelledby="userMenu">
+                        <li>
+                            <h6 class="dropdown-header small text-uppercase fw-bold text-muted">Utilizador Atual</h6>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-menu-item text-danger d-flex align-items-center gap-2 px-3 py-2 text-decoration-none small"
+                                href="../../login.html">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span class="fw-medium">Terminar Sessão</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid mt-4">
+        <div class="row g-4">
+            <aside class="col-md-3 col-lg-2">
+                <div
+                    class="bg-white p-3 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                    <h6 class="fw-bold text-muted small text-uppercase px-2 mb-3">Navegação</h6>
+                    <nav class="nav flex-column gap-1">
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="../../index.html"><i
+                                class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../equipamentos/equipamentos.html"><i
+                                class="fa-solid fa-heart-pulse me-2"></i>Equipamentos</a>
+                        <a class="nav-link fw-bold px-3 py-2 rounded-3 text-success bg-success-subtle"
+                            href="../localizacoes/localizacoes.html"><i
+                                class="fa-solid fa-hospital-user me-2"></i>Localizações</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../fornecedores/fornecedores.html"><i
+                                class="fa-solid fa-truck-field me-2"></i>Fornecedores</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../documentacao/documentos.html"><i
+                                class="fa-solid fa-file-pdf me-2"></i>Documentação</a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
+                            href="../garantias/contratos.html"><i
+                                class="fa-solid fa-file-contract me-2"></i>Garantias</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="col-md-9 col-lg-10">
+                <div
+                    class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                        <div>
+                            <h2 class="fw-bold text-dark m-0">Serviços e Localizações Hospitalares</h2>
+                            <p class="text-muted small m-0">Gestão de alas físicas, pisos e distribuição de dispositivos
+                                biomédicos.</p>
+                        </div>
+                        <a href="novo.html" class="btn btn-success rounded-pill px-4 fw-medium shadow-sm">
+                            <i class="fa-solid fa-plus me-2"></i>Adicionar Serviço
+                        </a>
+                    </div>
+
+                    <div class="bg-light p-3 rounded-3 mb-4 border">
+                        <form class="row g-2 align-items-center small" id="formFiltroLocalizacoes"
+                            name="form_filtro_localizacoes" method="GET">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted border-end-0"><i
+                                            class="fa-solid fa-magnifying-glass"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-0 text-secondary"
+                                        id="pesquisaLocalizacao" name="pesquisa_localizacao"
+                                        placeholder="Pesquisar por designação, ID de edifício ou serviço...">
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-grid">
+                                <button type="submit" id="btnFiltrarLocalizacoes"
+                                    class="btn btn-outline-success rounded-pill fw-medium btn-sm py-2">
+                                    <i class="fa-solid fa-filter me-1"></i> Filtrar Espaços
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light text-secondary small text-uppercase">
+                                <tr>
+                                    <th>ID Serviço</th>
+                                    <th>Nome do Serviço / Ala</th>
+                                    <th>Piso / Bloco</th>
+                                    <th>Dispositivos Alocados</th>
+                                    <th>Responsável Técnico</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="small">
+                                <tr>
+                                    <td class="fw-bold text-dark">#SRV-UCI</td>
+                                    <td class="fw-medium">Unidade de Cuidados Intensivos (UCI)</td>
+                                    <td>Piso 2 - Bloco Central</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border px-2 py-1 rounded-pill">14
+                                            Dispositivos</span>
+                                    </td>
+                                    <td>Dr. Ricardo Santos</td>
+                                    <td class="text-end">
+                                        <div class="btn-group gap-1">
+                                            <a href="detalhes.html?id=UCI"
+                                                class="btn btn-sm btn-outline-secondary rounded-2"
+                                                title="Visualizar Detalhes">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            <a href="editar.html?id=UCI"
+                                                class="btn btn-sm btn-outline-success rounded-2"
+                                                title="Editar Localização">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <a href="apagar.html?id=UCI" class="btn btn-sm btn-outline-danger rounded-2"
+                                                title="Remover Localização">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-dark">#SRV-IMG</td>
+                                    <td class="fw-medium">Serviço de Imagiologia e Radiologia</td>
+                                    <td>Piso 0 - Ala Sul</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border px-2 py-1 rounded-pill">8
+                                            Dispositivos</span>
+                                    </td>
+                                    <td>Eng.ª Marta Silva</td>
+                                    <td class="text-end">
+                                        <div class="btn-group gap-1">
+                                            <a href="detalhes.html?id=IMG"
+                                                class="btn btn-sm btn-outline-secondary rounded-2"
+                                                title="Visualizar Detalhes">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            <a href="editar.html?id=IMG"
+                                                class="btn btn-sm btn-outline-success rounded-2"
+                                                title="Editar Localização">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <a href="apagar.html?id=IMG" class="btn btn-sm btn-outline-danger rounded-2"
+                                                title="Remover Localização">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/1241841.js"></script>
+</body>
+
+</html>
