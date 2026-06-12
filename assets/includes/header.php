@@ -25,7 +25,7 @@
                         </li>
                         <li>
                             <a class="dropdown-menu-item text-danger d-flex align-items-center gap-2 px-3 py-2 text-decoration-none small"
-                                href="../../login.html">
+                                href="../../public/index.php">
                                 <i class="fa-solid fa-right-from-bracket"></i>
                                 <span class="fw-medium">Terminar Sessão</span>
                             </a>

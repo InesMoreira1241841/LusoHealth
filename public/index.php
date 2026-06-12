@@ -1,48 +1,14 @@
-<?php 
-require_once __DIR__ . '/../config/config.php'; 
-?> 
-
-<!DOCTYPE html> <!-- Informa ao navegador que este é um documento HTML5 -->
-
-<html lang="pt">
-<!-- <html> define o início do documento HTML -->
-<!-- lang="pt" indica que o idioma principal da página é português -->
-
-<head>
-    <meta charset="UTF-8">
-    <!-- Define a codificação de caracteres para UTF-8, que 
-         suporta acentos e caracteres especiais usados em português -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Torna a página responsiva, ajustando-a para diferentes 
-         tamanhos de ecrã, especialmente em dispositivos móveis -->
-    <title><?php echo APP_NAME; ?></title>
-
-    <!-- favicon -->
-    <link rel="shortcut icon" href="assets/img/logo.png" type="image/png">
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome (local) -->
-    <link rel="stylesheet" href="assets/fontawesome/all.min.css">
-
-    <!-- Bootstrap CSS & custom CSS -->
-    <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/1241841.css">
-</head>
+<?php include '../assets/includes/head.php'; ?>
 
 <body>
+
     <!-- Navegação -->
 
     <header class="custom-header sticky-top shadow-sm">
         <nav class="navbar navbar-expand-lg container">
             <div class="container-fluid">
                 <a class="navbar-brand d-flex align-items-center gap-2" href="#home">
-                    <img src="assets/img/logo.png" alt="Logo LusoHealth" width="40" height="40">
+                    <img src="../assets/img/logo.png" alt="Logo LusoHealth" width="40" height="40">
                     <span class="fw-bold brand-title"><?php echo APP_NAME; ?></span>
                 </a>
 
@@ -65,7 +31,7 @@ require_once __DIR__ . '/../config/config.php';
                 </div>
 
                 <div class="d-none d-lg-block">
-                    <a href="../private/login.html" class="btn btn-login-custom fw-bold px-4 rounded-pill shadow-sm">
+                    <a href="login.php" class="btn btn-login-custom fw-bold px-4 rounded-pill shadow-sm">
                         ENTRAR <i class="fa-solid fa-right-to-bracket ms-2"></i>
                     </a>
                 </div>
@@ -90,7 +56,7 @@ require_once __DIR__ . '/../config/config.php';
                     </p>
                 </div>
                 <div class="col-lg-5 text-center">
-                    <img class="img-fluid rounded-4 shadow-sm" src="assets/img/index_img01.png"
+                    <img class="img-fluid rounded-4 shadow-sm" src="../assets/img/index_img01.png"
                         alt="Equipamento Hospitalar">
                 </div>
             </div>
@@ -122,7 +88,7 @@ require_once __DIR__ . '/../config/config.php';
                     <div class="card bg-light border-0 rounded-4 shadow-sm p-4">
                         <div class="row align-items-center g-4">
                             <div class="col-sm-4 text-center">
-                                <img src="assets/img/sobre_nos_img01.png" alt="Inês Moreira"
+                                <img src="../assets/img/sobre_nos_img01.png" alt="Inês Moreira"
                                     class="img-fluid rounded-circle border border-3 border-success-custom shadow-sm"
                                     style="max-width: 110px;">
                             </div>
@@ -177,7 +143,7 @@ require_once __DIR__ . '/../config/config.php';
                         <p class="card-text text-muted small flex-grow-1 lh-base">Consulta e gestão do inventário
                             clínico, com monitorização de criticidade, localização e histórico de manutenção preventiva.
                         </p>
-                        <a href="equipamentos.html"
+                        <a href="equipamentos.php"
                             class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
                             Módulo</a>
                     </div>
@@ -191,7 +157,7 @@ require_once __DIR__ . '/../config/config.php';
                         <p class="card-text text-muted small flex-grow-1 lh-base">Visualização da distribuição dos
                             ativos por serviços hospitalares, garantindo resposta rápida e maior eficiência operacional.
                         </p>
-                        <a href="localizacoes.html"
+                        <a href="localizacoes.php"
                             class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
                             Módulo</a>
                     </div>
@@ -204,7 +170,7 @@ require_once __DIR__ . '/../config/config.php';
                         <h3 class="h5 fw-bold text-dark mb-2">Controlo de Fornecedores</h3>
                         <p class="card-text text-muted small flex-grow-1 lh-base">Centralização de contactos, contratos
                             de manutenção e garantias equipamentos médicos essenciais.</p>
-                        <a href="fornecedores.html"
+                        <a href="fornecedores.php"
                             class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
                             Módulo</a>
                     </div>
@@ -291,9 +257,4 @@ require_once __DIR__ . '/../config/config.php';
         </div>
     </footer>
 
-    <!-- Bootstrap JS and custom JS -->
-    <script src="assets/bootstrap/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+<?php include '../assets/includes/footer.php'; ?>

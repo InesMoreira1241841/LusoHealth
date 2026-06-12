@@ -1,5 +1,5 @@
 <?php 
-require_once __DIR__ . '/../../../config/config.php'; 
+require_once __DIR__ . '/../../config/config.php'; 
 ?> 
 
 <!DOCTYPE html> <!-- Informa ao navegador que este é um documento HTML5 -->
@@ -18,7 +18,7 @@ require_once __DIR__ . '/../../../config/config.php';
     <title><?php echo APP_NAME; ?></title>
 
     <!-- favicon -->
-    <link rel="shortcut icon" href="assets/img/logo.png" type="image/png">
+    <link rel="shortcut icon" href="/lusohealth/assets/img/logo.png" type="image/png">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,12 +28,9 @@ require_once __DIR__ . '/../../../config/config.php';
         rel="stylesheet">
 
     <!-- Font Awesome (local) -->
-    <link rel="stylesheet" href="assets/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/lusohealth/assets/fontawesome/all.min.css">
 
     <!-- Bootstrap CSS & custom CSS -->
-    <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/1241841.css">
+    <link rel="stylesheet" href="/lusohealth/assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/lusohealth/assets/css/1241841.css">
 </head>
-
-<body class="bg-page-light">
-<!-- Classe personalizada para cor de fundo global -->

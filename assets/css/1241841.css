@@ -147,3 +147,183 @@
 .text-muted {
     color: #6c757d !important; /* Cor cinzenta suave para o resto do texto */
 }
+
+/*   */
+
+/* ==========================================================================
+   LusoHealth - Estilos Customizados do Back Office (Engenharia Clínica)
+   SIBDAS 2025-2026
+   ========================================================================== */
+
+/* Definição das variáveis de cor do ecossistema LusoHealth */
+:root {
+    --mint-primary: #2e7d32;       /* Verde-menta escuro para textos e destaques */
+    --mint-light: #e8f5e9;         /* Verde-menta muito suave para fundos de menus ativos */
+    --mint-accent: #81c784;        /* Tom intermédio para transições */
+    --bg-main: #f8fafc;            /* Cinza-azulado muito claro para o fundo da página (Efeito Nuvem) */
+    --text-dark: #1e293b;          /* Azul-escuro charcoal para excelente legibilidade */
+    --border-color: #e2e8f0;       /* Cor de borda suave */
+}
+
+/* Estilo global e tipografia */
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-main) !important;
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Definições globais da aplicação de Inventário */
+body {
+    background-color: #f8fafc;
+}
+
+/* Cabeçalho Superior */
+header {
+    border-bottom: 1px solid var(--border-color) !important;
+    background-color: #ffffff !important;
+}
+
+/* Painéis e Caixas de Conteúdo (Efeito Nuvem / Arredondado) */
+aside div, 
+main div.bg-white {
+    border-radius: 16px !important; /* Cantos arredondados fofinhos exigidos */
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Links de Navegação Lateral (Sidebar) */
+.nav-link {
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+/* Estado normal dos links inativos */
+.nav-link.text-secondary:hover {
+    color: var(--mint-primary) !important;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+/* Estado ativo do módulo selecionado */
+.nav-link.text-success.bg-success-subtle {
+    color: var(--mint-primary) !important;
+    background-color: var(--mint-light) !important;
+    border-radius: 8px;
+}
+
+/* Customização de Tabelas de Inventário */
+.table {
+    margin-bottom: 0;
+}
+
+.table law-thead, 
+.table thead {
+    background-color: #f8fafc;
+}
+
+.table th {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #64748b !important;
+    border-bottom: 2px solid var(--border-color) !important;
+}
+
+.table td {
+    padding: 14px 12px !important;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Efeito hover suave nas linhas da tabela */
+.table-hover tbody tr:hover {
+    background-color: rgba(232, 245, 233, 0.3) !important;
+}
+
+/* Botões Arredondados do Sistema */
+.btn-success {
+    background-color: var(--mint-primary) !important;
+    border-color: var(--mint-primary) !important;
+}
+
+.btn-success:hover {
+    background-color: #1b5e20 !important;
+    border-color: #1b5e20 !important;
+}
+
+.btn-outline-success {
+    color: var(--mint-primary) !important;
+    border-color: var(--mint-primary) !important;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--mint-primary) !important;
+    color: #ffffff !important;
+}
+
+.btn-sm {
+    padding: 6px 10px !important;
+}
+
+/* Badges e Destaques Visuais de Criticidade Clínica (Requisito 11 do Enunciado) */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Inputs e Formulários de Registo */
+.form-control:focus, 
+.form-select:focus {
+    border-color: var(--mint-accent) !important;
+    box-shadow: 0 0 0 0.25rem rgba(129, 199, 132, 0.25) !important;
+}
+
+/* Caixas de Alerta de Remoção e Mensagens */
+.bg-danger-subtle {
+    background-color: #fef2f2 !important;
+    border-color: #fee2e2 !important;
+}
+
+/* Cor institucional para ícones médicos proeminentes */
+.icon-brand-clinical {
+    color: #2e7d32;
+}
+
+/* Garante o alinhamento vertical e altura mínima dos blocos da interface */
+.main-container-height {
+    min-height: 80vh;
+    border-radius: 12px;
+}
+
+/* Badge Personalizado para Equipamentos em Calibração */
+.badge-calibracao {
+    background-color: #fff3cd; /* Fundo amarelo suave */
+    color: #856404;            /* Letras num tom de castanho/ouro escuro para dar contraste */
+    border-color: #ffeeba !important;
+}
+
+/* Definições de Layout e Fundo global */
+.bg-page-light {
+    background-color: #f8fafc;
+}
+
+.custom-card-rounded {
+    border-radius: 12px;
+}
+
+.main-container-height {
+    min-height: 80vh;
+}
+
+/* Identidade Visual Clínica */
+.icon-brand-clinical {
+    color: #2e7d32;
+}
+
+/* Badge Corrigido para Letras Escuras em Fundo Amarelo (Legibilidade WCAG) */
+.badge-calibracao {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba !important;
+}

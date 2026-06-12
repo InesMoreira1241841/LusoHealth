@@ -1,11 +1,14 @@
-<?php include '../../includes/head/views.php'; ?>
+<?php include '../../../assets/includes/head.php'; ?>
 
-<?php include '../../includes/header.php'; ?>
+<body class="bg-page-light">
+<!-- Classe personalizada para cor de fundo global -->
+
+<?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
 
-            <?php include '../../includes/sidebar/fornecedores.php' ?>
+            <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
                 <div
@@ -81,4 +84,4 @@
         </div>
     </div>
 
-<?php include '../../includes/footer.php'; ?> 
+<?php include '../../../assets/includes/footer.php'; ?> 

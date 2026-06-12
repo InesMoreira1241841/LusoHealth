@@ -1,6 +1,38 @@
-<?php include 'includes/head/dashboard.php'; ?>
+<?php
+// --------------------------------------------------------------------
+// SEGURANÇA: Impede que o utilizador aceda diretamente a este script.
+// Este ficheiro deve ser acedido apenas através de submissão de formulário (POST).
+// Se for acedido diretamente (por URL), será redirecionado para o login.
+// --------------------------------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+ // Redireciona para o formulário de login (interface pública)
+ header('Location: ../public/login.php');
+ // Encerra a execução do script imediatamente após o redirecionamento
+ return;
+} 
 
-    <?php include 'includes/header.php'; ?>
+// --------------------------------------------------------------------
+// RECOLHA DE DADOS DO FORMULÁRIO
+// --------------------------------------------------------------------
+// Verifica se o campo 'text_username' foi enviado via POST.
+// Se sim, guarda-o na variável $username. Caso contrário, usa string vazia.
+$username = isset($_POST['utilizador']) ? $_POST['utilizador'] : '';
+// O mesmo para o campo da password.
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+// --------------------------------------------------------------------
+// APRESENTAÇÃO DE DADOS ENVIADOS
+// --------------------------------------------------------------------
+echo "Utilizador: " . $username . "<br>";
+echo "Password: " . $password;
+// Em produção, **nunca** se deve mostrar a password assim — isto é apenas para testes!
+?> 
+
+<?php include '../assets/includes/head.php'; ?>
+
+<body class="bg-page-light">
+<!-- Classe personalizada para cor de fundo global -->
+
+    <?php include '../assets/includes/header.php'; ?>
 
             <!-- Container principal da página -->
     <div class="container-fluid mt-4">
@@ -8,7 +40,7 @@
         <!-- Estrutura principal em grelha -->
         <div class="row g-4">
 
-            <?php include 'includes/sidebar/dashboard.php' ?>
+            <?php include '../assets/includes/sidebar/dashboard.php' ?>
 
             <!-- Conteúdo principal da dashboard -->
             <main class="col-md-9 col-lg-10">
@@ -121,4 +153,4 @@
 
     </div>
 
-<?php include 'includes/footer.php'; ?> 
+<?php include '../assets/includes/footer.php'; ?> 

@@ -1,11 +1,14 @@
-<?php include '../../includes/head/views.php'; ?>
+<?php include '../../../assets/includes/head.php'; ?>
 
-<?php include '../../includes/header.php'; ?>
+<body class="bg-page-light">
+<!-- Classe personalizada para cor de fundo global -->
+
+<?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
 
-            <?php include '../../includes/sidebar/fornecedores.php' ?>
+            <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
                 <div
@@ -17,13 +20,13 @@
                             <p class="text-muted small m-0">Entidades parceiras, fabricantes e prestadores de
                                 assistência biomédica.</p>
                         </div>
-                        <a href="novo.html" class="btn btn-success rounded-pill px-4 fw-medium shadow-sm">
+                        <a href="novo.php" class="btn btn-success rounded-pill px-4 fw-medium shadow-sm">
                             <i class="fa-solid fa-plus me-2"></i>Novo Fornecedor
                         </a>
                     </div>
 
                     <div class="bg-light p-3 rounded-3 mb-4 border">
-                        <form action="fornecedores.html" method="GET" class="row g-2 align-items-center small">
+                        <form action="fornecedores.php" method="GET" class="row g-2 align-items-center small">
 
                             <div class="col-md-5">
                                 <div class="input-group">
@@ -80,12 +83,12 @@
                                     <td class="text-end">
                                         <div class="d-flex gap-2 justify-content-end">
                                             <div class="btn-group gap-1">
-                                                <a href="detalhes.html"
+                                                <a href="detalhes.php"
                                                     class="btn btn-sm btn-outline-secondary rounded-2"
                                                     title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                                <a href="editar.html" class="btn btn-sm btn-outline-success rounded-2"
+                                                <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
                                                     title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                                <a href="apagar.html"
+                                                <a href="apagar.php"
                                                     class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
                                                     title="Eliminar"><i class="fa-solid fa-trash"></i></a>
                                             </div>
@@ -106,12 +109,12 @@
                                     <td class="text-end">
                                         <div class="d-flex gap-2 justify-content-end">
                                             <div class="btn-group gap-1">
-                                                <a href="detalhes.html"
+                                                <a href="detalhes.php"
                                                     class="btn btn-sm btn-outline-secondary rounded-2"
                                                     title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                                <a href="editar.html" class="btn btn-sm btn-outline-success rounded-2"
+                                                <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
                                                     title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                                <a href="apagar.html"
+                                                <a href="apagar.php"
                                                     class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
                                                     title="Eliminar"><i class="fa-solid fa-trash"></i></a>
                                             </div>
@@ -127,4 +130,4 @@
         </div>
     </div>
 
-<?php include '../../includes/footer.php'; ?> 
+<?php include '../../../assets/includes/footer.php'; ?> 
