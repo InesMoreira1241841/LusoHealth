@@ -3,7 +3,7 @@
         class="bg-white p-3 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
         <h6 class="fw-bold text-muted small text-uppercase px-2 mb-3">Navegação</h6>
         <nav class="nav flex-column gap-1">
-            <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="../../index.php"><i
+            <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="../../home.php"><i
                     class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
             <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3"
                 href="../../views/equipamentos/equipamentos.php"><i class="fa-solid fa-heart-pulse me-2"></i>Equipamentos

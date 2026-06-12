@@ -1,6 +1,6 @@
-<?php 
-require_once __DIR__ . '/../../config/config.php'; 
-?> 
+<?php
+require_once __DIR__ . '/../../config/config.php';
+?>
 
 <!DOCTYPE html> <!-- Informa ao navegador que este é um documento HTML5 -->
 

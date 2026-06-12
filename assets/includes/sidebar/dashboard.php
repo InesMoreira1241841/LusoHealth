@@ -9,7 +9,7 @@
 
                     <!-- Menu de navegação vertical -->
                     <nav class="nav flex-column gap-1">
-                        <a class="nav-link fw-bold px-3 py-2 rounded-3 text-success bg-success-subtle" href="index.php">
+                        <a class="nav-link fw-bold px-3 py-2 rounded-3 text-success bg-success-subtle" href="home.php">
                             <i class="fa-solid fa-chart-line me-2"></i>Dashboard
                         </a>
                         <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="views/equipamentos/equipamentos.php">
