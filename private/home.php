@@ -1,17 +1,15 @@
 <?php
+
 require_once 'includes/funcoes.php';
 redirect_if_not_logged();
 start_session();
 $success_message = $_SESSION['success_message'] ?? '';
 unset($_SESSION['success_message']);
-?>
 
-<?php
 
 include '../assets/includes/head.php';
-?>
 
-<?php if (!empty($success_message)) : ?>
+if (!empty($success_message)) : ?>
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
         <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 show" role="alert">
             <div class="d-flex">
@@ -26,11 +24,11 @@ include '../assets/includes/head.php';
 <?php endif; ?>
 
 <body class="bg-page-light">
-<!-- Classe personalizada para cor de fundo global -->
+    <!-- Classe personalizada para cor de fundo global -->
 
     <?php include '../assets/includes/header.php'; ?>
 
-            <!-- Container principal da página -->
+    <!-- Container principal da página -->
     <div class="container-fluid mt-4">
 
         <!-- Estrutura principal em grelha -->
@@ -40,7 +38,7 @@ include '../assets/includes/head.php';
 
             <!-- Conteúdo principal da dashboard -->
             <main class="col-md-9 col-lg-10">
-                
+
                 <!-- Secção de indicadores estatísticos -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-12">
@@ -149,4 +147,4 @@ include '../assets/includes/head.php';
 
     </div>
 
-<?php include '../assets/includes/footer.php'; ?> 
+    <?php include '../assets/includes/footer.php'; ?>

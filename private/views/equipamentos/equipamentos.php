@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
@@ -6,15 +7,34 @@
 // -------------------------------------------------------------------- 
 
 
-require_once __DIR__ . '/../../includes/funcoes.php'; 
-redirect_if_not_logged(); 
+require_once __DIR__ . '/../../includes/funcoes.php';
+redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+
+include '../../../assets/includes/head.php';
+
+// Ligação e execução da query
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
+        DB_USER,
+        DB_PASS
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $resultados = $ligacao->query("SELECT * FROM equipamentos")->fetchAll(PDO::FETCH_OBJ);
+    $erro = '';
+} catch (PDOException $err) {
+    $erro = "Aconteceu um erro na ligação.";
+    $resultados = [];
+}
+// Fecha a ligação
+$ligacao = null;
+
+
 ?>
 
-<?php include '../../../assets/includes/head.php';?>
-
 <body class="bg-page-light">
-<!-- Classe personalizada para cor de fundo global -->
+    <!-- Classe personalizada para cor de fundo global -->
 
     <?php include '../../../assets/includes/header.php'; ?>
 
@@ -71,70 +91,75 @@ redirect_if_not_logged();
                         </form>
                     </div>
 
-                    <div class="table-responsive">
+                    <?php if (!empty($erro)) : ?>
+                        <p class="text-center text-danger"><?= $erro ?></p>
+                    <?php else : ?>
+                        <?php if (count($resultados) == 0) : ?>
+                            <p class="shadow-sm border rounded-3 custom-card-rounded mb-4 border-light-subtle text-center p-4">Não existem clientes registados.</p>
+                        <?php else : ?>
 
-                        <table class="table table-hover align-middle border-top">
+                            <div class="table-responsive">
 
-                            <thead class="table-light text-secondary small text-uppercase">
-                                <tr>
-                                    <th scope="col">Código Interno</th>
-                                    <th scope="col">Equipamento / Modelo</th>
-                                    <th scope="col">Serviço</th>
-                                    <th scope="col">Criticidade Clínica</th>
-                                    <th scope="col">Estado</th>
-                                    <th scope="col" class="text-end">Ações</th>
-                                </tr>
-                            </thead>
+                                <table class="table table-hover align-middle border-top">
 
-                            <tbody class="small text-secondary">
-                                <tr>
-                                    <td class="fw-bold text-dark">[Código Interno]</td>
+                                    <thead class="table-light text-secondary small text-uppercase">
+                                        <tr>
+                                            <th scope="col">Equipamento</th>
+                                            <th scope="col">Código Interno</th>
+                                            <th scope="col">Marca | Modelo</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col">Criticidade Clínica</th>
+                                            <th scope="col" class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
 
-                                    <td>[Nome Equipamento] <span class="text-muted small d-block">[Dräger] |
-                                            [Modelo]</span></td>
+                                    <tbody class="small text-secondary">
 
-                                    <td>[Serviço]</td>
+                                        <?php foreach ($resultados as $equipamentos) : ?>
 
-                                    <td>
-                                        <span class="badge bg-danger text-white px-2 py-1 rounded-pill fw-medium">
-                                            <i class="fa-solid fa-triangle-exclamation me-1"></i>[Criticidade]
-                                        </span>
-                                    </td>
+                                            <tr>
+                                                <td><?= $equipamentos->designacao ?></td>
+                                                <td><?= $equipamentos->codigo_inventario ?></td>
+                                                <td><?= $equipamentos->marca . ' | ' . $equipamentos->modelo ?></td>
+                                                <td><?= $equipamentos->estado ?></td>
+                                                <td><?= $equipamentos->criticidade ?></td>
+                                                <td class="text-end">
+                                                    <div class="btn-group gap-1">
+                                                        <a href="detalhes.php" class="btn btn-sm btn-outline-secondary rounded-2"
+                                                            title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
+                                                        <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
+                                                            title="Editar"><i class="fa-solid fa-pen"></i></a>
+                                                        <a href="apagar.php"
+                                                            class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
+                                                            title="Eliminar"><i class="fa-solid fa-trash"></i></a>
+                                                        <a href="arquivar.php" class="btn btn-sm btn-outline-primary rounded-2"
+                                                            title="Arquivar"><i class="fa-solid fa-box-archive"></i></a>
+                                                    </div>
+                                                </td>
 
-                                    <td>
-                                        <span
-                                            class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-3 fw-medium">[Estado]</span>
-                                    </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
 
-                                    <td class="text-end">
-                                        <div class="btn-group gap-1">
-                                            <a href="detalhes.php" class="btn btn-sm btn-outline-secondary rounded-2"
-                                                title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                            <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
-                                                title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                            <a href="apagar.php"
-                                                class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
-                                                title="Eliminar"><i class="fa-solid fa-trash"></i></a>
-                                            <a href="arquivar.php" class="btn btn-sm btn-outline-primary rounded-2"
-                                                title="Arquivar"><i class="fa-solid fa-box-archive"></i></a>
-                                        </div>
-                                    </td>
+                                </table>
 
-                                </tr>
-                            </tbody>
+                                <div class="d-flex justify-content-between align-items-center mt-5 mb-3 pb-2 border-bottom">
+                                    <div>
+                                        <h3 class="fw-bold text-dark m-0">
+                                            <i class="fa-solid fa-box-archive text-primary me-2"></i>
+                                            Equipamentos Arquivados
+                                        </h3>
+                                        <p class="text-muted small m-0">
+                                            Equipamentos retirados de circulação ou descontinuados.
+                                        </p>
+                                    </div>
+                                </div>
 
-                        </table>
+                            <?php endif; ?> <!-- Fecha o if (count($resultados) == 0) -->
+                        <?php endif; ?> <!-- Fecha o if (!empty($erro)) -->
 
-                        <div class="d-flex justify-content-between align-items-center mt-5 mb-3 pb-2 border-bottom">
-                            <div>
-                                <h3 class="fw-bold text-dark m-0">
-                                    <i class="fa-solid fa-box-archive text-primary me-2"></i>
-                                    Equipamentos Arquivados
-                                </h3>
-                                <p class="text-muted small m-0">
-                                    Equipamentos retirados de circulação ou descontinuados.
-                                </p>
-                            </div>
+                        <div class="col">
+                            <p class="mb-5">Total: <strong> <?= count($resultados) ?> </strong></p>
                         </div>
 
                         <table class="table table-hover align-middle border-top">
@@ -182,7 +207,9 @@ redirect_if_not_logged();
 
                         </table>
 
-                    </div>
+                            </div>
+
+
 
                 </div>
 
@@ -192,4 +219,4 @@ redirect_if_not_logged();
 
     </div>
 
-<?php include '../../../assets/includes/footer.php'; ?> 
+    <?php include '../../../assets/includes/footer.php';
