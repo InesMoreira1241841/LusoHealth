@@ -1,9 +1,22 @@
+<?php
+// --------------------------------------------------------------------
+// SEGURANÇA: Proteção de acesso à página de edição
+// Este ficheiro deve ser acedido apenas por utilizadores autenticados.
+// Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
+// -------------------------------------------------------------------- 
+
+
+require_once __DIR__ . '/../../includes/funcoes.php';
+redirect_if_not_logged();
+// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+?>
+
 <?php include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
-<!-- Classe personalizada para cor de fundo global -->
+    <!-- Classe personalizada para cor de fundo global -->
 
-<?php include '../../../assets/includes/header.php'; ?>
+    <?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
@@ -11,7 +24,7 @@
             <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
-                <div
+                <section
                     class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
@@ -92,42 +105,19 @@
                                                     class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
                                                     title="Eliminar"><i class="fa-solid fa-trash"></i></a>
                                             </div>
-                                            </a>
+                                            
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="fw-bold text-dark">NIF-502881992</td>
-                                    <td>Philips Medical Systems S.A.</td>
-                                    <td>+351 213 124 100</td>
-                                    <td><code class="text-success">service.pt@philips.com</code></td>
-                                    <td>
-                                        <span class="badge badge-calibracao border px-2 py-1 rounded-3 fw-medium">Sem
-                                            Contrato
-                                        </span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="d-flex gap-2 justify-content-end">
-                                            <div class="btn-group gap-1">
-                                                <a href="detalhes.php"
-                                                    class="btn btn-sm btn-outline-secondary rounded-2"
-                                                    title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                                <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
-                                                    title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                                <a href="apagar.php"
-                                                    class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
-                                                    title="Eliminar"><i class="fa-solid fa-trash"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
 
-                </div>
+                </section>
+
             </main>
         </div>
     </div>
 
-<?php include '../../../assets/includes/footer.php'; ?> 
+    <?php include '../../../assets/includes/footer.php'; ?>

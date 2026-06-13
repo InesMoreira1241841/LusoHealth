@@ -1,3 +1,16 @@
+<?php 
+// --------------------------------------------------------------------
+// SEGURANÇA: Proteção de acesso à página de edição
+// Este ficheiro deve ser acedido apenas por utilizadores autenticados.
+// Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
+// -------------------------------------------------------------------- 
+
+
+require_once __DIR__ . '/../../includes/funcoes.php'; 
+redirect_if_not_logged(); 
+// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+?>
+
 <?php include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
@@ -20,10 +33,10 @@
                             <p class="text-muted small m-0">Histórico de assistência técnica e garantias associadas.</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="fornecedores.html" class="btn btn-light border btn-sm rounded-pill px-3 fw-medium">
+                            <a href="fornecedores.php" class="btn btn-light border btn-sm rounded-pill px-3 fw-medium">
                                 <i class="fa-solid fa-arrow-left me-2"></i>Voltar
                             </a>
-                            <a href="editar.html?id=1"
+                            <a href="editar.php?id=1"
                                 class="btn btn-success btn-sm rounded-pill px-3 fw-medium shadow-sm">
                                 <i class="fa-solid fa-pen-to-square me-2"></i>Editar Fornecedor
                             </a>

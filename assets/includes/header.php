@@ -1,16 +1,9 @@
 <?php
-// Verifica se a sessão ainda não foi iniciada
-if (session_status() == PHP_SESSION_NONE) {
-    session_start(); // Inicia a sessão
-}
-// Verifica se o utilizador está autenticado
-if (!isset($_SESSION['utilizador'])) {
-    // Se não estiver autenticado, redireciona para o formulário de login
-    header('Location: ../public/login.php');
-    exit; // Encerra o script
-}
-// A partir daqui, o utilizador está autenticado
-// Podemos usar livremente os dados da sessão
+
+require_once __DIR__ . '/../../private/includes/funcoes.php';
+
+redirect_if_not_logged();
+
 $nome = $_SESSION['utilizador'];
 ?>
 

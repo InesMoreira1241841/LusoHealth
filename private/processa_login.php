@@ -1,24 +1,44 @@
 <?php
 require_once 'includes/funcoes.php';
 start_session();
-// --------------------------------------------------------------------
-// SEGURANÇA: Impede que o utilizador aceda diretamente a este script.
-// Este ficheiro deve ser acedido apenas através de submissão de formulário (POST).
-// Se for acedido diretamente (por URL), será redirecionado para o login.
-// --------------------------------------------------------------------
+
+// Impede acesso direto (só aceita POST)
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    // Redireciona para o formulário de login (interface pública)
     header('Location: ../public/login.php');
-    // Encerra a execução do script imediatamente após o redirecionamento
-    return;
+    exit;
 }
-// --------------------------------------------------------------------
-// RECOLHA DE DADOS DO FORMULÁRIO
-// --------------------------------------------------------------------
 
+// Recolha de dados do formulário
+$username = isset($_POST['utilizador']) ? trim($_POST['utilizador']) : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
 
-// Guarda o nome de utilizador na sessão para identificar o utilizador autenticado
+// Validação
+$validation_errors = [];
+
+if (strlen($username) < 5 || strlen($username) > 50) {
+    $validation_errors[] = 'O nome de utilizador deve ter entre 5 e 50 caracteres.';
+}
+if (strlen($password) < 6 || strlen($password) > 12) {
+    $validation_errors[] = 'A palavra-passe deve ter entre 6 e 12 caracteres.';
+}
+
+if (!empty($validation_errors)) {
+    $_SESSION['validation_errors'] = $validation_errors;
+    header('Location: ../public/login.php');
+    exit;
+}
+
+// Simulação de login (será substituído por verificação real à BD)
+$result['status'] = 1;
+
+if (!$result['status']) {
+    $_SESSION['server_error'] = 'Login inválido. Verifique as credenciais.';
+    header('Location: ../public/login.php');
+    exit;
+}
+
+// Login bem-sucedido
 $_SESSION['utilizador'] = $username;
-// Redirecionar para a página principal privada
+$_SESSION['success_message'] = 'Bem-vindo, ' . htmlspecialchars($username) . '!';
 header('Location: home.php');
 exit;

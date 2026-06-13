@@ -1,3 +1,16 @@
+<?php 
+// --------------------------------------------------------------------
+// SEGURANÇA: Proteção de acesso à página de edição
+// Este ficheiro deve ser acedido apenas por utilizadores autenticados.
+// Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
+// -------------------------------------------------------------------- 
+
+
+require_once __DIR__ . '/../../includes/funcoes.php'; 
+redirect_if_not_logged(); 
+// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+?>
+
 <?php include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
@@ -25,11 +38,11 @@
                             base de dados do hospital.
                         </p>
 
-                        <form action="fornecedores.html" method="POST" class="mt-4">
+                        <form action="fornecedores.php" method="POST" class="mt-4">
                             <input type="hidden" id="id_fornecedor_eliminar" name="id_fornecedor" value="1">
 
                             <div class="d-flex gap-2 justify-content-center">
-                                <a href="fornecedores.html" class="btn btn-light border rounded-pill px-4 fw-medium">
+                                <a href="fornecedores.php" class="btn btn-light border rounded-pill px-4 fw-medium">
                                     Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-danger rounded-pill px-4 fw-medium shadow-sm">

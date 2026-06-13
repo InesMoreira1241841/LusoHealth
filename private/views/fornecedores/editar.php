@@ -1,3 +1,16 @@
+<?php 
+// --------------------------------------------------------------------
+// SEGURANÇA: Proteção de acesso à página de edição
+// Este ficheiro deve ser acedido apenas por utilizadores autenticados.
+// Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
+// -------------------------------------------------------------------- 
+
+
+require_once __DIR__ . '/../../includes/funcoes.php'; 
+redirect_if_not_logged(); 
+// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+?>
+
 <?php include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
@@ -21,7 +34,7 @@
                             atualizados.</p>
                     </div>
 
-                    <form action="fornecedores.html" method="POST" class="row g-3 fw-medium text-secondary small">
+                    <form action="fornecedores.php" method="POST" class="row g-3 fw-medium text-secondary small">
                         <input type="hidden" name="id_fornecedor" value="1">
 
                         <div class="col-md-6">
@@ -71,7 +84,7 @@
                         </div>
 
                         <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end">
-                            <a href="fornecedores.html" class="btn btn-light border rounded-pill px-4">Descartar</a>
+                            <a href="fornecedores.php" class="btn btn-light border rounded-pill px-4">Descartar</a>
                             <button type="submit" class="btn btn-success rounded-pill px-4">
                                 <i class="fa-solid fa-arrows-rotate me-2"></i>Atualizar Ficha
                             </button>
