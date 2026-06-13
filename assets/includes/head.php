@@ -33,4 +33,11 @@ require_once __DIR__ . '/../../config/config.php';
     <!-- Bootstrap CSS & custom CSS -->
     <link rel="stylesheet" href="/lusohealth/assets/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/lusohealth/assets/css/1241841.css">
+
+    <!-- jQuery -->
+    <script src="/lusohealth/assets/jquery/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS + JS -->
+    <link rel="stylesheet" href="/lusohealth/assets/datatables/datatables.min.css">
+    <script src="/lusohealth/assets/datatables/datatables.min.js"></script> 
 </head>

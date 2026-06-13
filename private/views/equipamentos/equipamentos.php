@@ -100,7 +100,7 @@ $ligacao = null;
 
                             <div class="table-responsive">
 
-                                <table class="table table-hover align-middle border-top">
+                                <table id="tabela-equipamentos" class="table table-hover align-middle border-top">
 
                                     <thead class="table-light text-secondary small text-uppercase">
                                         <tr>
@@ -159,59 +159,10 @@ $ligacao = null;
                         <?php endif; ?> <!-- Fecha o if (!empty($erro)) -->
 
                         <div class="col">
-                            <p class="mb-5">Total: <strong> <?= count($resultados) ?> </strong></p>
+                            <p class="mb-5">Total de Equipamentos: <strong> <?= count($resultados) ?> </strong></p>
                         </div>
 
-                        <table class="table table-hover align-middle border-top">
-
-                            <thead class="table-light text-secondary small text-uppercase">
-                                <tr>
-                                    <th scope="col">Código Interno</th>
-                                    <th scope="col">Equipamento / Modelo</th>
-                                    <th scope="col">Serviço</th>
-                                    <th scope="col">Criticidade Clínica</th>
-                                    <th scope="col">Estado</th>
-                                    <th scope="col" class="text-end">Detalhes</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="small text-secondary">
-                                <tr>
-                                    <td class="fw-bold text-dark">[Código Interno]</td>
-
-                                    <td>[Nome Equipamento] <span class="text-muted small d-block">[Dräger] |
-                                            [Modelo]</span></td>
-
-                                    <td>[Serviço]</td>
-
-                                    <td>
-                                        <span class="badge bg-danger text-white px-2 py-1 rounded-pill fw-medium">
-                                            <i class="fa-solid fa-triangle-exclamation me-1"></i>[Criticidade]
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span
-                                            class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-3 fw-medium">[Estado]</span>
-                                    </td>
-
-                                    <td class="text-end">
-                                        <div class="btn-group gap-1">
-                                            <a href="detalhes.php" class="btn btn-sm btn-outline-secondary rounded-2"
-                                                title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                        </div>
-                                    </td>
-
-                                </tr>
-                            </tbody>
-
-                        </table>
-
                             </div>
-
-
-
-                </div>
 
             </main>
 
@@ -219,4 +170,40 @@ $ligacao = null;
 
     </div>
 
-    <?php include '../../../assets/includes/footer.php';
+    <script>
+        // tradução para português
+        $(document).ready(function() {
+            // datatable
+            $('#tabela-clientes').DataTable({
+                pageLength: 5,
+                pagingType: "full_numbers",
+                language: {
+                    decimal: "",
+                    emptyTable: "Sem dados disponíveis na tabela.",
+                    info: "Mostrando _START_ até _END_ de _TOTAL_ registos",
+                    infoEmpty: "Mostrando 0 até 0 de 0 registos",
+                    infoFiltered: "(Filtrando _MAX_ total de registos)",
+                    infoPostFix: "",
+                    thousands: ",",
+                    lengthMenu: "Mostrando _MENU_ registos por página.",
+                    loadingRecords: "Carregando...",
+                    processing: "Processando...",
+                    search: "Filtrar:",
+                    zeroRecords: "Nenhum registro encontrado.",
+                    paginate: {
+                        first: "Primeira",
+                        last: "Última",
+                        next: "Seguinte",
+                        previous: "Anterior"
+                    },
+                    aria: {
+                        sortAscending: ": ative para classificar a coluna em ordem crescente.",
+                        sortDescending: ": ative para classificar a coluna em ordem decrescente."
+                    }
+                }
+            });
+        })
+    </script>
+
+
+    <?php include '../../../assets/includes/footer.php'; ?>
