@@ -1,98 +1,99 @@
-// Equipamentos - Número de Série
+// Garante que o código só corre quando o HTML estiver pronto
+document.addEventListener("DOMContentLoaded", function () {
 
-const inputSerie = document.getElementById("num_serie");
+    // Equipamentos - Código Interno
 
-// Verifica se o input existe na página antes de aplicar lógica
-if (inputSerie) {
+    const inputCodigo = document.getElementById("codigo_inventario");
 
-    const PREFIXO = "EQ-"; // Prefixo fixo obrigatório para todas as séries
+    // Verifica se o input existe na página antes de aplicar lógica
+    if (inputCodigo) {
 
-    function formatar(valor) {
+        const PREFIXO_COD = "EQ-"; // Prefixo fixo obrigatório para todas as séries
 
-        // Remove o prefixo e garante que só se trabalha com o conteúdo útil
-        let miolo; // let - guarda valores que podem mudar depois ao longo do código
-        if (valor.startsWith(PREFIXO)) {
-            miolo = valor.slice(PREFIXO.length);
-        } 
-        else {
-            miolo = valor;
-        }
+        function formatarCodigo(valor) {
 
-        // Normaliza o texto: maiúsculas e remove caracteres inválidos
-        miolo = miolo
-            .toUpperCase()
-            .replace(/[^A-Z0-9]/g, ""); // substituiu qualquer coisa que não seja de A a Z ou de 0 a 9 por ""
+            // Remove o prefixo e garante que só se trabalha com o conteúdo útil
+            let miolo; // let - guarda valores que podem mudar depois ao longo do código
+            if (valor.startsWith(PREFIXO_COD)) {
+                miolo = valor.slice(PREFIXO_COD.length);
+            }
+            else {
+                miolo = valor;
+            }
 
-        let numeros = "";
-        let letras = "";
+            // Normaliza o texto: maiúsculas e remove caracteres inválidos
+            miolo = miolo
+                .toUpperCase()
+                .replace(/[^A-Z0-9]/g, ""); // substituiu qualquer coisa que não seja de A a Z ou de 0 a 9 por ""
 
-        // Percorre o valor e separa números e letras de forma sequencial
-        for (let i = 0; i < miolo.length; i++) {
-            const char = miolo[i];
+            let numeros = "";
+            let letras = "";
 
-            // Primeiro bloco: aceita apenas até 5 números
-            if (numeros.length < 5) {
-                if (/[0-9]/.test(char)) { // .test() - função que testa a condição
-                    numeros += char;
+            // Percorre o valor e separa números e letras de forma sequencial
+            for (let i = 0; i < miolo.length; i++) {
+                const char = miolo[i];
+
+                // Primeiro bloco: aceita apenas até 5 números
+                if (numeros.length < 5) {
+                    if (/[0-9]/.test(char)) { // .test() - função que testa a condição
+                        numeros += char;
+                    }
+                }
+
+                // Segundo bloco: após 5 números, aceita até 3 letras
+                else if (letras.length < 3) {
+                    if (/[A-Z]/.test(char)) {
+                        letras += char;
+                    }
                 }
             }
 
-            // Segundo bloco: após 5 números, aceita até 3 letras
-            else if (letras.length < 3) {
-                if (/[A-Z]/.test(char)) {
-                    letras += char;
-                }
+            // Construção final da string formatada
+            let resultado = PREFIXO_COD + numeros;
+
+            // Adiciona hífen apenas quando os 5 números estão completos
+            if (numeros.length === 5) {
+                resultado += "-";
             }
+
+            // Adiciona as letras finais (até 3)
+            resultado += letras;
+
+            return resultado;
         }
 
-        // Construção final da string formatada
-        let resultado = PREFIXO + numeros;
+        // Atualiza o valor em tempo real enquanto o utilizador escreve
+        inputCodigo.addEventListener("input", function () {
+            // “Sempre que o utilizador alterar o conteúdo do campo inputCodigo, executa esta função.”
+            this.value = formatarCodigo(this.value);
 
-        // Adiciona hífen apenas quando os 5 números estão completos
-        if (numeros.length === 5) {
-            resultado += "-";
-        }
+            // Mantém o cursor no fim para evitar comportamento estranho
+            this.setSelectionRange(this.value.length, this.value.length);
+        });
 
-        // Adiciona as letras finais (até 3)
-        resultado += letras;
+        // Garante que o prefixo existe ao entrar no campo
+        inputCodigo.addEventListener("focus", function () {
+            if (!this.value) this.value = PREFIXO_COD;
 
-        return resultado;
+            setTimeout(() => {
+                this.setSelectionRange(this.value.length, this.value.length); // coloca o curso no fim do texto ...
+            }, 0); // ... de forma instantânea
+        });
+
+        // Impede apagar o prefixo obrigatório
+        inputCodigo.addEventListener("keydown", function (e) {
+            // keydown - este evento acontece quando uma tecla é pressionada (antes de o browser alterar o input)
+            // function(e) - o e significa event (contém informação sobre a tecla pressionada)
+            if (this.selectionStart <= PREFIXO_COD.length && // "O cursor está dentro ou antes do prefixo?"
+                // this.selectionStart - indica a posição do cursor no input
+                (e.key === "Backspace" || e.key === "Delete")) { // "E a tecla pressionada foi backspace OU delete?"
+                e.preventDefault(); // "Cancela a ação normal do browser"
+            }
+        });
     }
 
-    // Atualiza o valor em tempo real enquanto o utilizador escreve
-    inputSerie.addEventListener("input", function () {
-    // “Sempre que o utilizador alterar o conteúdo do campo inputSerie, executa esta função.”
-        this.value = formatar(this.value);
 
-        // Mantém o cursor no fim para evitar comportamento estranho
-        this.setSelectionRange(this.value.length, this.value.length);
-    });
-
-    // Garante que o prefixo existe ao entrar no campo
-    inputSerie.addEventListener("focus", function () {
-        if (!this.value) this.value = PREFIXO;
-
-        setTimeout(() => {
-            this.setSelectionRange(this.value.length, this.value.length); // coloca o curso no fim do texto ...
-        }, 0); // ... de forma instantânea
-    });
-
-    // Impede apagar o prefixo obrigatório
-    inputSerie.addEventListener("keydown", function (e) {
-    // keydown - este evento acontece quando uma tecla é pressionada (antes de o browser alterar o input)
-    // function(e) - o e significa event (contém informação sobre a tecla pressionada)
-        if (this.selectionStart <= PREFIXO.length && // "O cursor está dentro ou antes do prefixo?"
-        // this.selectionStart - indica a posição do cursor no input
-            (e.key === "Backspace" || e.key === "Delete")) { // "E a tecla pressionada foi backspace OU delete?"
-            e.preventDefault(); // "Cancela a ação normal do browser"
-        }
-    });
-}
-
-// Equipamentos - Ano de Fabrico
-
-// “Executa este código só depois de a página HTML estar totalmente carregada.”
-document.addEventListener("DOMContentLoaded", function () {
+    // Equipamentos - Ano de Fabrico
 
     // Procura o campo do ano de fabrico na página
     const inputAno = document.getElementById("ano_fabrico");
@@ -146,4 +147,104 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
+
+    // Equipamentos - Custo de Aquisição
+
+    const formCategoria = document.getElementById("formNovaCategoria");
+
+    if (formCategoria) {
+        formCategoria.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const nomeCategoria = document.getElementById("nome_categoria").value.trim();
+            const selectCategoria = document.getElementById("categoria_id");
+            const btnGuardar = document.getElementById("btnGuardarCategoria");
+
+            if (nomeCategoria === "") return;
+
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = "A guardar...";
+
+            const dados = new FormData();
+            dados.append("nome_categoria", nomeCategoria);
+
+            // Rota absoluta que descobrimos que funciona
+            fetch('/lusohealth/assets/includes/guardar_categoria_ajax.php', {
+                method: "POST",
+                body: dados
+            })
+                .then(response => {
+                    // Lemos a resposta como texto bruto primeiro para apanhar erros do PHP
+                    return response.text();
+                })
+                .then(texto => {
+                    console.log("--- RESPOSTA BRUTA DO SERVIDOR ---");
+                    console.log(texto);
+                    console.log("----------------------------------");
+
+                    try {
+                        // Tenta converter o texto para JSON
+                        const data = JSON.parse(texto);
+
+                        if (data.sucesso) {
+                            const novaOpcao = new Option(data.nome, data.id, true, true);
+                            selectCategoria.add(novaOpcao);
+                            document.getElementById("nome_categoria").value = "";
+
+                            const modalElement = document.getElementById("modalNovaCategoria");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            modal.hide();
+                        } else {
+                            alert("Erro no PHP: " + data.erro);
+                        }
+                    } catch (erroJson) {
+                        // MUDANÇA AQUI: Vamos ver o texto bruto num alert para não haver dúvidas!
+                        alert("--- RESPOSTA DO PHP ---\n" + texto + "\n------------------------");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na requisição FETCH:", error);
+                })
+                .finally(() => {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = "Guardar";
+                });
+        });
+    }
+
+    // Filtros
+
+    // tradução para português
+    $(document).ready(function () {
+        // datatable
+        $('#tabela-clientes').DataTable({
+            pageLength: 5,
+            pagingType: "full_numbers",
+            language: {
+                decimal: "",
+                emptyTable: "Sem dados disponíveis na tabela.",
+                info: "Mostrando _START_ até _END_ de _TOTAL_ registos",
+                infoEmpty: "Mostrando 0 até 0 de 0 registos",
+                infoFiltered: "(Filtrando _MAX_ total de registos)",
+                infoPostFix: "",
+                thousands: ",",
+                lengthMenu: "Mostrando _MENU_ registos por página.",
+                loadingRecords: "Carregando...",
+                processing: "Processando...",
+                search: "Filtrar:",
+                zeroRecords: "Nenhum registro encontrado.",
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                },
+                aria: {
+                    sortAscending: ": ative para classificar a coluna em ordem crescente.",
+                    sortDescending: ": ative para classificar a coluna em ordem decrescente."
+                }
+            }
+        });
+    })
+
+})
