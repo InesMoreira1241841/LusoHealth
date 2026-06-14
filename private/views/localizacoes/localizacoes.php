@@ -112,22 +112,29 @@ $ligacao = null;
                                                 <td><?= $localizacoes->responsavel ?></td>
 
                                                 <td class="text-end">
+
                                                     <div class="btn-group gap-1">
-                                                        <a href="detalhes.php?id=UCI"
+
+                                                        <a href="detalhes.php?id_localizacoes=<?= aes_encrypt($localizacoes->id) ?>"
                                                             class="btn btn-sm btn-outline-secondary rounded-2"
                                                             title="Visualizar Detalhes">
                                                             <i class="fa-solid fa-eye"></i>
                                                         </a>
-                                                        <a href="editar.php?id=UCI"
+
+                                                        <a href="editar.php?id_localizacoes=<?= aes_encrypt($localizacoes->id) ?>"
                                                             class="btn btn-sm btn-outline-success rounded-2"
                                                             title="Editar Localização">
                                                             <i class="fa-solid fa-pen"></i>
                                                         </a>
-                                                        <a href="apagar.php?id=UCI" class="btn btn-sm btn-outline-danger rounded-2"
+
+                                                        <a href="apagar.php?id_localizacoes=<?= aes_encrypt($localizacoes->id) ?>" 
+                                                            class="btn btn-sm btn-outline-danger rounded-2"
                                                             title="Remover Localização">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </a>
+
                                                     </div>
+
                                                 </td>
                                             </tr>
 

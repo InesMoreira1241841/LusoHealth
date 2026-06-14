@@ -9,6 +9,7 @@
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+require_once __DIR__ . '/../../includes/validacoes.php';
 
 // Verificar se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,29 +33,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // A. Verificar se o campo está vazio 
     // B. Verificar se contém apenas números ou mistura de letras com números
-    if (empty($codigo)) {
-        $erros[] = "O campo ID da Localização é obrigatório.";
-    }
-
+    
+    $erros = validar_codigo($codigo);
+    /*
     if (empty($nome)) {
         $erros[] = "O campo Nome do Serviço / Ala é obrigatório.";
     } elseif (preg_match('/\d/', $nome)) {
         $erros[] = "O campo Nome do Serviço / Ala não pode conter números.";
     }
-
-    if (empty($edificio)) {
-        $erros[] = "O campo Edifício / Bloco é obrigatório.";
-    }
-
-    if (empty($piso)) {
-        $erros[] = "O campo Piso é obrigatório.";
-    }
-
-    if (empty($responsavel)) {
-        $erros[] = "O campo Responsável é obrigatório.";
-    } elseif (preg_match('/\d/', $responsavel)) {
-        $erros[] = "O campo Responsável não pode conter números.";
-    }
+        */
+    $erros = validar_nome($nome);
+    $erros = validar_edificio($edificio);
+    $erros = validar_piso($piso);
+    $erros = validar_responsavel($responsavel);
 
 
     // 3. Se não houver erros, guardar na base de dados
@@ -66,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 DB_USER,
                 DB_PASS
             );
-            
+
             $sql = "INSERT INTO localizacoes (codigo, nome, edificio, piso, responsavel, observacoes) 
             VALUES (':codigo', ':nome', ':edificio', ':piso', ':responsavel', ':observacoes')";
 
@@ -74,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([
                 ':codigo' => $codigo,
                 ':nome' => $nome,
+                ':edificio' => $edificio,
                 ':piso' => $piso,
                 ':responsavel' => $responsavel,
                 ':observacoes' => $observacoes
@@ -81,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             header('Location: localizacoes.php');
             exit;
-
         } catch (PDOException $err) {
             $erros_sistema[] = "Erro ao gravar os dados: " . $err->getMessage();
         }
@@ -89,11 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $ligacao = null;
     }
 }
-/*
-    // 4. Depuração: mostrar os erros recolhidos
-    echo "<pre>"; // torna mais legível no browser
-    print_r($erros);
-    echo "</pre>"; */
+
 include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
@@ -185,10 +172,11 @@ include '../../../assets/includes/head.php'; ?>
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!empty($erro_sistema)): ?>
-                        <div class="alert alert-danger">
-                            <strong>Erro:</strong>
-                            <p><?= htmlspecialchars($erro_sistema) ?></p>
+                    <?php if (!empty($erros)): ?>
+                        <div class="alert alert-danger text-center" role="alert">
+                            <?php foreach ($erros as $erro): ?>
+                                <div><?= htmlspecialchars($erro) ?></div>
+                            <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
 
