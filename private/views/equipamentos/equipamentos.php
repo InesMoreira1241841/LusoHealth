@@ -29,8 +29,6 @@ try {
 }
 // Fecha a ligação
 $ligacao = null;
-
-
 ?>
 
 <body class="bg-page-light">
@@ -162,7 +160,7 @@ $ligacao = null;
                             <p class="mb-5">Total de Equipamentos: <strong> <?= count($resultados) ?> </strong></p>
                         </div>
 
-                            </div>
+                    
 
             </main>
 
