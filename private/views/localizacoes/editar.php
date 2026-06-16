@@ -122,7 +122,7 @@ include '../../../assets/includes/head.php'; ?>
                     <form action="editar.php?id_localizacoes=<?= $idLocEncrypted ?>" method="POST" novalidate class="small text-secondary">
 
                         <div class="row g-3">
-
+ 
                             <div class="col-md-4">
                                 <label for="editCodigoLocalizacao" class="form-label fw-bold text-dark">ID da
                                     Localização</label>
