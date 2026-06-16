@@ -39,5 +39,10 @@ require_once __DIR__ . '/../../config/config.php';
 
     <!-- DataTables CSS + JS -->
     <link rel="stylesheet" href="/lusohealth/assets/datatables/datatables.min.css">
-    <script src="/lusohealth/assets/datatables/datatables.min.js"></script> 
+    <script src="/lusohealth/assets/datatables/datatables.min.js"></script>
+
+    <!-- CSS do Flatpickr -->
+    <link rel="stylesheet" href="/lusohealth/assets/flatpickr/flatpickr.min.css">
+    <!-- JS do Flatpickr -->
+    <script src="/lusohealth/assets/flatpickr/flatpickr.js"></script>
 </head>

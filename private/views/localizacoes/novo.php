@@ -4,11 +4,11 @@
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
-
+ 
 
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
-// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+
 require_once __DIR__ . '/../../includes/validacoes.php';
 
 // Verificar se o formulário foi submetido
@@ -29,24 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $edificio = ucwords(strtolower($edificio));
     $responsavel = ucwords(strtolower($responsavel));
 
-    // 2. Validar os dados
-
-    // A. Verificar se o campo está vazio 
-    // B. Verificar se contém apenas números ou mistura de letras com números
+    // 2. Validar os dados acumulando os erros corretamente
     
-    $erros = validar_codigo($codigo);
-    /*
-    if (empty($nome)) {
-        $erros[] = "O campo Nome do Serviço / Ala é obrigatório.";
-    } elseif (preg_match('/\d/', $nome)) {
-        $erros[] = "O campo Nome do Serviço / Ala não pode conter números.";
-    }
-        */
-    $erros = validar_nome($nome);
-    $erros = validar_edificio($edificio);
-    $erros = validar_piso($piso);
-    $erros = validar_responsavel($responsavel);
-
+    $erros = [];
+    $erros = array_merge($erros, validar_codigo($codigo) ?? []);
+    $erros = array_merge($erros, validar_nome($nome) ?? []);
+    $erros = array_merge($erros, validar_edificio($edificio) ?? []);
+    $erros = array_merge($erros, validar_piso($piso) ?? []);
+    $erros = array_merge($erros, validar_responsavel($responsavel) ?? []);
 
     // 3. Se não houver erros, guardar na base de dados
 
@@ -57,27 +47,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 DB_USER,
                 DB_PASS
             );
+            $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "INSERT INTO localizacoes (codigo, nome, edificio, piso, responsavel, observacoes) 
-            VALUES (':codigo', ':nome', ':edificio', ':piso', ':responsavel', ':observacoes')";
+            // --- VERIFICAÇÃO DE DUPLICADO AQUI ---
+            $sqlCheck = "SELECT COUNT(*) FROM localizacoes WHERE codigo = :codigo";
+            $stmtCheck = $ligacao->prepare($sqlCheck);
+            $stmtCheck->execute([':codigo' => $codigo]);
+            
+            if ($stmtCheck->fetchColumn() > 0) {
+                // Se já existir, injetamos o erro no teu array global de erros
+                $erros[] = "O ID da Localização '$codigo' já está registado. Escolha um código único.";
+            }
 
-            $stmt = $ligacao->prepare($sql);
-            $stmt->execute([
-                ':codigo' => $codigo,
-                ':nome' => $nome,
-                ':edificio' => $edificio,
-                ':piso' => $piso,
-                ':responsavel' => $responsavel,
-                ':observacoes' => $observacoes
-            ]);
+            // 4. Se continuar sem erros (ou seja, o código é único), faz-se o INSERT
+            if (empty($erros)) {
+                $sql = "INSERT INTO localizacoes (
+                            codigo, nome, edificio, piso, responsavel, observacoes) 
+                        VALUES (
+                            :codigo, :nome, :edificio, :piso, :responsavel, :observacoes)";
 
-            header('Location: localizacoes.php');
-            exit;
+                $stmt = $ligacao->prepare($sql);
+                $stmt->execute([
+                    ':codigo' => $codigo,
+                    ':nome' => $nome,
+                    ':edificio' => $edificio,
+                    ':piso' => $piso,
+                    ':responsavel' => $responsavel,
+                    ':observacoes' => $observacoes
+                ]);
+
+                header('Location: localizacoes.php');
+                exit;
+            }
+
         } catch (PDOException $err) {
             $erros_sistema[] = "Erro ao gravar os dados: " . $err->getMessage();
+        } finally {
+            $ligacao = null;
         }
-
-        $ligacao = null;
     }
 }
 
@@ -148,7 +155,7 @@ include '../../../assets/includes/head.php'; ?>
                                     value="<?= htmlspecialchars($_POST['observacoes'] ?? '') ?>">
                             </div>
 
-                            <div class="col-12 pt-3 border-top mt-4 d-flex gap-2 justify-content-end">
+                            <div class="col-12 pt-3 mt-2 mb-4 d-flex gap-2 justify-content-end">
                                 <a href="localizacoes.php"
                                     class="btn btn-light border rounded-pill px-4 fw-medium">Cancelar</a>
                                 <button type="submit" id="btnSalvarLocalizacao"
@@ -169,14 +176,6 @@ include '../../../assets/includes/head.php'; ?>
                                     <li><?= htmlspecialchars($erro) ?></li>
                                 <?php endforeach; ?>
                             </ul>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger text-center" role="alert">
-                            <?php foreach ($erros as $erro): ?>
-                                <div><?= htmlspecialchars($erro) ?></div>
-                            <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
 

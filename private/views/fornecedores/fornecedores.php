@@ -1,4 +1,5 @@
 <?php
+
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
@@ -9,9 +10,26 @@
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
-?>
 
-<?php include '../../../assets/includes/head.php'; ?>
+include '../../../assets/includes/head.php'; 
+
+// Ligação e execução da query
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
+        DB_USER,
+        DB_PASS
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $resultados = $ligacao->query("SELECT * FROM fornecedores")->fetchAll(PDO::FETCH_OBJ);
+    $erro = '';
+} catch (PDOException $erro) {
+    $erro = "Aconteceu um erro na ligação.";
+    $resultados = [];
+}
+// Fecha a ligação
+$ligacao = null;
+?>?>
 
 <body class="bg-page-light">
     <!-- Classe personalizada para cor de fundo global -->

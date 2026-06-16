@@ -6,7 +6,6 @@
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
-
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
@@ -121,22 +120,40 @@ $ligacao = null;
                                                 <td><?= $equipamentos->marca . ' | ' . $equipamentos->modelo ?></td>
                                                 <td><?= $equipamentos->estado ?></td>
                                                 <td><?= $equipamentos->criticidade ?></td>
+
                                                 <td class="text-end">
+
                                                     <div class="btn-group gap-1">
-                                                        <a href="detalhes.php" class="btn btn-sm btn-outline-secondary rounded-2"
-                                                            title="Ver Detalhes"><i class="fa-solid fa-eye"></i></a>
-                                                        <a href="editar.php" class="btn btn-sm btn-outline-success rounded-2"
-                                                            title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                                        <a href="apagar.php"
-                                                            class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
-                                                            title="Eliminar"><i class="fa-solid fa-trash"></i></a>
+
+                                                        <a href="detalhes.php?id_equipamentos=<?= aes_encrypt($equipamentos->id) ?>"
+                                                            class="btn btn-sm btn-outline-secondary rounded-2"
+                                                            title="Visualizar Detalhes">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+
+                                                        <a href="editar.php?id_equipamentos=<?= aes_encrypt($equipamentos->id) ?>"
+                                                            class="btn btn-sm btn-outline-success rounded-2"
+                                                            title="Editar Equipamentos">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </a>
+
+                                                        <a href="apagar.php?id_equipamentos=<?= aes_encrypt($equipamentos->id) ?>"
+                                                            class="btn btn-sm btn-outline-danger rounded-2"
+                                                            title="Remover Equipamentos">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </a>
+
                                                         <a href="arquivar.php" class="btn btn-sm btn-outline-primary rounded-2"
-                                                            title="Arquivar"><i class="fa-solid fa-box-archive"></i></a>
+                                                            title="Arquivar"><i class="fa-solid fa-box-archive"></i>
+                                                        </a>
+
                                                     </div>
                                                 </td>
 
                                             </tr>
+
                                         <?php endforeach; ?>
+
                                     </tbody>
 
                                 </table>
@@ -152,15 +169,16 @@ $ligacao = null;
                                         </p>
                                     </div>
                                 </div>
+                            </div>
 
-                            <?php endif; ?> <!-- Fecha o if (count($resultados) == 0) -->
-                        <?php endif; ?> <!-- Fecha o if (!empty($erro)) -->
+                        <?php endif; ?> <!-- Fecha o if (count($resultados) == 0) -->
+                    <?php endif; ?> <!-- Fecha o if (!empty($erro)) -->
 
-                        <div class="col">
-                            <p class="mb-5">Total de Equipamentos: <strong> <?= count($resultados) ?> </strong></p>
-                        </div>
+                </div>
 
-                    
+                <div class="col">
+                    <p class="mb-5">Total de Equipamentos: <strong> <?= count($resultados) ?> </strong></p>
+                </div>
 
             </main>
 

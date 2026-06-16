@@ -6,7 +6,6 @@
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
-
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
@@ -23,8 +22,7 @@ try {
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $resultados = $ligacao->query("SELECT * FROM localizacoes")->fetchAll(PDO::FETCH_OBJ);
     $erro = '';
-} 
-catch (PDOException $erro) {
+} catch (PDOException $erro) {
     $erro = "Aconteceu um erro na ligação.";
     $resultados = [];
 }
@@ -145,6 +143,7 @@ $ligacao = null;
                                 </table>
 
                             </div>
+                            
                         <?php endif; ?> <!-- Fecha o if (count($resultados) == 0) -->
                     <?php endif; ?> <!-- Fecha o if (!empty($erro)) -->
                 </div>
@@ -154,7 +153,9 @@ $ligacao = null;
                 </div>
 
             </main>
+
         </div>
+
     </div>
 
     <?php include '../../../assets/includes/footer.php'; ?>

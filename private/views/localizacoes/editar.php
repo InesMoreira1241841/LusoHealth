@@ -48,10 +48,11 @@ try {
         $novoResponsavel = $_POST['responsavel'] ?? '';
         $novoObservacoes = $_POST['observacoes'] ?? '';
 
-        $erros = validar_nome($novoNome);
-        $erros = validar_edificio($novoEdificio);
-        $erros = validar_piso($novoPiso);
-        $erros = validar_responsavel($novoResponsavel);
+        $erros = [];
+        $erros = array_merge($erros, validar_nome($novoNome) ?? []);
+        $erros = array_merge($erros, validar_edificio($novoEdificio) ?? []);
+        $erros = array_merge($erros, validar_piso($novoPiso) ?? []);
+        $erros = array_merge($erros, validar_responsavel($novoResponsavel) ?? []);
 
         if (empty(trim($novoNome))) {
             $erro = "O nome não pode estar vazio.";
@@ -126,7 +127,7 @@ include '../../../assets/includes/head.php'; ?>
                                 <label for="editCodigoLocalizacao" class="form-label fw-bold text-dark">ID da
                                     Localização</label>
                                 <input type="text" class="form-control font-monospace text-uppercase bg-light"
-                                    name="codigo" value="S<?= htmlspecialchars($localizacoes->codigo) ?>" readonly>
+                                    name="codigo" value="<?= htmlspecialchars($localizacoes->codigo) ?>" readonly>
                             </div>
 
                             <div class="col-md-8">
