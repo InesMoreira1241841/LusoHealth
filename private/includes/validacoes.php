@@ -1,5 +1,7 @@
 <?php
 
+// ------------------------------ DOCUMENTAÇÃO ------------------------------
+
 // ------------------------------ EQUIPAMENTOS ------------------------------
 
 function validar_designacao(string $designacao): array
@@ -154,6 +156,111 @@ function validar_criticidade(string $criticidade): array
     }
     return $erros;
 }
+
+// ------------------------------ FORNECEDORES ------------------------------
+
+function validar_nome_fornecedor(string $nome): array
+{
+    $erros = [];
+    $nome_limpo = trim($nome);
+    if ($nome_limpo === '') {
+        $erros[] = "O campo Nome / Razão Social é obrigatório.";
+    } elseif (mb_strlen($nome_limpo) > 150) {
+        $erros[] = "O campo Nome / Razão Social não pode exceder os 150 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_nif(string $nif): array
+{
+    $erros = [];
+    $nif_limpo = trim($nif);
+    if ($nif_limpo === '') {
+        $erros[] = "O campo NIF é obrigatório.";
+    } elseif (!preg_match('/^[0-9]{9}$/', $nif_limpo)) {
+        $erros[] = "O NIF deve conter exatamente 9 dígitos numéricos.";
+    }
+    return $erros;
+}
+
+function validar_tipo_fornecedor(string $tipo): array
+{
+    $erros = [];
+    if (!in_array($tipo, ['Fabricante', 'Distribuidor', 'Assistência Técnica', 'Consumíveis'], true)) {
+        $erros[] = "Selecione um Tipo de Fornecedor válido.";
+    }
+    return $erros;
+}
+
+function validar_telefone_fornecedor(string $telefone): array
+{
+    $erros = [];
+    $tel_limpo = trim($telefone);
+    if ($tel_limpo !== '' && mb_strlen($tel_limpo) > 30) {
+        $erros[] = "O Telefone Geral da Empresa não pode exceder os 30 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_email_fornecedor(string $email): array
+{
+    $erros = [];
+    $email_limpo = trim($email);
+    if ($email_limpo !== '') {
+        if (!filter_var($email_limpo, FILTER_VALIDATE_EMAIL)) {
+            $erros[] = "O E-mail de Assistência Oficial inserido não é válido.";
+        } elseif (mb_strlen($email_limpo) > 100) {
+            $erros[] = "O E-mail de Assistência Oficial não pode exceder os 100 caracteres.";
+        }
+    }
+    return $erros;
+}
+
+function validar_website_fornecedor(string $website): array
+{
+    $erros = [];
+    $web_limpo = trim($website);
+    if ($web_limpo !== '') {
+        if (!filter_var($web_limpo, FILTER_VALIDATE_URL)) {
+            $erros[] = "O endereço do Website Oficial não é válido (ex: https://www.empresa.com).";
+        } elseif (mb_strlen($web_limpo) > 150) {
+            $erros[] = "O Website Oficial não pode exceder os 150 caracteres.";
+        }
+    }
+    return $erros;
+}
+
+function validar_morada_fornecedor(string $morada): array
+{
+    $erros = [];
+    $morada_limpa = trim($morada);
+    if ($morada_limpa !== '' && mb_strlen($morada_limpa) > 200) {
+        $erros[] = "O Endereço da Sede Comercial não pode exceder os 200 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_tecnico_nome(string $tecnico_nome): array
+{
+    $erros = [];
+    $nome_limpo = trim($tecnico_nome);
+    if ($nome_limpo !== '' && mb_strlen($nome_limpo) > 100) {
+        $erros[] = "O nome do Gestor de Conta / Técnico Responsável não pode exceder os 100 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_tecnico_telefone(string $tecnico_telefone): array
+{
+    $erros = [];
+    $tel_limpo = trim($tecnico_telefone);
+    if ($tel_limpo !== '' && mb_strlen($tel_limpo) > 30) {
+        $erros[] = "A Linha Direta do Técnico não pode exceder os 30 caracteres.";
+    }
+    return $erros;
+}
+
+// ------------------------------ GARANTIAS ------------------------------
 
 // ------------------------------ LOCALIZACOES ------------------------------
 
