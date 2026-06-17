@@ -1,5 +1,3 @@
-// Página - localizacoes/editar.php
-
 <?php
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição
@@ -9,12 +7,13 @@
 
 
 require_once __DIR__ . '/../../includes/funcoes.php';
+start_session();
 redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
 require_once __DIR__ . '/../../includes/validacoes.php';
 
 // 1. Capturar e desencriptar o ID do equipamento vindo do GET
-$idLocEncrypted = $_GET['id_localizacoes'] ?? null;
+$idLocEncrypted = $_GET['id'] ?? null;
 $idLoc = aes_decrypt($idLocEncrypted);
 
 if (!$idLoc || !is_numeric($idLoc)) {
@@ -51,17 +50,17 @@ try {
         $novoResponsavel = $_POST['responsavel'] ?? '';
         $novoObservacoes = $_POST['observacoes'] ?? '';
 
+        // 1. Acumular erros das funções de validação
         $erros = [];
         $erros = array_merge($erros, validar_nome($novoNome) ?? []);
         $erros = array_merge($erros, validar_edificio($novoEdificio) ?? []);
         $erros = array_merge($erros, validar_piso($novoPiso) ?? []);
         $erros = array_merge($erros, validar_responsavel($novoResponsavel) ?? []);
 
-        if (empty(trim($novoNome))) {
-            $erro = "O nome não pode estar vazio.";
-        } else {
+        // 2. Se não houver erros de validação, avançamos para a BD
+        if (empty($erros)) {
             try {
-                // Reutiliza a ligação $ligacao que já está aberta
+                // Preparamos a query dentro do TRY para total segurança
                 $stmt = $ligacao->prepare("
                     UPDATE localizacoes
                     SET nome = :nome,
@@ -73,30 +72,33 @@ try {
                     WHERE id = :id
                 ");
 
-                #$stmt->bindParam(':nome', $novoNome);
                 $stmt->bindParam(':nome', $novoNome, PDO::PARAM_STR);
                 $stmt->bindParam(':edificio', $novoEdificio, PDO::PARAM_STR);
                 $stmt->bindParam(':piso', $novoPiso, PDO::PARAM_INT);
                 $stmt->bindParam(':responsavel', $novoResponsavel, PDO::PARAM_STR);
                 $stmt->bindParam(':observacoes', $novoObservacoes, PDO::PARAM_STR);
-                $stmt->bindParam(':id', $idLoc, PDO::PARAM_INT); // ou $
+                $stmt->bindParam(':id', $idLoc, PDO::PARAM_INT);
+
                 $stmt->execute();
 
-                // Mensagem de sucesso e redirecionamento (opcional)
+                // Sucesso absoluto: Mensagem guardada e redirecionamento
+                $_SESSION['success_message'] = "Localização atualizada com sucesso.";
                 header('Location: localizacoes.php');
                 exit;
             } catch (PDOException $err) {
-                $erro = "Erro ao atualizar o nome: " . $err->getMessage();
+                // Se a BD falhar, injetamos no array global de erros
+                $erros[] = "Erro ao atualizar a base de dados: " . $err->getMessage();
             }
         }
     }
 } catch (PDOException $err) {
-    $erro = "Erro na ligação à base de dados.";
+    // Este catch protege o SELECT inicial e a ligação geral à BD
+    $erros[] = "Erro na ligação ou na leitura da base de dados.";
     $localizacoes = null;
 }
+
 // Fecha a ligação
 $ligacao = null;
-
 
 include '../../../assets/includes/head.php'; ?>
 
@@ -111,6 +113,14 @@ include '../../../assets/includes/head.php'; ?>
             <?php include '../../../assets/includes/sidebar/localizacoes.php' ?>
 
             <main class="col-md-9 col-lg-10">
+
+                <?php if (!empty($erros)): ?>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <?php foreach ($erros as $erro): ?>
+                            <div><?= htmlspecialchars($erro) ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
                 <div
                     class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
@@ -122,10 +132,10 @@ include '../../../assets/includes/head.php'; ?>
                             ala.</p>
                     </div>
 
-                    <form action="editar.php?id_localizacoes=<?= $idLocEncrypted ?>" method="POST" novalidate class="small text-secondary">
+                    <form action="editar.php?id=<?= $idLocEncrypted ?>" method="POST" novalidate class="small text-secondary">
 
                         <div class="row g-3">
- 
+
                             <div class="col-md-4">
                                 <label for="editCodigoLocalizacao" class="form-label fw-bold text-dark">ID da
                                     Localização</label>
@@ -178,13 +188,7 @@ include '../../../assets/includes/head.php'; ?>
                         </div>
                     </form>
 
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger text-center" role="alert">
-                            <?php foreach ($erros as $erro): ?>
-                                <div><?= htmlspecialchars($erro) ?></div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+
 
                 </div>
             </main>

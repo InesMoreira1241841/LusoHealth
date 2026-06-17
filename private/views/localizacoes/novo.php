@@ -1,14 +1,13 @@
-// Página - localizacoes/novo.php
-
 <?php
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
- 
+
 
 require_once __DIR__ . '/../../includes/funcoes.php';
+start_session();
 redirect_if_not_logged();
 
 require_once __DIR__ . '/../../includes/validacoes.php';
@@ -32,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $responsavel = ucwords(strtolower($responsavel));
 
     // 2. Validar os dados acumulando os erros corretamente
-    
+
     $erros = [];
     $erros = array_merge($erros, validar_codigo($codigo) ?? []);
     $erros = array_merge($erros, validar_nome($nome) ?? []);
@@ -55,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sqlCheck = "SELECT COUNT(*) FROM localizacoes WHERE codigo = :codigo";
             $stmtCheck = $ligacao->prepare($sqlCheck);
             $stmtCheck->execute([':codigo' => $codigo]);
-            
+
             if ($stmtCheck->fetchColumn() > 0) {
                 // Se já existir, injetamos o erro no teu array global de erros
                 $erros[] = "O ID da Localização '$codigo' já está registado. Escolha um código único.";
@@ -76,10 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':observacoes' => $observacoes
                 ]);
 
+                $_SESSION['success_message'] = "Localização hospitalar registada com sucesso.";
                 header('Location: localizacoes.php');
                 exit;
             }
-
         } catch (PDOException $err) {
             $erros_sistema[] = "Erro ao gravar os dados: " . $err->getMessage();
         } finally {
@@ -109,6 +108,18 @@ include '../../../assets/includes/head.php'; ?>
                         <p class="text-muted small m-0">Crie um novo espaço ou serviço para alocação de dispositivos
                             biomédicos.</p>
                     </div>
+
+                    <!-- Área de erros -->
+                    <?php if (!empty($erros)): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Foram encontrados os seguintes erros:</strong>
+                            <ul class="mb-0">
+                                <?php foreach ($erros as $erro): ?>
+                                    <li><?= htmlspecialchars($erro) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
 
                     <form action=# method="POST" class="small text-secondary">
 
@@ -166,19 +177,7 @@ include '../../../assets/includes/head.php'; ?>
 
                         </div>
                     </form>
-
-                    <!-- Área de erros -->
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger" role="alert">
-                            <strong>Foram encontrados os seguintes erros:</strong>
-                            <ul class="mb-0">
-                                <?php foreach ($erros as $erro): ?>
-                                    <li><?= htmlspecialchars($erro) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
-
+                
                 </div>
             </main>
         </div>

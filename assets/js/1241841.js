@@ -216,6 +216,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // tradução para português
     $(document).ready(function () {
+
+        // Procura na página se existe algum alerta de sucesso ativo
+        const alertaSucesso = $('.alert-success');
+
+        if (alertaSucesso.length) {
+            // Executa uma contagem decrescente de 3000ms (3 segundos)
+            setTimeout(function () {
+                // Efeito visual suave de desaparecimento (fade) ao longo de 500ms
+                alertaSucesso.fadeOut(500, function () {
+                    // Remove completamente o elemento do HTML após desaparecer
+                    $(this).remove();
+                });
+            }, 2000); // 3000 milissegundos = 3 segundos
+        }
+
         // datatable
         $('#tabela-clientes').DataTable({
             pageLength: 5,
@@ -245,6 +260,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+
+        $('#tabela-localizacoes-hospitalares').DataTable({
+                "pageLength": 10, // Limita estritamente a 10 por página
+                "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Nenhuma localização encontrada.",
+                    "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ localizações", // Contador no final
+                    "infoEmpty": "A apresentar 0 até 0 de 0 registos",
+                    "infoFiltered": "(filtrado de um total de _MAX_ registos)",
+                    "lengthMenu": "Mostrar _MENU_ localizações por página",
+                    "loadingRecords": "A carregar...",
+                    "processing": "A processar...",
+                    "search": "Filtrar por qualquer coluna:", // A barra de pesquisa global
+                    "zeroRecords": "Não foram encontrados resultados correspondentes",
+                    "paginate": {
+                        "first": "Primeira",
+                        "last": "Última",
+                        "next": "Seguinte",
+                        "previous": "Anterior"
+                    }
+                }
+            });
     })
 
 })

@@ -227,14 +227,7 @@ function validar_criticidade(string $criticidade): array
     return $erros;
 }
 
-function validar_arquivado_equipamento(string $arquivado): array
-{
-    $erros = [];
-    if (!in_array($arquivado, ['0', '1'], true)) {
-        $erros[] = "O estado de arquivo do equipamento é inválido.";
-    }
-    return $erros;
-}
+
 
 
 // ------------------------------ FORNECEDORES ------------------------------
@@ -437,57 +430,73 @@ function validar_caminhos_garantia(string $ficheiro_path, string $url_externo): 
 
 // ------------------------------ LOCALIZACOES ------------------------------
 
-function validar_codigo(string $codigo): array
-{
+function validar_codigo(string $codigo) {
     $erros = [];
+    $codigo = trim($codigo);
+
     if (empty($codigo)) {
         $erros[] = "O campo ID da Localização é obrigatório.";
+    } elseif (strlen($codigo) < 3 || strlen($codigo) > 15) {
+        $erros[] = "O ID da Localização deve conter entre 3 e 15 caracteres.";
+    } elseif (!preg_match('/^[A-Z0-9\-]+$/i', $codigo)) {
+        // Permite apenas letras, números e hífen (padrão para siglas hospitalares)
+        $erros[] = "O ID da Localização apenas pode conter letras, números e hífens.";
     }
+    
+    return $erros; // Devolve SEMPRE um array (vazio se não houver erros)
+}
+
+function validar_nome(string $nome) {
+    $erros = [];
+    $nome = trim($nome);
+
+    if (empty($nome)) {
+        $erros[] = "O campo Nome do Serviço / Ala é obrigatório.";
+    } elseif (strlen($nome) < 3 || strlen($nome) > 100) {
+        $erros[] = "O Nome do Serviço deve conter entre 3 e 100 caracteres.";
+    }
+    
     return $erros;
 }
 
-function validar_nome(string $nome): array
-{
+function validar_edificio(string $edificio) {
     $erros = [];
-    if (empty(trim($nome))) {
-        $erros[] = "O campo Nome é obrigatório.";
-    } elseif (preg_match('/\d/', $nome)) {
-        $erros[] = "O campo Nome não pode conter números.";
-    }
-    return $erros;
-}
+    $edificio = trim($edificio);
 
-function validar_edificio(string $edificio): array
-{
-    $erros = [];
     if (empty($edificio)) {
         $erros[] = "O campo Edifício / Bloco é obrigatório.";
     }
+    
     return $erros;
 }
 
-function validar_piso(string $piso): array
-{
+function validar_piso(string $piso) {
     $erros = [];
-    // Verifica se está mesmo vazio (string vazia)
-    if (trim($piso) === '') {
-        $erros[] = "O campo Piso é obrigatório.";
-    } 
-    // Garante que o que foi digitado é um número inteiro válido
-    elseif (!filter_var($piso, FILTER_VALIDATE_INT) && $piso !== '0') {
-        $erros[] = "O campo Piso deve ser um número inteiro válido.";
+    
+    // Como o piso pode ser "0", verificamos explicitamente se a string está vazia
+    if (trim($piso) === "") {
+        $erros[] = "O campo Piso é de preenchimento obrigatório.";
+    } elseif (!is_numeric($piso)) {
+        $erros[] = "O valor do Piso deve ser um número válido.";
+    } else {
+        $piso_int = (int)$piso;
+        // Validação com base nos limites configurados no teu HTML (min="-2" max="7")
+        if ($piso_int < -2 || $piso_int > 7) {
+            $erros[] = "Piso inválido. O hospital apenas dispõe de pisos entre o -2 e o 7.";
+        }
     }
+    
     return $erros;
 }
 
-function validar_responsavel(string $responsavel): array
-{
+function validar_responsavel(string $responsavel) : array {
     $erros = [];
+    $responsavel = trim($responsavel);
+
     if (empty($responsavel)) {
         $erros[] = "O campo Responsável é obrigatório.";
-    } elseif (preg_match('/\d/', $responsavel)) {
-        $erros[] = "O campo Responsável não pode conter números.";
     }
+    
     return $erros;
 }
 
