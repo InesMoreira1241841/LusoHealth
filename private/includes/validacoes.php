@@ -2,6 +2,76 @@
 
 // ------------------------------ DOCUMENTAÇÃO ------------------------------
 
+function validar_documento_equipamento_id(string $equipamento_id): array
+{
+    $erros = [];
+    if (trim($equipamento_id) === '' || !ctype_digit($equipamento_id)) {
+        $erros[] = "O documento deve estar associado a um Equipamento válido.";
+    }
+    return $erros;
+}
+
+function validar_documento_fornecedor_id(string $fornecedor_id): array
+{
+    $erros = [];
+    if (trim($fornecedor_id) !== '' && !ctype_digit($fornecedor_id)) {
+        $erros[] = "O Fornecedor associado ao documento é inválido.";
+    }
+    return $erros;
+}
+
+function validar_tipo_documento(string $tipo): array
+{
+    $erros = [];
+    if (trim($tipo) === '') {
+        $erros[] = "O Tipo de Documento é obrigatório.";
+    } elseif (mb_strlen(trim($tipo)) > 50) {
+        $erros[] = "O Tipo de Documento não pode exceder os 50 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_nome_documento(string $nome_documento): array
+{
+    $erros = [];
+    if (trim($nome_documento) === '') {
+        $erros[] = "O Nome do Documento é obrigatório.";
+    } elseif (mb_strlen(trim($nome_documento)) > 255) {
+        $erros[] = "O Nome do Documento não pode exceder os 255 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_ficheiro_documento(string $caminho): array
+{
+    $erros = [];
+    if (trim($caminho) === '') {
+        $erros[] = "O ficheiro do documento ou o seu caminho é obrigatório.";
+    } elseif (mb_strlen(trim($caminho)) > 255) {
+        $erros[] = "O caminho do ficheiro não pode exceder os 255 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_datas_documento(string $data_doc, string $data_val): array
+{
+    $erros = [];
+    if (trim($data_doc) !== '') {
+        $d = DateTime::createFromFormat('Y-m-d', $data_doc);
+        if (!$d || $d->format('Y-m-d') !== $data_doc) {
+            $erros[] = "A Data do Documento introduzida é inválida.";
+        }
+    }
+    if (trim($data_val) !== '') {
+        $v = DateTime::createFromFormat('Y-m-d', $data_val);
+        if (!$v || $v->format('Y-m-d') !== $data_val) {
+            $erros[] = "A Data de Validade introduzida é inválida.";
+        }
+    }
+    return $erros;
+}
+
+
 // ------------------------------ EQUIPAMENTOS ------------------------------
 
 function validar_designacao(string $designacao): array
@@ -157,6 +227,16 @@ function validar_criticidade(string $criticidade): array
     return $erros;
 }
 
+function validar_arquivado_equipamento(string $arquivado): array
+{
+    $erros = [];
+    if (!in_array($arquivado, ['0', '1'], true)) {
+        $erros[] = "O estado de arquivo do equipamento é inválido.";
+    }
+    return $erros;
+}
+
+
 // ------------------------------ FORNECEDORES ------------------------------
 
 function validar_nome_fornecedor(string $nome): array
@@ -260,7 +340,100 @@ function validar_tecnico_telefone(string $tecnico_telefone): array
     return $erros;
 }
 
+
 // ------------------------------ GARANTIAS ------------------------------
+function validar_num_contrato(string $num_contrato): array
+{
+    $erros = [];
+    if (trim($num_contrato) === '') {
+        $erros[] = "O Número de Contrato é obrigatório.";
+    } elseif (mb_strlen(trim($num_contrato)) > 50) {
+        $erros[] = "O Número de Contrato não pode exceder os 50 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_garantia_equipamento_id(string $equipamento_id): array
+{
+    $erros = [];
+    if (trim($equipamento_id) === '' || !ctype_digit($equipamento_id)) {
+        $erros[] = "Selecione um Equipamento válido para associar à garantia.";
+    }
+    return $erros;
+}
+
+function validar_garantia_fornecedor_id(string $fornecedor_id): array
+{
+    $erros = [];
+    // Opcional na base de dados
+    if (trim($fornecedor_id) !== '' && !ctype_digit($fornecedor_id)) {
+        $erros[] = "O Fornecedor selecionado é inválido.";
+    }
+    return $erros;
+}
+
+function validar_tipo_garantia(string $tipo): array
+{
+    $erros = [];
+    if (!in_array($tipo, ['Garantia de Fábrica', 'Contrato de Manutenção', 'Outro'], true)) {
+        $erros[] = "Selecione um Tipo de Garantia válido.";
+    }
+    return $erros;
+}
+
+function validar_tem_contrato_manutencao(string $tem_contrato): array
+{
+    $erros = [];
+    if (!in_array($tem_contrato, ['0', '1'], true)) {
+        $erros[] = "A indicação de Contrato de Manutenção é inválida.";
+    }
+    return $erros;
+}
+
+function validar_datas_garantia(string $data_inicio, string $data_fim): array
+{
+    $erros = [];
+    $inicio = DateTime::createFromFormat('Y-m-d', $data_inicio);
+    $fim = DateTime::createFromFormat('Y-m-d', $data_fim);
+
+    if (trim($data_inicio) === '' || !$inicio || $inicio->format('Y-m-d') !== $data_inicio) {
+        $erros[] = "A Data de Início deve ser uma data válida (AAAA-MM-DD).";
+    }
+    if (trim($data_fim) === '' || !$fim || $fim->format('Y-m-d') !== $data_fim) {
+        $erros[] = "A Data de Fim deve ser uma data válida (AAAA-MM-DD).";
+    }
+
+    if ($inicio && $fim && $fim <= $inicio) {
+        $erros[] = "A Data de Fim do contrato deve ser estritamente posterior à Data de Início.";
+    }
+    return $erros;
+}
+
+function validar_periodicidade(string $periodicidade): array
+{
+    $erros = [];
+    if (trim($periodicidade) !== '' && mb_strlen(trim($periodicidade)) > 50) {
+        $erros[] = "O campo Periodicidade não pode exceder os 50 caracteres.";
+    }
+    return $erros;
+}
+
+function validar_caminhos_garantia(string $ficheiro_path, string $url_externo): array
+{
+    $erros = [];
+    if (trim($ficheiro_path) !== '' && mb_strlen(trim($ficheiro_path)) > 255) {
+        $erros[] = "O caminho do ficheiro local excede o limite de 255 caracteres.";
+    }
+    if (trim($url_externo) !== '') {
+        if (!filter_var(trim($url_externo), FILTER_VALIDATE_URL)) {
+            $url_externo = "O Link para a Cloud inserido não é um URL válido.";
+        } elseif (mb_strlen(trim($url_externo)) > 255) {
+            $erros[] = "O Link para a Cloud não pode exceder os 255 caracteres.";
+        }
+    }
+    return $erros;
+}
+
 
 // ------------------------------ LOCALIZACOES ------------------------------
 
@@ -314,6 +487,15 @@ function validar_responsavel(string $responsavel): array
         $erros[] = "O campo Responsável é obrigatório.";
     } elseif (preg_match('/\d/', $responsavel)) {
         $erros[] = "O campo Responsável não pode conter números.";
+    }
+    return $erros;
+}
+
+function validar_arquivado_localizacao(string $arquivado): array
+{
+    $erros = [];
+    if (!in_array($arquivado, ['0', '1'], true)) {
+        $erros[] = "O estado de arquivo selecionado é inválido.";
     }
     return $erros;
 }

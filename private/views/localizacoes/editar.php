@@ -1,3 +1,5 @@
+// Página - localizacoes/editar.php
+
 <?php
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição

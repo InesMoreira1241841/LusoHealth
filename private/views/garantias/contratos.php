@@ -19,21 +19,12 @@ try {
         DB_PASS
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Fazemos um LEFT JOIN para trazer os nomes legíveis do Equipamento e Fornecedor se necessário,
-    // ou podes manter apenas o "SELECT *" da tabela garantias.
-    $query = "SELECT g.*, e.designacao AS equipamento_nome, f.nome AS fornecedor_nome 
-              FROM garantias g
-              LEFT JOIN equipamentos e ON g.equipamento_id = e.id
-              LEFT JOIN fornecedores f ON g.fornecedor_id = f.id";
-              
-    $resultados = $ligacao->query($query)->fetchAll(PDO::FETCH_OBJ);
+    $resultados = $ligacao->query("SELECT * FROM garantias")->fetchAll(PDO::FETCH_OBJ);
     $erro = '';
 } catch (PDOException $erro) {
     $erro = "Aconteceu um erro na ligação às garantias e contratos.";
     $resultados = [];
 }
-
 // Fecha a ligação
 $ligacao = null;
 ?>
@@ -60,6 +51,7 @@ $ligacao = null;
                         </a>
                     </div>
 
+                    <!-- Filtro -->
                     <div class="bg-light p-3 rounded-3 mb-4 border">
                         <form class="row g-2 align-items-center small" id="formFiltroGarantias" name="form_filtro_garantias" method="GET">
                             <div class="col-md-10">
@@ -86,7 +78,9 @@ $ligacao = null;
                         <?php else : ?>
 
                             <div class="table-responsive">
+
                                 <table class="table table-hover align-middle">
+
                                     <thead class="table-light text-secondary small text-uppercase">
                                         <tr>
                                             <th>Nº Contrato / Apólice</th>
@@ -99,22 +93,25 @@ $ligacao = null;
                                     </thead>
 
                                     <tbody class="small text-secondary">
+
                                         <?php foreach ($resultados as $contrato) : ?>
+
                                             <tr>
-                                                <td class="font-monospace fw-bold text-dark"><?= htmlspecialchars($contrato->num_contrato) ?></td>
-                                                <td>
-                                                    <span class="badge bg-light text-dark border">#<?= $contrato->equipamento_id ?></span> 
-                                                    <?= htmlspecialchars($contrato->equipamento_nome ?? 'Equipamento Desconhecido') ?>
+                                                <td class="font-monospace fw-bold text-dark">
+                                                    <?= $contrato->num_contrato ?>
+                                                </td>
+                                                <td class="badge bg-light text-dark border"> 
+                                                    <?= $contrato->equipamento_nome ?>
                                                 </td>
                                                 <td>
                                                     <span class="badge <?= ($contrato->tipo === 'Garantia de Fábrica') ? 'bg-primary-subtle text-primary' : 'bg-info-subtle text-info' ?> border-0">
-                                                        <?= htmlspecialchars($contrato->tipo) ?>
+                                                        <?= $contrato->tipo ?>
                                                     </span>
                                                 </td>
                                                 <td class="font-monospace">
-                                                    <?= date('d/m/Y', strtotime($contrato->data_inicio)) ?> | <?= date('d/m/Y', strtotime($contrato->data_fim)) ?>
+                                                    <?= $contrato->data_inicio ?> | <?= $contrato->data_fim ?>
                                                 </td>
-                                                <td><?= htmlspecialchars($contrato->fornecedor_nome ?? 'Não Atribuído') ?></td>
+                                                <td><?= $contrato->fornecedor_nome ?></td>
 
                                                 <td class="text-end">
                                                     <div class="btn-group gap-1">
@@ -146,5 +143,5 @@ $ligacao = null;
             </main>
         </div>
     </div>
-
+ 
     <?php include '../../../assets/includes/footer.php'; ?>

@@ -14,3 +14,7 @@ ALTER TABLE `garantias`
     DROP COLUMN `clausulas`,
     ADD COLUMN `ficheiro_path` VARCHAR(255) DEFAULT NULL COMMENT 'Caminho do PDF local (Forma 1)' AFTER `periodicidade`,
     ADD COLUMN `url_externo` VARCHAR(255) DEFAULT NULL COMMENT 'Link para a Cloud/OneDrive (Forma 2)' AFTER `ficheiro_path`;
+
+
+ALTER TABLE `localizacoes`
+    ADD COLUMN `arquivado` TINYINT(1) NOT NULL DEFAULT 0 AFTER observacoes;
