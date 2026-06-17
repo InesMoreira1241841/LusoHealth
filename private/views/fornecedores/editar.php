@@ -113,7 +113,7 @@ try {
                         <p class="text-muted small m-0">Mantenha os canais e e-mails de assistência biomédica sempre atualizados.</p>
                     </div>
 
-                    <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>?id_fornecedores=<?= $idFornecedorEncrypted ?>" method="POST" class="row g-3 fw-medium text-secondary small">
+                    <form action="editar.php??id_fornecedores=<?= $idFornecedorEncrypted ?>" method="POST" class="row g-3 fw-medium text-secondary small">
 
                         <div class="col-md-6">
                             <label for="edit_nome" class="form-label text-dark">Nome / Razão Social</label>

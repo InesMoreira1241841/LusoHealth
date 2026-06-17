@@ -61,10 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 4. Se continuar sem erros (ou seja, o código é único), faz-se o INSERT
             if (empty($erros)) {
-                $sql = "INSERT INTO localizacoes (
-                            codigo, nome, edificio, piso, responsavel, observacoes) 
-                        VALUES (
-                            :codigo, :nome, :edificio, :piso, :responsavel, :observacoes)";
+                $sql = "INSERT INTO localizacoes (codigo, nome, edificio, piso, responsavel, observacoes) 
+                        VALUES (:codigo, :nome, :edificio, :piso, :responsavel, :observacoes)";
 
                 $stmt = $ligacao->prepare($sql);
                 $stmt->execute([
@@ -166,7 +164,7 @@ include '../../../assets/includes/head.php'; ?>
 
                         </div>
                     </form>
- 
+
                     <!-- Área de erros -->
                     <?php if (!empty($erros)): ?>
                         <div class="alert alert-danger" role="alert">
