@@ -1,16 +1,13 @@
 <?php
 
 // --------------------------------------------------------------------
-// SEGURANÇA: Proteção de acesso à página de edição
+// SEGURANÇA: Proteção de acesso à página de listagem
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
-// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
-
-include '../../../assets/includes/head.php'; 
 
 // Captura os dados dos filtros via GET (se existirem)
 $pesquisa = $_GET['pesquisa'] ?? '';
@@ -64,6 +61,8 @@ try {
 $ligacao = null; 
 ?>
 
+<?php include '../../../assets/includes/head.php'; ?>
+
 <body class="bg-page-light">
     <?php include '../../../assets/includes/header.php'; ?>
 
@@ -73,8 +72,7 @@ $ligacao = null;
             <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
-                <section
-                    class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                <section class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                         <div>
@@ -164,17 +162,17 @@ $ligacao = null;
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="btn-group gap-1">
-                                                        <a href="detalhes.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>"
+                                                        <a href="detalhes.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>"
                                                             class="btn btn-sm btn-outline-secondary rounded-2"
                                                             title="Ver Detalhes">
                                                             <i class="fa-solid fa-eye"></i>
                                                         </a>
-                                                        <a href="editar.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" 
+                                                        <a href="editar.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>" 
                                                             class="btn btn-sm btn-outline-success rounded-2"
                                                             title="Editar">
                                                             <i class="fa-solid fa-pen"></i>
                                                         </a>
-                                                        <a href="apagar.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>"
+                                                        <a href="apagar.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>"
                                                             class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
                                                             title="Eliminar">
                                                             <i class="fa-solid fa-trash"></i>
@@ -188,7 +186,9 @@ $ligacao = null;
                                 </table>
                             </div>
 
-                        <?php endif; ?> <?php endif; ?> </section>
+                        <?php endif; ?> 
+                    <?php endif; ?> 
+                </section>
 
                 <div class="col mt-3">
                     <p class="mb-5">Total de Fornecedores: <strong> <?= count($resultados) ?> </strong></p>

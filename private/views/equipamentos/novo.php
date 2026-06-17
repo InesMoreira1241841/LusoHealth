@@ -5,7 +5,6 @@
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
-
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 
@@ -15,18 +14,16 @@ require_once __DIR__ . '/../../includes/validacoes.php';
 $erros = [];
 $erros_sistema = [];
 
-
 // Verificar se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 1. Recolher dados
+    // 1. Recolher dados principais do Equipamento
     $codigo_inventario = $_POST["codigo_inventario"] ?? "";
     $designacao        = $_POST["designacao"] ?? "";
     $categoria_id      = $_POST["categoria_id"] ?? "";
     $marca             = $_POST["marca"] ?? "";
     $modelo            = $_POST["modelo"] ?? "";
     $num_serie         = $_POST["num_serie"] ?? "";
-    $fabricante        = $_POST["fabricante"] ?? "";
     $ano_fabrico       = $_POST["ano_fabrico"] ?? "";
     $data_aquisicao    = $_POST["data_aquisicao"] ?? "";
     $custo_aquisicao   = $_POST["custo_aquisicao"] ?? "";
@@ -36,24 +33,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $localizacao_id    = $_POST["localizacao_id"] ?? "";
     $observacoes       = $_POST["observacoes"] ?? "";
 
-    // A. Normalizar entrada 
+    // Recolher as associações dinâmicas de fornecedores [Papel => Fornecedor_ID]
+    $fornecedores_post = $_POST["fornecedores"] ?? [];
 
+    // A. Normalizar entrada 
     $codigo_inventario = strtoupper($codigo_inventario);
     $designacao = ucwords(strtolower($designacao));
     $marca = ucwords(strtolower($marca));
     $modelo = ucwords(strtolower($modelo));
-    $fabricante = ucwords(strtolower($fabricante));
 
-
-    // 2. Validar os dados acumulando os erros corretamente
-
-    $erros = [];
+    // 2. Validar os dados acumulando os erros de forma estrita
     $erros = array_merge($erros, validar_designacao($designacao) ?? []);
     $erros = array_merge($erros, validar_codigo_inventario($codigo_inventario) ?? []);
     $erros = array_merge($erros, validar_marca($marca) ?? []);
     $erros = array_merge($erros, validar_modelo($modelo) ?? []);
     $erros = array_merge($erros, validar_num_serie($num_serie) ?? []);
-    $erros = array_merge($erros, validar_fabricante($fabricante) ?? []);
     $erros = array_merge($erros, validar_ano_fabrico($ano_fabrico) ?? []);
     $erros = array_merge($erros, validar_data_aquisicao($data_aquisicao) ?? []);
     $erros = array_merge($erros, validar_custo_aquisicao($custo_aquisicao) ?? []);
@@ -63,11 +57,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $erros = array_merge($erros, validar_estado($estado) ?? []);
     $erros = array_merge($erros, validar_criticidade($criticidade) ?? []);
 
-    // B. Normalizar custo de aquisição (depois da validação, formato PT: 1.250,00 € -> 1250.00)
+    // Validar se pelo menos o Fabricante de seleção foi indicado (Requisito de Integridade)
+    if (empty($fornecedores_post['Fabricante'])) {
+        $erros[] = "Deve selecionar obrigatoriamente um Fabricante na secção de Entidades Vinculadas.";
+    }
+
+    // B. Normalizar custo de aquisição (depois da validação)
     $custo_aquisicao = normalizar_custo_aquisicao($custo_aquisicao);
 
-    // 3. Se não houver erros, guardar na base de dados
-
+    // 3. Se não houver erros, iniciar o processo de gravação segura
     if (empty($erros)) {
         try {
             $ligacao = new PDO(
@@ -83,20 +81,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmtCheck->execute([':codigo_inventario' => $codigo_inventario]);
 
             if ($stmtCheck->fetchColumn() > 0) {
-                // Se já existir, injetamos o erro no teu array global de erros
                 $erros[] = "O Código de Inventário '$codigo_inventario' já está registado. Escolha um código único.";
             }
 
-            // 4. Se continuar sem erros (o código é único), faz-se o INSERT
+            // Se continuar sem erros, avançamos estruturalmente com uma TRANSAÇÃO
             if (empty($erros)) {
+                $ligacao->beginTransaction();
+
+                // 4. Efetuar o INSERT principal
                 $sql = "INSERT INTO equipamentos (
                             codigo_inventario, designacao, categoria_id, marca, modelo, 
-                            num_serie, fabricante, ano_fabrico, data_aquisicao, 
+                            num_serie, ano_fabrico, data_aquisicao, 
                             custo_aquisicao, tipo_entrada, estado, criticidade, 
                             localizacao_id, observacoes) 
                         VALUES (
                             :codigo_inventario, :designacao, :categoria_id, :marca, :modelo, 
-                            :num_serie, :fabricante, :ano_fabrico, :data_aquisicao, 
+                            :num_serie, :ano_fabrico, :data_aquisicao, 
                             :custo_aquisicao, :tipo_entrada, :estado, :criticidade, 
                             :localizacao_id, :observacoes)";
 
@@ -108,7 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':marca'             => $marca,
                     ':modelo'            => $modelo,
                     ':num_serie'         => $num_serie,
-                    ':fabricante'        => $fabricante,
                     ':ano_fabrico'       => $ano_fabrico,
                     ':data_aquisicao'    => $data_aquisicao,
                     ':custo_aquisicao'   => $custo_aquisicao,
@@ -119,11 +118,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':observacoes'       => $observacoes
                 ]);
 
+                // Obter o ID gerado automaticamente para o novo dispositivo
+                $equipamento_id = $ligacao->lastInsertId();
+
+                // 5. Inserir os registros associados na tabela pivot equipamento_fornecedor
+                $sqlPivot = "INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_associacao) 
+                             VALUES (:equipamento_id, :fornecedor_id, :tipo_associacao)";
+                $stmtPivot = $ligacao->prepare($sqlPivot);
+
+                foreach ($fornecedores_post as $tipo_associacao => $fornecedor_id) {
+                    if (!empty($fornecedor_id)) {
+                        $stmtPivot->execute([
+                            ':equipamento_id'   => $equipamento_id,
+                            ':fornecedor_id'    => $fornecedor_id,
+                            ':tipo_associacao'  => $tipo_associacao
+                        ]);
+                    }
+                }
+
+                // Submeter todas as operações simultaneamente
+                $ligacao->commit();
+
                 header('Location: equipamentos.php');
                 exit;
             }
         } catch (PDOException $err) {
-            $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
+            if (isset($ligacao) && $ligacao->inTransaction()) {
+                $ligacao->rollBack();
+            }
+            $erros[] = "Erro ao gravar os dados no sistema: " . $err->getMessage();
         } finally {
             $ligacao = null;
         }
@@ -131,11 +154,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // --------------------------------------------------------------------
-// BLOCO EXTRA: Procurar dados para as ComboBoxes / Selects do Formulário
-// (Executado sempre que a página carrega, seja via GET ou se houver erros no POST)
+// BLOCO EXTRA: Carregar dados dinâmicos para as ComboBoxes do formulário
 // --------------------------------------------------------------------
-$erros = $erros ?? [];
-
 try {
     $ligacao = new PDO(
         "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
@@ -144,21 +164,23 @@ try {
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 1. Tipos de entrada existentes
     $stmt_tipos = $ligacao->query("SELECT DISTINCT tipo_entrada FROM equipamentos WHERE tipo_entrada IS NOT NULL AND tipo_entrada != '' ORDER BY tipo_entrada ASC");
     $tipos_existentes = $stmt_tipos->fetchAll(PDO::FETCH_COLUMN);
 
-    // 2. Categorias
     $stmt_categorias = $ligacao->query("SELECT id, nome FROM categorias ORDER BY nome ASC");
     $categorias_existentes = $stmt_categorias->fetchAll(PDO::FETCH_OBJ);
 
-    // 3. Localizações
     $stmt_localizacoes = $ligacao->query("SELECT id, nome, edificio, piso FROM localizacoes ORDER BY edificio ASC");
     $localizacoes_existentes = $stmt_localizacoes->fetchAll(PDO::FETCH_OBJ);
+
+    $stmt_fornecedores = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC");
+    $fornecedores_existentes = $stmt_fornecedores->fetchAll(PDO::FETCH_OBJ);
+
 } catch (PDOException $e) {
     $tipos_existentes = [];
     $categorias_existentes = [];
     $localizacoes_existentes = [];
+    $fornecedores_existentes = [];
     $erros[] = "Erro ao carregar listas do formulário: " . $e->getMessage();
 } finally {
     $ligacao = null;
@@ -167,27 +189,22 @@ try {
 include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
-    <!-- Classe personalizada para cor de fundo global -->
 
     <?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
-
         <div class="row g-4">
-
             <?php include '../../../assets/includes/sidebar/equipamentos.php'; ?>
 
             <main class="col-md-9 col-lg-10">
-
                 <div class="bg-white p-4 shadow-sm border border-light-subtle">
 
                     <div class="mb-4 pb-2 border-bottom">
                         <h2 class="fw-bold text-dark m-0">Registar Dispositivo Médico</h2>
-                        <p class="text-muted small m-0">Introduza os dados de inventário e atribuição de segurança
-                            clínica.</p>
+                        <p class="text-muted small m-0">Introduza os dados de inventário e atribuição de segurança clínica.</p>
                     </div>
 
-                    <form action=# method="POST" class="row g-3 fw-medium text-secondary small">
+                    <form action="#" method="POST" class="row g-3 fw-medium text-secondary small">
 
                         <div class="col-md-4">
                             <label for="designacao" class="form-label text-dark">Nome do Equipamento</label>
@@ -204,7 +221,7 @@ include '../../../assets/includes/head.php'; ?>
                         </div>
 
                         <div class="col-md-4">
-                            <label for="marca" class="form-label text-dark">Marca</label>
+                            <label for="marca" class="form-label text-dark">Marca / Fabricante</label>
                             <input type="text" id="marca" name="marca" class="form-control rounded-3"
                                 placeholder="Ex: Philips"
                                 value="<?= htmlspecialchars($_POST['marca'] ?? '') ?>" required>
@@ -212,67 +229,35 @@ include '../../../assets/includes/head.php'; ?>
 
                         <div class="col-md-2">
                             <label for="modelo" class="form-label text-dark">Modelo</label>
-                            <input
-                                type="text"
-                                id="modelo"
-                                name="modelo"
-                                class="form-control rounded-3"
+                            <input type="text" id="modelo" name="modelo" class="form-control rounded-3"
                                 placeholder="Ex: IntelliVue MP5"
-                                value="<?= htmlspecialchars($_POST['modelo'] ?? '') ?>"
-                                required>
+                                value="<?= htmlspecialchars($_POST['modelo'] ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="num_serie" class="form-label text-dark">Número de Série (S/N)</label>
                             <input type="text" id="num_serie" name="num_serie" class="form-control rounded-3"
                                 placeholder="Ex: MP5-2022-45873"
                                 value="<?= htmlspecialchars($_POST['num_serie'] ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="fabricante" class="form-label text-dark">Fabricante</label>
-                            <input
-                                type="text"
-                                id="fabricante"
-                                name="fabricante"
-                                class="form-control rounded-3"
-                                placeholder="Ex: Philips"
-                                value="<?= htmlspecialchars($_POST['fabricante'] ?? '') ?>"
-                                required>
-                        </div>
-
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="ano_fabrico" class="form-label text-dark">Ano Fabrico</label>
-                            <input
-                                type="number"
-                                id="ano_fabrico"
-                                name="ano_fabrico"
-                                class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? '') ?>"
-                                required>
+                            <input type="number" id="ano_fabrico" name="ano_fabrico" class="form-control rounded-3"
+                                value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="data_aquisicao" class="form-label text-dark">Data de Aquisição</label>
-                            <input
-                                type="text"
-                                id="data_aquisicao"
-                                name="data_aquisicao"
-                                class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['data_aquisicao'] ?? '') ?>"
-                                required>
+                            <input type="text" id="data_aquisicao" name="data_aquisicao" class="form-control rounded-3"
+                                value="<?= htmlspecialchars($_POST['data_aquisicao'] ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="custo_aquisicao" class="form-label text-dark">Custo de Aquisição</label>
-                            <input
-                                type="text"
-                                id="custo_aquisicao"
-                                name="custo_aquisicao"
-                                class="form-control rounded-3"
+                            <input type="text" id="custo_aquisicao" name="custo_aquisicao" class="form-control rounded-3"
                                 placeholder="0.00 €"
-                                value="<?= htmlspecialchars($_POST['custo_aquisicao'] ?? '') ?>"
-                                required>
+                                value="<?= htmlspecialchars($_POST['custo_aquisicao'] ?? '') ?>" required>
                         </div>
 
                         <div class="col-md-4">
@@ -280,15 +265,11 @@ include '../../../assets/includes/head.php'; ?>
                             <div class="input-group">
                                 <select id="categoria_id" name="categoria_id" class="form-select rounded-start-3" required>
                                     <option value="" selected disabled>Selecione uma categoria...</option>
-
                                     <?php foreach ($categorias_existentes as $cat): ?>
-                                        <option 
-                                            value="<?= $cat->id ?>"
-                                            <?= (($_POST['categoria_id'] ?? '') == $cat->id) ? 'selected' : '' ?>>
+                                        <option value="<?= $cat->id ?>" <?= (($_POST['categoria_id'] ?? '') == $cat->id) ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($cat->nome) ?>
                                         </option>
                                     <?php endforeach; ?>
-
                                 </select>
                                 <button class="btn btn-outline-success rounded-end-3" type="button" data-bs-toggle="modal" data-bs-target="#modalNovaCategoria">
                                     <i class="fa-solid fa-plus"></i>
@@ -298,72 +279,97 @@ include '../../../assets/includes/head.php'; ?>
 
                         <div class="col-md-4">
                             <label for="tipo_entrada" class="form-label text-dark">Tipo de Entrada</label>
-                            <div class="input-group">
-
-                                <select id="tipo_entrada" name="tipo_entrada" class="form-select rounded-start-3" required>
-                                    <option value="" selected disabled>Selecione um tipo de entrada...</option>
-                                    <option value="Compra" <?= (($_POST['tipo_entrada'] ?? '') == 'Compra') ? 'selected' : '' ?>>Compra</option>
-                                    <option value="Doação" <?= (($_POST['tipo_entrada'] ?? '') == 'Doação') ? 'selected' : '' ?>>Doação</option>
-                                    <option value="Aluguer" <?= (($_POST['tipo_entrada'] ?? '') == 'Aluguer') ? 'selected' : '' ?>>Aluguer</option>
-                                    <option value="Empréstimo" <?= (($_POST['tipo_entrada'] ?? '') == 'Empréstimo') ? 'selected' : '' ?>>Empréstimo</option>
-                                </select>
-                            </div>
+                            <select id="tipo_entrada" name="tipo_entrada" class="form-select rounded-3" required>
+                                <option value="" selected disabled>Selecione um tipo de entrada...</option>
+                                <option value="Compra" <?= (($_POST['tipo_entrada'] ?? '') == 'Compra') ? 'selected' : '' ?>>Compra</option>
+                                <option value="Doação" <?= (($_POST['tipo_entrada'] ?? '') == 'Doação') ? 'selected' : '' ?>>Doação</option>
+                                <option value="Aluguer" <?= (($_POST['tipo_entrada'] ?? '') == 'Aluguer') ? 'selected' : '' ?>>Aluguer</option>
+                                <option value="Empréstimo" <?= (($_POST['tipo_entrada'] ?? '') == 'Empréstimo') ? 'selected' : '' ?>>Empréstimo</option>
+                            </select>
                         </div>
 
                         <div class="col-md-4">
                             <label for="localizacao_id" class="form-label text-dark">Localização</label>
-                            <div class="input-group">
-
-                                <select id="localizacao_id" name="localizacao_id" class="form-select rounded-start-3">
-                                    <option value="" selected disabled>Selecione uma localização...</option>
-
-                                    <?php foreach ($localizacoes_existentes as $loc): ?>
-                                        <option
-                                            value="<?= $loc->id ?>"
-                                            <?= (($_POST['localizacao_id'] ?? '') == $loc->id) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($loc->edificio) ?> |
-                                            <?= htmlspecialchars($loc->nome) ?>
-                                            (Piso <?= htmlspecialchars($loc->piso) ?>)
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                            <select id="localizacao_id" name="localizacao_id" class="form-select rounded-3" required>
+                                <option value="" selected disabled>Selecione uma localização...</option>
+                                <?php foreach ($localizacoes_existentes as $loc): ?>
+                                    <option value="<?= $loc->id ?>" <?= (($_POST['localizacao_id'] ?? '') == $loc->id) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($loc->edificio) ?> | <?= htmlspecialchars($loc->nome) ?> (Piso <?= htmlspecialchars($loc->piso) ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div class="col-md-4">
                             <label for="estado" class="form-label text-dark">Estado</label>
-                            <div class="input-group">
-
-                                <select id="estado" name="estado" class="form-select rounded-start-3" required>
-                                    <option value="" selected disabled>Selecione um estado...</option>
-                                    <option value="Ativo" <?= (($_POST['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
-                                    <option value="Em manutenção" <?= (($_POST['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
-                                    <option value="Inativo"> <?= (($_POST['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>Inativo</option>
-                                    <option value="Em calibração" <?= (($_POST['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
-                                    <option value="Em quarentena" <?= (($_POST['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
-                                    <option value="Abatido" <?= (($_POST['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
-                                </select>
-                            </div>
+                            <select id="estado" name="estado" class="form-select rounded-3" required>
+                                <option value="" selected disabled>Selecione um estado...</option>
+                                <option value="Ativo" <?= (($_POST['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
+                                <option value="Em manutenção" <?= (($_POST['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
+                                <option value="Inativo" <?= (($_POST['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
+                                <option value="Em calibração" <?= (($_POST['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
+                                <option value="Em quarentena" <?= (($_POST['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
+                                <option value="Abatido" <?= (($_POST['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
+                            </select>
                         </div>
 
                         <div class="col-md-4">
                             <label for="criticidade" class="form-label text-dark">Criticidade</label>
-                            <div class="input-group">
-
-                                <select id="criticidade" name="criticidade" class="form-select rounded-start-3" required>
-                                    <option value="" selected disabled>Selecione um nível de criticidade...</option>
-                                    <option value="Baixa" <?= (($_POST['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
-                                    <option value="Média" <?= (($_POST['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
-                                    <option value="Alta" <?= (($_POST['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>
-                                    <option value="Suporte de vida" <?= (($_POST['criticidade'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
-                                </select>
-                            </div>
+                            <select id="criticidade" name="criticidade" class="form-select rounded-3" required>
+                                <option value="" selected disabled>Selecione um nível de criticidade...</option>
+                                <option value="Baixa" <?= (($_POST['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
+                                <option value="Média" <?= (($_POST['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
+                                <option value="Alta" <?= (($_POST['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>
+                                <option value="Suporte de vida" <?= (($_POST['criticidade'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
+                            </select>
                         </div>
 
                         <div class="col-md-4">
                             <label for="observacoes" class="form-label text-dark">Observações</label>
-                            <input type="text" id="observacoes" name="observacoes" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['observacoes'] ?? '') ?>">
+                            <input type="text" id="observacoes" name="observacoes" class="form-control rounded-3" value="<?= htmlspecialchars($_POST['observacoes'] ?? '') ?>">
+                        </div>
+
+                        <div class="col-12 mt-4 pt-3 border-top">
+                            <h5 class="fw-bold text-dark mb-1">Entidades e Fornecedores Vinculados</h5>
+                            <p class="text-muted small mb-3">Associe as diferentes entidades responsáveis pelo ciclo de vida deste equipamento médico.</p>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="forn_fabricante" class="form-label text-dark fw-bold">Fabricante Oficial (Entidade Relacionada)</label>
+                                    <select id="forn_fabricante" name="fornecedores[Fabricante]" class="form-select rounded-3" required>
+                                        <option value="" selected disabled>Selecione o Fabricante...</option>
+                                        <?php foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Fabricante'] ?? '') == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="forn_distribuidor" class="form-label text-dark">Distribuidor Comercial</label>
+                                    <select id="forn_distribuidor" name="fornecedores[Distribuidor comercial]" class="form-select rounded-3">
+                                        <option value="" selected>Nenhum / Não Aplicável</option>
+                                        <?php foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Distribuidor comercial'] ?? '') == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="forn_assistencia" class="form-label text-dark">Assistência Técnica Autorizada</label>
+                                    <select id="forn_assistencia" name="fornecedores[Assistência Técnica]" class="form-select rounded-3">
+                                        <option value="" selected>Nenhuma / Não Aplicável</option>
+                                        <?php foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Assistência Técnica'] ?? '') == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-12 pt-3 mt-2 mb-4 d-flex gap-2 justify-content-end">
@@ -374,11 +380,10 @@ include '../../../assets/includes/head.php'; ?>
                         </div>
                     </form>
 
-                    <!-- Área de erros -->
                     <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger rounded-3" role="alert">
                             <strong>Foram encontrados os seguintes erros:</strong>
-                            <ul class="mb-0">
+                            <ul class="mb-0 mt-1">
                                 <?php foreach ($erros as $erro): ?>
                                     <li><?= htmlspecialchars($erro) ?></li>
                                 <?php endforeach; ?>
@@ -387,11 +392,8 @@ include '../../../assets/includes/head.php'; ?>
                     <?php endif; ?>
 
                 </div>
-
             </main>
-
         </div>
-
     </div>
 
     <div class="modal fade" id="modalNovaCategoria" tabindex="-1" aria-labelledby="modalNovaCategoriaLabel" aria-hidden="true">

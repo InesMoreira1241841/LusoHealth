@@ -11,6 +11,7 @@ redirect_if_not_logged();
 // Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
 require_once __DIR__ . '/../../includes/validacoes.php';
 
+// 1. Capturar e desencriptar o ID do equipamento vindo do GET
 $idLocEncrypted = $_GET['id_localizacoes'] ?? null;
 $idLoc = aes_decrypt($idLocEncrypted);
 

@@ -5,17 +5,16 @@
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
-
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
-// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+
 require_once __DIR__ . '/../../includes/validacoes.php';
 
 // Inicializar variáveis de erro
 $erros = [];
 
 // 1. Capturar e desencriptar o ID do equipamento vindo do GET
-$idEquipamentoEncrypted = $_GET['id_equipamentos'] ?? null; // Altere o nome do parâmetro GET se necessário
+$idEquipamentoEncrypted = $_GET['id_equipamentos'] ?? null; 
 $idEquipamento = aes_decrypt($idEquipamentoEncrypted);
 
 if (!$idEquipamento || !is_numeric($idEquipamento)) {
@@ -34,14 +33,13 @@ try {
     // 2. Se o formulário foi submetido via POST (Processar a Atualização)
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        // Recolher dados do formulário
+        // Recolher dados principais do Equipamento
         $codigo_inventario = $_POST["codigo_inventario"] ?? "";
         $designacao        = $_POST["designacao"] ?? "";
         $categoria_id      = $_POST["categoria_id"] ?? "";
         $marca             = $_POST["marca"] ?? "";
         $modelo            = $_POST["modelo"] ?? "";
         $num_serie         = $_POST["num_serie"] ?? "";
-        $fabricante        = $_POST["fabricante"] ?? "";
         $ano_fabrico       = $_POST["ano_fabrico"] ?? "";
         $data_aquisicao    = $_POST["data_aquisicao"] ?? "";
         $custo_aquisicao   = $_POST["custo_aquisicao"] ?? "";
@@ -51,20 +49,21 @@ try {
         $localizacao_id    = $_POST["localizacao_id"] ?? "";
         $observacoes       = $_POST["observacoes"] ?? "";
 
+        // Recolher as associações dinâmicas de fornecedores [Papel => Fornecedor_ID]
+        $fornecedores_post = $_POST["fornecedores"] ?? [];
+
         // Normalizar entrada
         $codigo_inventario = strtoupper($codigo_inventario);
         $designacao = ucwords(strtolower($designacao));
         $marca = ucwords(strtolower($marca));
         $modelo = ucwords(strtolower($modelo));
-        $fabricante = ucwords(strtolower($fabricante));
 
-        // Validar os dados acumulando os erros
+        // Validar os dados acumulando os erros de forma estrita
         $erros = array_merge($erros, validar_designacao($designacao) ?? []);
         $erros = array_merge($erros, validar_codigo_inventario($codigo_inventario) ?? []);
         $erros = array_merge($erros, validar_marca($marca) ?? []);
         $erros = array_merge($erros, validar_modelo($modelo) ?? []);
         $erros = array_merge($erros, validar_num_serie($num_serie) ?? []);
-        $erros = array_merge($erros, validar_fabricante($fabricante) ?? []);
         $erros = array_merge($erros, validar_ano_fabrico($ano_fabrico) ?? []);
         $erros = array_merge($erros, validar_data_aquisicao($data_aquisicao) ?? []);
         $erros = array_merge($erros, validar_custo_aquisicao($custo_aquisicao) ?? []);
@@ -74,10 +73,15 @@ try {
         $erros = array_merge($erros, validar_estado($estado) ?? []);
         $erros = array_merge($erros, validar_criticidade($criticidade) ?? []);
 
+        // Validar se pelo menos o Fabricante de seleção foi indicado (Requisito de Integridade)
+        if (empty($fornecedores_post['Fabricante'])) {
+            $erros[] = "Deve selecionar obrigatoriamente um Fabricante na secção de Entidades Vinculadas.";
+        }
+
         // Normalizar custo de aquisição pós-validação
         $custo_aquisicao = normalizar_custo_aquisicao($custo_aquisicao);
 
-        // Verificar se o Código de Inventário já existe noutro equipamento (excluindo o atual)
+        // Verificar se o Código de Inventário já existe noutro equipamento 
         $sqlCheck = "SELECT COUNT(*) FROM equipamentos WHERE codigo_inventario = :codigo_inventario AND id != :id";
         $stmtCheck = $ligacao->prepare($sqlCheck);
         $stmtCheck->execute([':codigo_inventario' => $codigo_inventario, ':id' => $idEquipamento]);
@@ -85,8 +89,11 @@ try {
             $erros[] = "O Código de Inventário '$codigo_inventario' já está registado noutro dispositivo.";
         }
 
-        // Se continuar sem erros, faz o UPDATE
+        // Se continuar sem erros, faz o UPDATE estruturado por TRANSAÇÃO
         if (empty($erros)) {
+            $ligacao->beginTransaction();
+
+            // 1. Atualizar dados na tabela principal 
             $sqlUp = "UPDATE equipamentos SET 
                         codigo_inventario = :codigo_inventario, 
                         designacao = :designacao, 
@@ -94,7 +101,6 @@ try {
                         marca = :marca, 
                         modelo = :modelo, 
                         num_serie = :num_serie, 
-                        fabricante = :fabricante, 
                         ano_fabrico = :ano_fabrico, 
                         data_aquisicao = :data_aquisicao, 
                         custo_aquisicao = :custo_aquisicao, 
@@ -114,7 +120,6 @@ try {
                 ':marca'             => $marca,
                 ':modelo'            => $modelo,
                 ':num_serie'         => $num_serie,
-                ':fabricante'        => $fabricante,
                 ':ano_fabrico'       => $ano_fabrico,
                 ':data_aquisicao'    => $data_aquisicao,
                 ':custo_aquisicao'   => $custo_aquisicao,
@@ -125,6 +130,28 @@ try {
                 ':observacoes'       => $observacoes,
                 ':id'                => $idEquipamento
             ]);
+
+            // 2. Limpar as associações antigas na tabela pivot para este equipamento
+            $sqlDeletePivot = "DELETE FROM equipamento_fornecedor WHERE equipamento_id = :equipamento_id";
+            $stmtDeletePivot = $ligacao->prepare($sqlDeletePivot);
+            $stmtDeletePivot->execute([':equipamento_id' => $idEquipamento]);
+
+            // 3. Inserir as novas associações atualizadas
+            $sqlPivot = "INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_relacao) 
+                         VALUES (:equipamento_id, :fornecedor_id, :tipo_relacao)";
+            $stmtPivot = $ligacao->prepare($sqlPivot);
+
+            foreach ($fornecedores_post as $tipo_relacao => $fornecedor_id) {
+                if (!empty($fornecedor_id)) {
+                    $stmtPivot->execute([
+                        ':equipamento_id'   => $idEquipamento,
+                        ':fornecedor_id'    => $fornecedor_id,
+                        ':tipo_relacao'     => $tipo_relacao
+                    ]);
+                }
+            }
+
+            $ligacao->commit();
 
             header('Location: equipamentos.php');
             exit;
@@ -142,7 +169,12 @@ try {
         exit;
     }
 
-    // 4. Carregar dados auxiliares para as ComboBoxes / Selects
+    // 4. Mapear os fornecedores atualmente vinculados na tabela pivot para preenchimento automático
+    $stmt_vinculos = $ligacao->prepare("SELECT tipo_relacao, fornecedor_id FROM equipamento_fornecedor WHERE equipamento_id = :equipamento_id");
+    $stmt_vinculos->execute([':equipamento_id' => $idEquipamento]);
+    $vinculos_existentes = $stmt_vinculos->fetchAll(PDO::FETCH_KEY_PAIR); // Retorna um array [tipo_relacao => fornecedor_id]
+
+    // 5. Carregar dados auxiliares para as ComboBoxes / Selects
     $stmt_tipos = $ligacao->query("SELECT DISTINCT tipo_entrada FROM equipamentos WHERE tipo_entrada IS NOT NULL AND tipo_entrada != '' ORDER BY tipo_entrada ASC");
     $tipos_existentes = $stmt_tipos->fetchAll(PDO::FETCH_COLUMN);
 
@@ -151,11 +183,20 @@ try {
 
     $stmt_localizacoes = $ligacao->query("SELECT id, nome, edificio, piso FROM localizacoes ORDER BY edificio ASC");
     $localizacoes_existentes = $stmt_localizacoes->fetchAll(PDO::FETCH_OBJ);
+
+    $stmt_fornecedores = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC");
+    $fornecedores_existentes = $stmt_fornecedores->fetchAll(PDO::FETCH_OBJ);
+
 } catch (PDOException $err) {
+    if (isset($ligacao) && $ligacao->inTransaction()) {
+        $ligacao->rollBack();
+    }
     $erros[] = "Erro no sistema ou na ligação à base de dados: " . $err->getMessage();
     $tipos_existentes = [];
     $categorias_existentes = [];
     $localizacoes_existentes = [];
+    $fornecedores_existentes = [];
+    $vinculos_existentes = [];
 } finally {
     $ligacao = null;
 }
@@ -163,7 +204,6 @@ try {
 include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
-    <!-- Classe personalizada para cor de fundo global -->
 
     <?php include '../../../assets/includes/header.php'; ?>
 
@@ -172,8 +212,7 @@ include '../../../assets/includes/head.php'; ?>
             <?php include '../../../assets/includes/sidebar/equipamentos.php' ?>
 
             <main class="col-md-9 col-lg-10">
-                <div
-                    class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="mb-4 pb-2 border-bottom">
                         <h2 class="fw-bold text-dark m-0">Modificar Registo
@@ -182,7 +221,7 @@ include '../../../assets/includes/head.php'; ?>
                         <p class="text-muted small m-0">Atualize as informações operacionais ou reposicionamento de serviço.</p>
                     </div>
 
-                    <form action="editar.php?id_equipamentos=<?= $idEquipamentoEncrypted ?>" method="POST" novalidate class="row g-3 fw-medium text-secondary small">
+                    <form action="editar.php?id_equipamentos=<?= $idEquipamentoEncrypted ?>" method="POST" class="row g-3 fw-medium text-secondary small">
 
                         <div class="col-md-4">
                             <label for="designacao" class="form-label text-dark">Nome do Equipamento</label>
@@ -212,33 +251,26 @@ include '../../../assets/includes/head.php'; ?>
                                 value="<?= htmlspecialchars($_POST['modelo'] ?? $equipamento->modelo ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="num_serie" class="form-label text-dark">Número de Série (S/N)</label>
                             <input type="text" id="num_serie" name="num_serie" class="form-control rounded-3"
                                 placeholder="Ex: MP5-2022-45873"
                                 value="<?= htmlspecialchars($_POST['num_serie'] ?? $equipamento->num_serie ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="fabricante" class="form-label text-dark">Fabricante</label>
-                            <input type="text" id="fabricante" name="fabricante" class="form-control rounded-3"
-                                placeholder="Ex: Philips"
-                                value="<?= htmlspecialchars($_POST['fabricante'] ?? $equipamento->fabricante ?? '') ?>" required>
-                        </div>
-
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="ano_fabrico" class="form-label text-dark">Ano Fabrico</label>
                             <input type="number" id="ano_fabrico" name="ano_fabrico" class="form-control rounded-3"
                                 value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? $equipamento->ano_fabrico ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
-                            <label handle for="data_aquisicao" class="form-label text-dark">Data de Aquisição</label>
+                        <div class="col-md-3">
+                            <label for="data_aquisicao" class="form-label text-dark">Data de Aquisição</label>
                             <input type="text" id="data_aquisicao" name="data_aquisicao" class="form-control rounded-3"
                                 value="<?= htmlspecialchars($_POST['data_aquisicao'] ?? $equipamento->data_aquisicao ?? '') ?>" required>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="custo_aquisicao" class="form-label text-dark">Custo de Aquisição</label>
                             <input type="text" id="custo_aquisicao" name="custo_aquisicao" class="form-control rounded-3"
                                 placeholder="0,00 €"
@@ -294,7 +326,7 @@ include '../../../assets/includes/head.php'; ?>
                                 $estado_selecionado = $_POST['estado'] ?? $equipamento->estado ?? '';
                                 $opcoes_estado = ['Ativo', 'Em manutenção', 'Inativo', 'Em calibração', 'Em quarentena', 'Abatido'];
                                 foreach ($opcoes_estado as $opcao): ?>
-                                    <option value="<?= $opcao ?>" <?= ($estado_selecionado == $opcao) ? 'selected' : '' ?>><?= $opcao ?></option>
+                                    <option value="<?= $opcao ?>" <?= ($estado_selecionado === $opcao) ? 'selected' : '' ?>><?= $opcao ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -307,7 +339,7 @@ include '../../../assets/includes/head.php'; ?>
                                 $crit_selecionada = $_POST['criticidade'] ?? $equipamento->criticidade ?? '';
                                 $opcoes_crit = ['Baixa', 'Média', 'Alta', 'Suporte de vida'];
                                 foreach ($opcoes_crit as $opcao): ?>
-                                    <option value="<?= $opcao ?>" <?= ($crit_selecionada == $opcao) ? 'selected' : '' ?>><?= $opcao ?></option>
+                                    <option value="<?= $opcao ?>" <?= ($crit_selecionada === $opcao) ? 'selected' : '' ?>><?= $opcao ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -316,6 +348,55 @@ include '../../../assets/includes/head.php'; ?>
                             <label for="observacoes" class="form-label text-dark">Observações</label>
                             <input type="text" id="observacoes" name="observacoes" class="form-control rounded-3"
                                 value="<?= htmlspecialchars($_POST['observacoes'] ?? $equipamento->observacoes ?? '') ?>">
+                        </div>
+
+                        <div class="col-12 mt-4 pt-3 border-top">
+                            <h5 class="fw-bold text-dark mb-1">Entidades e Fornecedores Vinculados</h5>
+                            <p class="text-muted small mb-3">Gerencie as entidades responsáveis por este equipamento médico.</p>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="forn_fabricante" class="form-label text-dark fw-bold">Fabricante Oficial</label>
+                                    <select id="forn_fabricante" name="fornecedores[Fabricante]" class="form-select rounded-3" required>
+                                        <option value="" disabled>Selecione o Fabricante...</option>
+                                        <?php 
+                                        $fab_selecionado = $_POST['fornecedores']['Fabricante'] ?? $vinculos_existentes['Fabricante'] ?? '';
+                                        foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= ($fab_selecionado == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="forn_distribuidor" class="form-label text-dark">Distribuidor Comercial</label>
+                                    <select id="forn_distribuidor" name="fornecedores[Distribuidor comercial]" class="form-select rounded-3">
+                                        <option value="" selected>Nenhum / Não Aplicável</option>
+                                        <?php 
+                                        $dist_selecionado = $_POST['fornecedores']['Distribuidor comercial'] ?? $vinculos_existentes['Distribuidor comercial'] ?? '';
+                                        foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= ($dist_selecionado == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="forn_assistencia" class="form-label text-dark">Assistência Técnica Autorizada</label>
+                                    <select id="forn_assistencia" name="fornecedores[Assistência Técnica]" class="form-select rounded-3">
+                                        <option value="" selected>Nenhuma / Não Aplicável</option>
+                                        <?php 
+                                        $ast_selecionado = $_POST['fornecedores']['Assistência Técnica'] ?? $vinculos_existentes['Assistência Técnica'] ?? '';
+                                        foreach ($fornecedores_existentes as $f): ?>
+                                            <option value="<?= $f->id ?>" <?= ($ast_selecionado == $f->id) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-12 pt-3 mt-2 mb-4 d-flex gap-2 justify-content-end border-top">
@@ -328,9 +409,9 @@ include '../../../assets/includes/head.php'; ?>
                     </form>
 
                     <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger rounded-3" role="alert">
                             <strong>Foram encontrados os seguintes erros:</strong>
-                            <ul class="mb-0">
+                            <ul class="mb-0 mt-1">
                                 <?php foreach ($erros as $erro): ?>
                                     <li><?= htmlspecialchars($erro) ?></li>
                                 <?php endforeach; ?>
@@ -343,7 +424,7 @@ include '../../../assets/includes/head.php'; ?>
             </main>
 
         </div>
-
+        
     </div>
 
     <script>
