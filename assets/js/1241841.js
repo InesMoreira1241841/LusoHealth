@@ -277,6 +277,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+
+        $('#tabela-fornecedores').DataTable({
+            "pageLength": 10, // Limita estritamente a 10 por página
+            "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
+            "language": {
+                "decimal": "",
+                "emptyTable": "Nenhum fornecedor encontrado.",
+                "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ fornecedores", // Contador no final
+                "infoEmpty": "A apresentar 0 até 0 de 0 fornecedores",
+                "infoFiltered": "(a filtrar um total de _MAX_ fornecedores)",
+                "lengthMenu": "Mostrar _MENU_ fornecedores por página",
+                "loadingRecords": "A carregar...",
+                "processing": "A processar...",
+                "search": "Filtrar:", // A barra de pesquisa global
+                "zeroRecords": "Não foram encontrados resultados correspondentes",
+                "paginate": {
+                    "first": "Primeira",
+                    "last": "Última",
+                    "next": "Seguinte",
+                    "previous": "Anterior"
+                }
+            }
+        });
     })
 
 })

@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (empty($erros)) {
                 $sql = "INSERT INTO localizacoes (codigo, nome, edificio, piso, responsavel, observacoes) 
                         VALUES (:codigo, :nome, :edificio, :piso, :responsavel, :observacoes)";
-
+ 
                 $stmt = $ligacao->prepare($sql);
                 $stmt->execute([
                     ':codigo' => $codigo,

@@ -6,14 +6,23 @@
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
+// Inclusão dos ficheiros base de segurança e conexão
 require_once __DIR__ . '/../../includes/funcoes.php';
+
+include '../../../assets/includes/head.php';
+
+start_session();
 redirect_if_not_logged();
 
-// Captura os dados dos filtros via GET (se existirem)
-$pesquisa = $_GET['pesquisa'] ?? '';
-$estado = $_GET['estado'] ?? '';
+$success_message = $_SESSION['success_message'] ?? '';
+$error_message = $_SESSION['error_message'] ?? '';
+unset($_SESSION['success_message'], $_SESSION['error_message']);
 
-// Ligação e execução da query
+// Captura o modo de visualização. Se não for especificado "arquivados", mostra os ativos (0)
+$ver_arquivados = (isset($_GET['modo']) && $_GET['modo'] === 'arquivados') ? 1 : 0;
+
+
+// Bloco Try/Catch para puxar os dados por PDO
 try {
     $ligacao = new PDO(
         "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
@@ -21,47 +30,17 @@ try {
         DB_PASS
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Construção da Query Dinâmica com LEFT JOIN para verificar contratos na tabela garantias
-    // Usamos um COUNT para saber quantas garantias/contratos ativos (ou totais) o fornecedor tem
-    $sql = "SELECT f.*, 
-            COUNT(g.id) as total_contratos 
-            FROM fornecedores f
-            LEFT JOIN garantias g ON f.id = g.fornecedor_id
-            WHERE 1=1";
-    
-    $params = [];
-    
-    // Aplicar filtro de pesquisa (NIF ou Nome)
-    if (!empty($pesquisa)) {
-        $sql .= " AND (f.nif LIKE :pesquisa OR f.nome LIKE :pesquisa)";
-        $params[':pesquisa'] = '%' . $pesquisa . '%';
-    }
-    
-    $sql .= " GROUP BY f.id";
-    
-    // Aplicar filtro do estado com base no COUNT de contratos vinculados
-    if ($estado === 'Ativo') {
-        $sql .= " HAVING total_contratos > 0";
-    } elseif ($estado === 'Sem Contrato') {
-        $sql .= " HAVING total_contratos = 0";
-    }
-    
+
+    // O valor de 'arquivado = :arquivado' muda dinamicamente
+    $sql = "SELECT * FROM fornecedores WHERE arquivado = :arquivado ORDER BY nome ASC";
     $stmt = $ligacao->prepare($sql);
-    $stmt->execute($params);
-    $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
-    
-    $erro = '';
-} catch (PDOException $excecao) {
-    $erro = "Aconteceu um erro na ligação ou na consulta dos dados.";
-    $resultados = [];
+    $stmt->execute([':arquivado' => $ver_arquivados]);
+    $lista_fornecedores = $stmt->fetchAll(PDO::FETCH_OBJ);
+} catch (PDOException $e) {
+    $error_message = "Erro ao aceder à base de dados.";
+    $lista_fornecedores = [];
 }
-
-// Fecha a ligação
-$ligacao = null; 
 ?>
-
-<?php include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
     <?php include '../../../assets/includes/header.php'; ?>
@@ -72,7 +51,19 @@ $ligacao = null;
             <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
-                <section class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <div class="btn-group shadow-sm rounded-pill p-1 bg-light border" role="group">
+                        <a href="fornecedores.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-primary shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-folder-open me-1"></i> Ativas
+                        </a>
+                        <a href="fornecedores.php?modo=arquivados" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 1 ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-box-archive me-1"></i> Arquivados
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                         <div>
@@ -84,118 +75,101 @@ $ligacao = null;
                         </a>
                     </div>
 
-                    <div class="bg-light p-3 rounded-3 mb-4 border">
-                        <form action="fornecedores.php" method="GET" class="row g-2 align-items-center small">
+                    <?php if (!empty($success_message)) : ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= htmlspecialchars($success_message) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
 
-                            <div class="col-md-5">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white text-muted border-end-0">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                    </span>
-                                    <input type="text" id="pesquisa_fornecedor" name="pesquisa"
-                                        class="form-control border-start-0 ps-0"
-                                        value="<?= htmlspecialchars($pesquisa) ?>"
-                                        placeholder="Pesquisar por NIF ou Nome da Entidade...">
-                                </div>
-                            </div>
+                    <?php if (!empty($error_message)) : ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= htmlspecialchars($error_message) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
 
-                            <div class="col-md-4">
-                                <select id="filtro_estado" name="estado" class="form-select">
-                                    <option value="">Todos os Estados de Parceria</option>
-                                    <option value="Ativo" <?= $estado === 'Ativo' ? 'selected' : '' ?>>Com Contrato de Manutenção Ativo</option>
-                                    <option value="Sem Contrato" <?= $estado === 'Sem Contrato' ? 'selected' : '' ?>>Sem Contrato Vinculado</option>
-                                </select>
-                            </div>
+                    <div class="table-responsive">
 
-                            <div class="col-md-3 d-grid">
-                                <button type="submit" class="btn btn-outline-success btn-sm rounded-pill fw-medium">
-                                    <i class="fa-solid fa-filter me-1"></i> Filtrar
-                                </button>
-                            </div>
+                        <table class="table table-hover align-middle" id="tabela-fornecedores">
 
-                        </form>
+                            <thead class="table-light text-secondary small text-uppercase">
+                                <tr>
+                                    <th class="text-center">NIF / Registo</th>
+                                    <th class="text-center">Nome da Entidade</th>
+                                    <th class="text-center">Contacto Principal</th>
+                                    <th class="text-center">E-mail de Suporte</th>
+                                    <th class="text-center">Tipo de Fornecedor</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="small text-secondary">
+
+                                <?php if (empty($lista_fornecedores)): ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-3">
+                                            Nenhum fornecedor encontrado no sistema.
+                                        </td>
+                                    </tr>
+
+                                <?php else: ?>
+                                    <?php foreach ($lista_fornecedores as $forn) : ?>
+
+                                        <tr>
+                                            <td class="text-center fw-bold text-dark"><?= htmlspecialchars($forn->nif) ?></td>
+                                            <td class="text-center"><?= htmlspecialchars($forn->nome) ?></td>
+                                            <td class="text-center"><?= htmlspecialchars($forn->telefone ?? 'N/A') ?></td>
+                                            <td class="text-center">
+                                                <?php if (!empty($forn->email)): ?>
+                                                    <code class="text-success"><?= htmlspecialchars($forn->email) ?></code>
+                                                <?php else: ?>
+                                                    <span class="text-muted small">Não associado</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="text-center"><?= htmlspecialchars($forn->tipo) ?></td>
+
+                                            <td class="text-center">
+                                                <a href="detalhes.php?id_fornecedores=<?= aes_encrypt($forn->id) ?>" class="btn btn-sm btn-outline-secondary rounded-2" title="Visualizar Detalhes">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+
+                                                <?php if ($ver_arquivados === 0): ?>
+
+                                                    <a href="editar.php?id_fornecedores=<?= aes_encrypt($forn->id) ?>" class="btn btn-sm btn-outline-success rounded-2" title="Editar">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </a>
+                                                    <a href="arquivar.php?id_fornecedores=<?= aes_encrypt($forn->id) ?>" class="btn btn-sm btn-outline-danger rounded-2"
+                                                        title="Arquivar" onclick="return confirm('Tem a certeza que deseja arquivar este fornecedor?');">
+                                                        <i class="fa-solid fa-box-archive"></i>
+                                                    </a>
+
+                                                <?php else: ?>
+                                                    <a href="desarquivar.php?id_fornecedores=<?= aes_encrypt($forn->id) ?>" class="btn btn-sm btn-outline-primary rounded-2"
+                                                        title="Desarquivar" onclick="return confirm('Deseja restaurar este fornecedor?');">
+                                                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                                    </a>
+
+                                                <?php endif; ?>
+                                            </td>
+
+                                        </tr>
+
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
+                            </tbody>
+
+                        </table>
+
                     </div>
 
-                    <?php if (!empty($erro)) : ?>
-                        <p class="text-center text-danger"><?= $erro ?></p>
-                    <?php else : ?>
-                        <?php if (count($resultados) == 0) : ?>
-                            <p class="shadow-sm border rounded-3 custom-card-rounded mb-4 border-light-subtle text-center p-4">Não existem fornecedores registados.</p>
-                        <?php else : ?>
-
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light text-secondary small text-uppercase">
-                                        <tr>
-                                            <th>NIF / Registo</th>
-                                            <th>Nome da Entidade</th>
-                                            <th>Contacto Principal</th>
-                                            <th>E-mail de Suporte</th>
-                                            <th>Contratos Vinculados</th>
-                                            <th class="text-end">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="small text-secondary">
-
-                                        <?php foreach ($resultados as $fornecedor) : ?>
-                                            <tr>
-                                                <td class="fw-bold text-dark"><?= htmlspecialchars($fornecedor->nif) ?></td>
-                                                <td><?= htmlspecialchars($fornecedor->nome) ?></td>
-                                                <td><?= htmlspecialchars($fornecedor->telefone ?? 'N/A') ?></td>
-                                                <td>
-                                                    <?php if (!empty($fornecedor->email)): ?>
-                                                        <code class="text-success"><?= htmlspecialchars($fornecedor->email) ?></code>
-                                                    <?php else: ?>
-                                                        <span class="text-muted small">Não associado</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($fornecedor->total_contratos > 0) : ?>
-                                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-3">
-                                                            Contrato Ativo (<?= $fornecedor->total_contratos ?>)
-                                                        </span>
-                                                    <?php else : ?>
-                                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-3">
-                                                            Sem Contrato
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td class="text-end">
-                                                    <div class="btn-group gap-1">
-                                                        <a href="detalhes.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>"
-                                                            class="btn btn-sm btn-outline-secondary rounded-2"
-                                                            title="Ver Detalhes">
-                                                            <i class="fa-solid fa-eye"></i>
-                                                        </a>
-                                                        <a href="editar.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>" 
-                                                            class="btn btn-sm btn-outline-success rounded-2"
-                                                            title="Editar">
-                                                            <i class="fa-solid fa-pen"></i>
-                                                        </a>
-                                                        <a href="apagar.php?id_fornecedores=<?= aes_encrypt($fornecedor->id) ?>"
-                                                            class="btn btn-sm btn-outline-danger rounded-2 btn-delete-equipment"
-                                                            title="Eliminar">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        <?php endif; ?> 
-                    <?php endif; ?> 
-                </section>
-
-                <div class="col mt-3">
-                    <p class="mb-5">Total de Fornecedores: <strong> <?= count($resultados) ?> </strong></p>
                 </div>
 
             </main>
+
         </div>
+
     </div>
 
     <?php include '../../../assets/includes/footer.php'; ?>

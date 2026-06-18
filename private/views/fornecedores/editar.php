@@ -1,21 +1,21 @@
-<?php 
+<?php
 // --------------------------------------------------------------------
 // SEGURANÇA: Proteção de acesso à página de edição
 // Este ficheiro deve ser acedido apenas por utilizadores autenticados.
 // Caso não exista sessão iniciada, o utilizador será redirecionado para o login.
 // -------------------------------------------------------------------- 
 
-require_once __DIR__ . '/../../includes/funcoes.php'; 
-redirect_if_not_logged(); 
-
-// Inicializar variáveis de erro
-$erros = [];
+require_once __DIR__ . '/../../includes/funcoes.php';
+start_session();
+redirect_if_not_logged();
+// Inicia a sessão (se necessário) e verifica se o utilizador está autenticado
+require_once __DIR__ . '/../../includes/validacoes.php';
 
 // 1. Capturar e desencriptar o ID do fornecedor vindo do GET
-$idFornecedorEncrypted = $_GET['id_fornecedores'] ?? null; 
-$idFornecedor = aes_decrypt($idFornecedorEncrypted);
+$idFornecedorEncrypted = $_GET['id_fornecedores'] ?? null;
+$idFornecedores = aes_decrypt($idFornecedorEncrypted);
 
-if (!$idFornecedor || !is_numeric($idFornecedor)) {
+if (!$idFornecedores || !is_numeric($idFornecedores)) {
     header('Location: fornecedores.php');
     exit;
 }
@@ -26,79 +26,99 @@ try {
         DB_USER,
         DB_PASS
     );
+
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Preparar e executar a query com segurança
+    $stmt = $ligacao->prepare("SELECT * FROM fornecedores WHERE id = :id_fornecedores");
+
+    $stmt->bindParam(':id_fornecedores', $idFornecedores, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $fornecedores = $stmt->fetch(PDO::FETCH_OBJ);
+
+    $tipoSelecionado = $_POST['tipo'] ?? $fornecedores->tipo;
 
     // 2. Se o formulário foi submetido via POST (Processar a Atualização)
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nome              = $_POST["nome"] ?? "";
-        $telefone          = $_POST["telefone"] ?? "";
-        $email             = $_POST["email"] ?? "";
-        $morada            = $_POST["morada"] ?? "";
-        $tecnico_nome      = $_POST["tecnico_nome"] ?? "";
-        $tecnico_telefone  = $_POST["tecnico_telefone"] ?? "";
+        $novoNome = $_POST['nome'] ?? '';
+        $novoTipo = $_POST['tipo'] ?? '';
+        $novoTelefone = $_POST["telefone"] ?? "";
+        $novoEmail = $_POST["email"] ?? "";
+        $novaMorada = $_POST["morada"] ?? "";
+        $novoWebsite = $_POST["website"] ?? "";
+        $novoTecnicoNome      = $_POST["tecnico_nome"] ?? "";
+        $novoTecnicoTelefone  = $_POST["tecnico_telefone"] ?? "";
+        $novasObservacoes  = $_POST["observacoes"] ?? "";
 
-        // Validações básicas no servidor
-        if (empty($nome)) $erros[] = "O campo Nome / Razão Social é obrigatório.";
-        if (empty($email)) $erros[] = "O e-mail de assistência oficial é obrigatório.";
+        // 1. Acumular erros das funções de validação
+        $erros = [];
+        $erros = array_merge($erros, validar_nome_fornecedor($novoNome) ?? []);
+        $erros = array_merge($erros, validar_tipo_fornecedor($novoTipo) ?? []);
+        $erros = array_merge($erros, validar_telefone_fornecedor($novoTelefone) ?? []);
+        $erros = array_merge($erros, validar_email_fornecedor($novoEmail) ?? []);
+        $erros = array_merge($erros, validar_morada_fornecedor($novaMorada) ?? []);
+        $erros = array_merge($erros, validar_website_fornecedor($novoWebsite) ?? []);
+        $erros = array_merge($erros, validar_tecnico_nome($novoTecnicoNome) ?? []);
+        $erros = array_merge($erros, validar_tecnico_telefone($novoTecnicoTelefone) ?? []);
 
+        // 2. Se não houver erros de validação, avançamos para a BD
         if (empty($erros)) {
-            $sqlUp = "UPDATE fornecedores SET 
-                        nome = :nome, 
+            try {
+                // Preparamos a query dentro do TRY para total segurança
+                $stmt = $ligacao->prepare("
+                    UPDATE fornecedores
+                    SET nome = :nome, 
+                        tipo = :tipo,
                         telefone = :telefone, 
                         email = :email, 
                         morada = :morada, 
+                        website = :website,
                         tecnico_nome = :tecnico_nome, 
-                        tecnico_telefone = :tecnico_telefone
-                      WHERE id = :id";
-            
-            $stmtUp = $ligacao->prepare($sqlUp);
-            $stmtUp->execute([
-                ':nome'             => $nome,
-                ':telefone'         => $telefone,
-                ':email'            => $email,
-                ':morada'           => $morada,
-                ':tecnico_nome'     => $tecnico_nome,
-                ':tecnico_telefone' => $tecnico_telefone,
-                ':id'               => $idFornecedor
-            ]);
+                        tecnico_telefone = :tecnico_telefone,
+                        observacoes = :observacoes,
+                        atualizado_em = NOW()
+                    WHERE id = :id_fornecedores
+                ");
 
-            header('Location: fornecedores.php');
-            exit;
+                $stmt->bindParam(':nome', $novoNome, PDO::PARAM_STR);
+                $stmt->bindParam(':tipo', $novoTipo, PDO::PARAM_STR);
+                $stmt->bindParam(':telefone', $novoTelefone, PDO::PARAM_STR);
+                $stmt->bindParam(':email', $novoEmail, PDO::PARAM_STR);
+                $stmt->bindParam(':morada', $novaMorada, PDO::PARAM_STR);
+                $stmt->bindParam(':website', $novoWebsite, PDO::PARAM_STR);
+                $stmt->bindParam(':tecnico_nome', $novoTecnicoNome, PDO::PARAM_STR);
+                $stmt->bindParam(':tecnico_telefone', $novoTecnicoTelefone, PDO::PARAM_STR);
+                $stmt->bindParam(':observacoes', $novasObservacoes, PDO::PARAM_STR);
+
+                $stmt->bindParam(':id_fornecedores', $idFornecedores, PDO::PARAM_INT);
+
+                $stmt->execute();
+
+                // Sucesso absoluto: Mensagem guardada e redirecionamento
+                $_SESSION['success_message'] = "Fornecedor atualizado com sucesso.";
+                header('Location: fornecedores.php');
+                exit;
+            } catch (PDOException $err) {
+                // Se a BD falhar, injetamos no array global de erros
+                $erros[] = "Erro ao atualizar a base de dados: " . $err->getMessage();
+            }
         }
     }
-
-    // 3. Procurar os dados atuais do fornecedor para preencher o formulário
-    $stmt = $ligacao->prepare("SELECT * FROM fornecedores WHERE id = :id");
-    $stmt->bindParam(':id', $idFornecedor, PDO::PARAM_INT);
-    $stmt->execute();
-    $fornecedor = $stmt->fetch(PDO::FETCH_OBJ);
-
-    if (!$fornecedor) {
-        header('Location: fornecedores.php');
-        exit;
-    }
-
-    // 4. QUERY: Procurar todos os equipamentos associados a este fornecedor pela tabela pivot
-    $sqlEquipamentos = "SELECT e.id, e.codigo_inventario, e.designacao, e.marca, e.modelo, ef.tipo_relacao 
-                        FROM equipamentos e
-                        INNER JOIN equipamento_fornecedor ef ON e.id = ef.equipamento_id
-                        WHERE ef.fornecedor_id = :fornecedor_id
-                        ORDER BY e.designacao ASC";
-    
-    $stmtEquip = $ligacao->prepare($sqlEquipamentos);
-    $stmtEquip->execute([':fornecedor_id' => $idFornecedor]);
-    $equipamentos_vinculados = $stmtEquip->fetchAll(PDO::FETCH_OBJ);
-
 } catch (PDOException $err) {
-    $erros[] = "Erro no sistema ou na ligação à base de dados: " . $err->getMessage();
+    // Este catch protege o SELECT inicial e a ligação geral à BD
+    $erros[] = "Erro na ligação ou na leitura da base de dados.";
+    $fornecedores = null;
 }
-?>
 
-<?php include '../../../assets/includes/head.php'; ?>
+// Fecha a ligação
+$ligacao = null;
+
+include '../../../assets/includes/head.php'; ?>
 
 <body class="bg-page-light">
 
-<?php include '../../../assets/includes/header.php'; ?>
+    <?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
@@ -106,43 +126,84 @@ try {
             <?php include '../../../assets/includes/sidebar/fornecedores.php' ?>
 
             <main class="col-md-9 col-lg-10">
+
+                <?php if (!empty($erros)): ?>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <?php foreach ($erros as $erro): ?>
+                            <div><?= htmlspecialchars($erro) ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="mb-4 pb-2 border-bottom">
-                        <h2 class="fw-bold text-dark m-0">Modificar Fornecedor <span class="text-success">#<?= htmlspecialchars($fornecedor->nome ?? '') ?></span></h2>
+                        <h2 class="fw-bold text-dark m-0">Modificar Fornecedor
+                            <span class="text-success">
+                                <?= htmlspecialchars($fornecedores->nome) ?></span>
+                        </h2>
                         <p class="text-muted small m-0">Mantenha os canais e e-mails de assistência biomédica sempre atualizados.</p>
                     </div>
 
-                    <form action="editar.php??id_fornecedores=<?= $idFornecedorEncrypted ?>" method="POST" class="row g-3 fw-medium text-secondary small">
+                    <form action="editar.php?id_fornecedores=<?= $idFornecedorEncrypted ?>" method="POST" class="row g-3 fw-medium text-secondary small">
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <label for="edit_nome" class="form-label text-dark">Nome / Razão Social</label>
                             <input type="text" id="edit_nome" name="nome" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['nome'] ?? $fornecedor->nome ?? '') ?>" required>
+                                value="<?= htmlspecialchars($fornecedores->nome) ?>" required>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="edit_nif" class="form-label text-dark">NIF (Imutável)</label>
-                            <input type="text" id="edit_nif" name="nif" class="form-control rounded-3 bg-light" 
-                                value="<?= htmlspecialchars($fornecedor->nif ?? '') ?>" readonly>
+                        <div class="col-md-3">
+                            <label for="edit_nif" class="form-label text-dark">Número de Identificação Fiscal</label>
+                            <input type="text" id="edit_nif" name="nif" class="form-control rounded-3 bg-light"
+                                value="<?= htmlspecialchars($fornecedores->nif) ?>" readonly>
                         </div>
+
+                        <div class="col-md-4">
+                            <label for="titipo_fornecedorpo" class="form-label text-dark">Tipo de Fornecedor</label>
+                            
+                                       <select id="tipo_fornecedor" name="tipo" class="form-select rounded-3" required>
+                                <option value="">Selecione...</option>
+
+                                <option value="Fabricante"
+                                    <?= $tipoSelecionado === 'Fabricante' ? 'selected' : '' ?>>
+                                    Fabricante
+                                </option>
+
+                                <option value="Distribuidor"
+                                    <?= $tipoSelecionado === 'Distribuidor' ? 'selected' : '' ?>>
+                                    Distribuidor
+                                </option>
+
+                                <option value="Assistência Técnica"
+                                    <?= $tipoSelecionado === 'Assistência Técnica' ? 'selected' : '' ?>>
+                                    Assistência Técnica
+                                </option>
+
+                                <option value="Consumíveis"
+                                    <?= $tipoSelecionado === 'Consumíveis' ? 'selected' : '' ?>>
+                                    Consumíveis
+                                </option>
+                            </select>
+                        </div>
+
 
                         <div class="col-md-6">
                             <label for="edit_telefone" class="form-label text-dark">Telefone de Suporte Técnico</label>
                             <input type="tel" id="edit_telefone" name="telefone" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['telefone'] ?? $fornecedor->telefone ?? '') ?>" required>
+                                value="<?= htmlspecialchars($fornecedores->telefone) ?>" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="edit_email" class="form-label text-dark">E-mail de Assistência Oficial</label>
                             <input type="email" id="edit_email" name="email" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['email'] ?? $fornecedor->email ?? '') ?>" required>
+                                value="<?= htmlspecialchars($fornecedores->email) ?>" required>
                         </div>
 
                         <div class="col-md-12">
                             <label for="edit_morada" class="form-label text-dark">Endereço da Sede Comercial</label>
                             <input type="text" id="edit_morada" name="morada" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['morada'] ?? $fornecedor->morada ?? '') ?>">
+                                value="<?= htmlspecialchars($fornecedores->morada) ?>">
                         </div>
 
                         <div class="col-md-6 mt-4 pt-2">
@@ -150,7 +211,7 @@ try {
                                 <i class="fa-solid fa-user-gear me-2"></i>Gestor de Conta / Técnico Responsável
                             </label>
                             <input type="text" id="edit_tecnico_nome" name="tecnico_nome" class="form-control rounded-3"
-                                value="<?= htmlspecialchars($_POST['tecnico_nome'] ?? $fornecedor->tecnico_nome ?? '') ?>" required>
+                                value="<?= htmlspecialchars($fornecedores->tecnico_nome) ?>" required>
                         </div>
 
                         <div class="col-md-6 mt-4 pt-2">
@@ -158,7 +219,7 @@ try {
                                 <i class="fa-solid fa-phone-volume me-2"></i>Linha Direta do Técnico
                             </label>
                             <input type="tel" id="edit_tecnico_telefone" name="tecnico_telefone"
-                                class="form-control rounded-3" value="<?= htmlspecialchars($_POST['tecnico_telefone'] ?? $fornecedor->tecnico_telefone ?? '') ?>" required>
+                                class="form-control rounded-3" value="<?= htmlspecialchars($fornecedores->tecnico_telefone) ?>" required>
                         </div>
 
                         <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end">
@@ -168,16 +229,6 @@ try {
                             </button>
                         </div>
                     </form>
-
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger mt-3 rounded-3" role="alert">
-                            <ul class="mb-0">
-                                <?php foreach ($erros as $erro): ?>
-                                    <li><?= htmlspecialchars($erro) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
 
                     <div class="mt-5 pt-4 border-top">
                         <h4 class="fw-bold text-dark mb-1">Parque Médico Associado</h4>
@@ -230,4 +281,4 @@ try {
         </div>
     </div>
 
-<?php include '../../../assets/includes/footer.php'; ?>
+    <?php include '../../../assets/includes/footer.php'; ?>

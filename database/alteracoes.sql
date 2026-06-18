@@ -18,3 +18,6 @@ ALTER TABLE `garantias`
 
 ALTER TABLE `localizacoes`
     ADD COLUMN `arquivado` TINYINT(1) NOT NULL DEFAULT 0 AFTER observacoes;
+
+ALTER TABLE `fornecedores`
+    ADD COLUMN `arquivado` TINYINT(1) NOT NULL DEFAULT 0 AFTER observacoes;

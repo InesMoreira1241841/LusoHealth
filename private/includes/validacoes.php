@@ -228,8 +228,6 @@ function validar_criticidade(string $criticidade): array
 }
 
 
-
-
 // ------------------------------ FORNECEDORES ------------------------------
 
 function validar_nome_fornecedor(string $nome): array

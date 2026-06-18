@@ -27,7 +27,7 @@ try {
         DB_USER,
         DB_PASS
     );
-
+    
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Preparar e executar a query com segurança
@@ -80,7 +80,7 @@ try {
                 $stmt->bindParam(':id', $idLoc, PDO::PARAM_INT);
 
                 $stmt->execute();
-
+ 
                 // Sucesso absoluto: Mensagem guardada e redirecionamento
                 $_SESSION['success_message'] = "Localização atualizada com sucesso.";
                 header('Location: localizacoes.php');
@@ -121,12 +121,14 @@ include '../../../assets/includes/head.php'; ?>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+
                 <div
                     class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
                     <div class="mb-4 pb-2 border-bottom">
-                        <h2 class="fw-bold text-dark m-0">Modificar Localização<span class="text-success">
-                                <?= htmlspecialchars($localizacoes->codigo) ?></span>
+                        <h2 class="fw-bold text-dark m-0">Modificar Localização
+                            <span class="text-success">
+                            <?= htmlspecialchars($localizacoes->codigo) ?></span>
                         </h2>
                         <p class="text-muted small m-0">Atualize os dados estruturais ou altere a responsabilidade da
                             ala.</p>
@@ -187,8 +189,6 @@ include '../../../assets/includes/head.php'; ?>
 
                         </div>
                     </form>
-
-
 
                 </div>
             </main>

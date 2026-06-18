@@ -73,7 +73,7 @@ try {
                             <i class="fa-solid fa-plus me-2"></i>Nova Localização
                         </a>
                     </div>
-
+ 
                     <?php if (!empty($success_message)) : ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <?= htmlspecialchars($success_message) ?>

@@ -6,12 +6,10 @@
 // -------------------------------------------------------------------- 
 
 require_once __DIR__ . '/../../includes/funcoes.php';
+start_session();
 redirect_if_not_logged();
 
 require_once __DIR__ . '/../../includes/validacoes.php';
-
-$erros = [];
-$erros_sistema = [];
 
 // Verificar se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -67,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmtCheck->execute([':nif' => $nif]);
             
             if ($stmtCheck->fetchColumn() > 0) {
+                // Se já existir, injetamos o erro no teu array global de erros
                 $erros[] = "O NIF '$nif' já está registado para outro fornecedor. O NIF deve ser único.";
             }
 
@@ -91,12 +90,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':observacoes'      => $observacoes
                 ]);
 
+                $_SESSION['success_message'] = "Fornecedor registado com sucesso.";
                 header('Location: fornecedores.php'); 
                 exit;
             }
 
         } catch (PDOException $err) {
-            $erros_sistema[] = "Erro ao gravar os dados: " . $err->getMessage();
+            $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
         } finally {
             $ligacao = null;
         }
@@ -116,10 +116,22 @@ include '../../../assets/includes/head.php'; ?>
             <main class="col-md-9 col-lg-10">
                 <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
-                    <div class="mb-4 pb-2 border-bottom">
+                   <div class="mb-4 pb-2 border-bottom">
                         <h2 class="fw-bold text-dark m-0">Registar Fornecedor / Fabricante</h2>
                         <p class="text-muted small m-0">Insira os dados da entidade externa para vinculação a equipamentos e contratos.</p>
                     </div>
+
+                    <!-- Área de erros -->
+                    <?php if (!empty($erros)): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Foram encontrados os seguintes erros:</strong>
+                            <ul class="mb-0">
+                                <?php foreach ($erros as $erro): ?>
+                                    <li><?= htmlspecialchars($erro) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
 
                     <form action="#" method="POST" class="small text-secondary">
 
@@ -211,29 +223,7 @@ include '../../../assets/includes/head.php'; ?>
 
                         </div>
                     </form>
-
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger rounded-3 shadow-sm" role="alert">
-                            <strong>Foram encontrados os seguintes erros:</strong>
-                            <ul class="mb-0 mt-2">
-                                <?php foreach ($erros as $erro): ?>
-                                    <li><?= htmlspecialchars($erro) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($erros_sistema)): ?>
-                        <div class="alert alert-warning rounded-3 shadow-sm" role="alert">
-                            <strong>Erro de Sistema:</strong>
-                            <ul class="mb-0 mt-1">
-                                <?php foreach ($erros_sistema as $erro_sys): ?>
-                                    <li><?= htmlspecialchars($erro_sys) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
-
+                    
                 </div>
             </main>
         </div>
