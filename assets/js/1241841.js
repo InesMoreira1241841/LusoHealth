@@ -232,57 +232,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // datatable
-        $('#tabela-clientes').DataTable({
-            pageLength: 5,
-            pagingType: "full_numbers",
-            language: {
-                decimal: "",
-                emptyTable: "Sem dados disponíveis na tabela.",
-                info: "Mostrando _START_ até _END_ de _TOTAL_ registos",
-                infoEmpty: "Mostrando 0 até 0 de 0 registos",
-                infoFiltered: "(Filtrando _MAX_ total de registos)",
-                infoPostFix: "",
-                thousands: ",",
-                lengthMenu: "Mostrando _MENU_ registos por página.",
-                loadingRecords: "Carregando...",
-                processing: "Processando...",
-                search: "Filtrar:",
-                zeroRecords: "Nenhum registro encontrado.",
-                paginate: {
-                    first: "Primeira",
-                    last: "Última",
-                    next: "Seguinte",
-                    previous: "Anterior"
+        $('#tabela-equipamentos').DataTable({
+            "pageLength": 10,
+            "pagingType": "full_numbers",
+            "language": {
+                "decimal": "",
+                "emptyTable": "Nenhum equipamento encontrado.",
+                "info": "A mostrar _START_ até _END_ de _TOTAL_ equipamentos",
+                "infoEmpty": "A mostrar 0 até 0 de 0 equipamentos",
+                "infoFiltered": "(a filtar um total de _MAX_ equipamentos)",
+                "lengthMenu": "A mostrar _MENU_ registos por página.",
+                "loadingRecords": "A carregar...",
+                "processing": "A processar...",
+                "search": "Filtrar: ",
+                "zeroRecords": "Nenhum equipamento encontrado.",
+                "paginate": {
+                    "first": "Primeira",
+                    "last": "Última",
+                    "next": "Seguinte",
+                    "previous": "Anterior"
                 },
-                aria: {
-                    sortAscending: ": ative para classificar a coluna em ordem crescente.",
-                    sortDescending: ": ative para classificar a coluna em ordem decrescente."
-                }
             }
         });
 
         $('#tabela-localizacoes-hospitalares').DataTable({
-                "pageLength": 10, // Limita estritamente a 10 por página
-                "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
-                "language": {
-                    "decimal": "",
-                    "emptyTable": "Nenhuma localização encontrada.",
-                    "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ localizações", // Contador no final
-                    "infoEmpty": "A apresentar 0 até 0 de 0 registos",
-                    "infoFiltered": "(filtrado de um total de _MAX_ registos)",
-                    "lengthMenu": "Mostrar _MENU_ localizações por página",
-                    "loadingRecords": "A carregar...",
-                    "processing": "A processar...",
-                    "search": "Filtrar por qualquer coluna:", // A barra de pesquisa global
-                    "zeroRecords": "Não foram encontrados resultados correspondentes",
-                    "paginate": {
-                        "first": "Primeira",
-                        "last": "Última",
-                        "next": "Seguinte",
-                        "previous": "Anterior"
-                    }
+            "pageLength": 10, // Limita estritamente a 10 por página
+            "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
+            "language": {
+                "decimal": "",
+                "emptyTable": "Nenhuma localização encontrada.",
+                "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ localizações", // Contador no final
+                "infoEmpty": "A apresentar 0 até 0 de 0 localizações",
+                "infoFiltered": "(a filtrar um total de _MAX_ localizações)",
+                "lengthMenu": "Mostrar _MENU_ localizações por página",
+                "loadingRecords": "A carregar...",
+                "processing": "A processar...",
+                "search": "Filtrar:", // A barra de pesquisa global
+                "zeroRecords": "Não foram encontrados resultados correspondentes",
+                "paginate": {
+                    "first": "Primeira",
+                    "last": "Última",
+                    "next": "Seguinte",
+                    "previous": "Anterior"
                 }
-            });
+            }
+        });
     })
 
 })
+
+
+// Inicializar o seletor de data
+flatpickr("#data_aquisicao", {
+    dateFormat: "Y-m-d"
+});

@@ -39,13 +39,13 @@ try {
 <body class="bg-page-light">
     <!-- Classe personalizada para cor de fundo global -->
 
-    <!-- // INCLUSÃO DOS COMPONENTES VISUAIS REUTILIZÁVEIS -->
+    <!-- INCLUSÃO DOS COMPONENTES VISUAIS REUTILIZÁVEIS -->
     <?php include '../../../assets/includes/header.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
 
-            <!-- // INCLUSÃO DOS COMPONENTES VISUAIS REUTILIZÁVEIS -->
+            <!-- INCLUSÃO DOS COMPONENTES VISUAIS REUTILIZÁVEIS -->
             <?php include '../../../assets/includes/sidebar/localizacoes.php' ?>
 
             <main class="col-md-9 col-lg-10">
@@ -130,7 +130,7 @@ try {
                                                 </a>
 
                                                 <?php if ($ver_arquivados === 0): ?>
-
+ 
                                                     <a href="editar.php?id=<?= aes_encrypt($loc->id) ?>" class="btn btn-sm btn-outline-success rounded-2" title="Editar">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </a>
@@ -168,6 +168,6 @@ try {
     </div>
 
     <?php
-    // INCLUSÃO DO RODAPÉ REUTILIZÁVEL (Ficha 09)
+    // INCLUSÃO DO RODAPÉ REUTILIZÁVEL
     include '../../../assets/includes/footer.php';
     ?>

@@ -6,13 +6,11 @@
 // -------------------------------------------------------------------- 
 
 require_once __DIR__ . '/../../includes/funcoes.php';
+start_session();
 redirect_if_not_logged();
 
 require_once __DIR__ . '/../../includes/validacoes.php';
 
-// Inicializar arrays para evitar erros na renderização do HTML
-$erros = [];
-$erros_sistema = [];
 
 // Verificar se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -42,7 +40,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $marca = ucwords(strtolower($marca));
     $modelo = ucwords(strtolower($modelo));
 
+    if (!empty($custo_aquisicao)) {
+        $custo_aquisicao = str_replace(',', '.', $custo_aquisicao);
+    }
+
     // 2. Validar os dados acumulando os erros de forma estrita
+    $erros = [];
     $erros = array_merge($erros, validar_designacao($designacao) ?? []);
     $erros = array_merge($erros, validar_codigo_inventario($codigo_inventario) ?? []);
     $erros = array_merge($erros, validar_marca($marca) ?? []);
@@ -61,9 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($fornecedores_post['Fabricante'])) {
         $erros[] = "Deve selecionar obrigatoriamente um Fabricante na secção de Entidades Vinculadas.";
     }
-
-    // B. Normalizar custo de aquisição (depois da validação)
-    $custo_aquisicao = normalizar_custo_aquisicao($custo_aquisicao);
 
     // 3. Se não houver erros, iniciar o processo de gravação segura
     if (empty($erros)) {
@@ -84,11 +84,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $erros[] = "O Código de Inventário '$codigo_inventario' já está registado. Escolha um código único.";
             }
 
-            // Se continuar sem erros, avançamos estruturalmente com uma TRANSAÇÃO
+            // 4. Se continuar sem erros, avança-se estruturalmente com uma TRANSAÇÃO
             if (empty($erros)) {
                 $ligacao->beginTransaction();
 
-                // 4. Efetuar o INSERT principal
                 $sql = "INSERT INTO equipamentos (
                             codigo_inventario, designacao, categoria_id, marca, modelo, 
                             num_serie, ano_fabrico, data_aquisicao, 
@@ -121,17 +120,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Obter o ID gerado automaticamente para o novo dispositivo
                 $equipamento_id = $ligacao->lastInsertId();
 
-                // 5. Inserir os registros associados na tabela pivot equipamento_fornecedor
-                $sqlPivot = "INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_associacao) 
-                             VALUES (:equipamento_id, :fornecedor_id, :tipo_associacao)";
-                $stmtPivot = $ligacao->prepare($sqlPivot);
-
-                foreach ($fornecedores_post as $tipo_associacao => $fornecedor_id) {
+                // Inserir os registros associados na tabela pivot equipamento_fornecedor
+                $stmtPivot = $ligacao->prepare("INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_relacao) VALUES (:equip_id, :forn_id, :tipo)");
+                foreach ($fornecedores_post as $tipo_relacao => $fornecedor_id) {
                     if (!empty($fornecedor_id)) {
                         $stmtPivot->execute([
-                            ':equipamento_id'   => $equipamento_id,
-                            ':fornecedor_id'    => $fornecedor_id,
-                            ':tipo_associacao'  => $tipo_associacao
+                            ':equip_id' => $equipamento_id,
+                            ':forn_id'  => $fornecedor_id,
+                            ':tipo'     => $tipo_relacao
                         ]);
                     }
                 }
@@ -139,6 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Submeter todas as operações simultaneamente
                 $ligacao->commit();
 
+                $_SESSION['success_message'] = "Equipamento biomédico registado com sucesso.";
                 header('Location: equipamentos.php');
                 exit;
             }
@@ -146,16 +143,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($ligacao) && $ligacao->inTransaction()) {
                 $ligacao->rollBack();
             }
-            $erros[] = "Erro ao gravar os dados no sistema: " . $err->getMessage();
+            $erros[] = "Erro ao gravar os dados no system: " . $err->getMessage();
         } finally {
             $ligacao = null;
         }
     }
 }
 
-// --------------------------------------------------------------------
-// BLOCO EXTRA: Carregar dados dinâmicos para as ComboBoxes do formulário
-// --------------------------------------------------------------------
+// Carregar tabelas auxiliares para alimentar os Selects do HTML
 try {
     $ligacao = new PDO(
         "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
@@ -164,24 +159,12 @@ try {
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt_tipos = $ligacao->query("SELECT DISTINCT tipo_entrada FROM equipamentos WHERE tipo_entrada IS NOT NULL AND tipo_entrada != '' ORDER BY tipo_entrada ASC");
-    $tipos_existentes = $stmt_tipos->fetchAll(PDO::FETCH_COLUMN);
+    $categorias_existentes   = $ligacao->query("SELECT id, nome FROM categorias ORDER BY nome ASC")->fetchAll(PDO::FETCH_OBJ);
+    $localizacoes_existentes = $ligacao->query("SELECT id, nome, edificio, piso FROM localizacoes ORDER BY edificio ASC")->fetchAll(PDO::FETCH_OBJ);
+    $fornecedores_existentes = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC")->fetchAll(PDO::FETCH_OBJ); 
 
-    $stmt_categorias = $ligacao->query("SELECT id, nome FROM categorias ORDER BY nome ASC");
-    $categorias_existentes = $stmt_categorias->fetchAll(PDO::FETCH_OBJ);
-
-    $stmt_localizacoes = $ligacao->query("SELECT id, nome, edificio, piso FROM localizacoes ORDER BY edificio ASC");
-    $localizacoes_existentes = $stmt_localizacoes->fetchAll(PDO::FETCH_OBJ);
-
-    $stmt_fornecedores = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC");
-    $fornecedores_existentes = $stmt_fornecedores->fetchAll(PDO::FETCH_OBJ);
-
-} catch (PDOException $e) {
-    $tipos_existentes = [];
-    $categorias_existentes = [];
-    $localizacoes_existentes = [];
-    $fornecedores_existentes = [];
-    $erros[] = "Erro ao carregar listas do formulário: " . $e->getMessage();
+} catch (PDOException $err) {
+    $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
 } finally {
     $ligacao = null;
 }
@@ -194,6 +177,7 @@ include '../../../assets/includes/head.php'; ?>
 
     <div class="container-fluid mt-4">
         <div class="row g-4">
+
             <?php include '../../../assets/includes/sidebar/equipamentos.php'; ?>
 
             <main class="col-md-9 col-lg-10">
@@ -203,6 +187,17 @@ include '../../../assets/includes/head.php'; ?>
                         <h2 class="fw-bold text-dark m-0">Registar Dispositivo Médico</h2>
                         <p class="text-muted small m-0">Introduza os dados de inventário e atribuição de segurança clínica.</p>
                     </div>
+
+                    <?php if (!empty($erros)): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Foram encontrados os seguintes erros:</strong>
+                            <ul class="mb-0">
+                                <?php foreach ($erros as $erro): ?>
+                                    <li><?= htmlspecialchars($erro) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
 
                     <form action="#" method="POST" class="row g-3 fw-medium text-secondary small">
 
@@ -332,7 +327,7 @@ include '../../../assets/includes/head.php'; ?>
                         <div class="col-12 mt-4 pt-3 border-top">
                             <h5 class="fw-bold text-dark mb-1">Entidades e Fornecedores Vinculados</h5>
                             <p class="text-muted small mb-3">Associe as diferentes entidades responsáveis pelo ciclo de vida deste equipamento médico.</p>
-                            
+
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label for="forn_fabricante" class="form-label text-dark fw-bold">Fabricante Oficial (Entidade Relacionada)</label>
@@ -340,7 +335,7 @@ include '../../../assets/includes/head.php'; ?>
                                         <option value="" selected disabled>Selecione o Fabricante...</option>
                                         <?php foreach ($fornecedores_existentes as $f): ?>
                                             <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Fabricante'] ?? '') == $f->id) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                                <?= htmlspecialchars($f->nome) ?> (<?= htmlspecialchars($f->tipo) ?>)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -352,7 +347,7 @@ include '../../../assets/includes/head.php'; ?>
                                         <option value="" selected>Nenhum / Não Aplicável</option>
                                         <?php foreach ($fornecedores_existentes as $f): ?>
                                             <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Distribuidor comercial'] ?? '') == $f->id) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                                <?= htmlspecialchars($f->nome) ?> (<?= htmlspecialchars($f->tipo) ?>)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -364,7 +359,7 @@ include '../../../assets/includes/head.php'; ?>
                                         <option value="" selected>Nenhuma / Não Aplicável</option>
                                         <?php foreach ($fornecedores_existentes as $f): ?>
                                             <option value="<?= $f->id ?>" <?= (($_POST['fornecedores']['Assistência Técnica'] ?? '') == $f->id) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($f->nome) ?> (<?= $f->tipo ?>)
+                                                <?= htmlspecialchars($f->nome) ?> (<?= htmlspecialchars($f->tipo) ?>)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -380,17 +375,6 @@ include '../../../assets/includes/head.php'; ?>
                         </div>
                     </form>
 
-                    <?php if (!empty($erros)): ?>
-                        <div class="alert alert-danger rounded-3" role="alert">
-                            <strong>Foram encontrados os seguintes erros:</strong>
-                            <ul class="mb-0 mt-1">
-                                <?php foreach ($erros as $erro): ?>
-                                    <li><?= htmlspecialchars($erro) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
-
                 </div>
             </main>
         </div>
@@ -404,7 +388,7 @@ include '../../../assets/includes/head.php'; ?>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formNovaCategoria">
+                    <form id="formNovaCategoriaExclusivo">
                         <div class="mb-3">
                             <label for="nome_categoria" class="form-label text-secondary small fw-medium">Nome da Categoria</label>
                             <input type="text" class="form-control rounded-3" id="nome_categoria" placeholder="Ex: Monitores, Seringas..." required>
@@ -420,9 +404,64 @@ include '../../../assets/includes/head.php'; ?>
     </div>
 
     <script>
-        flatpickr("#data_aquisicao", {
-            dateFormat: "Y-m-d"
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Escuta o ID exclusivo para evitar interferências de scripts antigos globais
+        const formNovaCategoria = document.getElementById('formNovaCategoriaExclusivo');
+        
+        if (formNovaCategoria) {
+            formNovaCategoria.addEventListener('submit', function(e) {
+                e.preventDefault(); // Impede o comportamento de submissão do formulário principal
+
+                const nomeCategoria = document.getElementById('nome_categoria').value;
+                const btnGuardar = document.getElementById('btnGuardarCategoria');
+                
+                // Rota direta e correta para o controlador AJAX privado
+                const urlAjax = '/lusohealth/private/includes/guardar_categoria_ajax.php';
+
+                btnGuardar.disabled = true;
+                btnGuardar.innerText = 'A guardar...';
+
+                fetch(urlAjax, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'nome=' + encodeURIComponent(nomeCategoria)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro no servidor (Status: ' + response.status + ')');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Inserir a nova categoria no Select e selecioná-la
+                        const selectCategoria = document.getElementById('categoria_id');
+                        const novaOpcao = new Option(data.nome, data.id, false, true);
+                        selectCategoria.add(novaOpcao);
+
+                        // Fechar o Modal de forma limpa pelo Bootstrap
+                        const modalElement = document.getElementById('modalNovaCategoria');
+                        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+                        modal.hide();
+
+                        formNovaCategoria.reset();
+                    } else {
+                        alert('Aviso: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro detetado:', error);
+                    alert('Erro ao tentar comunicar com o servidor.');
+                })
+                .finally(() => {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerText = 'Guardar';
+                });
+            });
+        }
+    });
     </script>
 
     <?php include '../../../assets/includes/footer.php'; ?>

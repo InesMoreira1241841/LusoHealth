@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit;
             }
         } catch (PDOException $err) {
-            $erros_sistema[] = "Erro ao gravar os dados: " . $err->getMessage();
+            $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
         } finally {
             $ligacao = null;
         }
@@ -119,7 +119,7 @@ include '../../../assets/includes/head.php'; ?>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
-                    <?php endif; ?>
+                    <?php endif; ?> 
 
                     <form action=# method="POST" class="small text-secondary">
 
