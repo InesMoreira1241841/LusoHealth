@@ -327,3 +327,97 @@ main div.bg-white {
     color: #856404;
     border-color: #ffeeba !important;
 }
+
+/*  FILTROS
+
+/* 1. Input de Pesquisa / Filtro */
+.dataTables_filter input {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 50px !important; /* Formato pílula fofinho */
+    padding: 0.375rem 1rem !important;
+    margin-left: 0.5rem !important;
+    background-color: #ffffff !important;
+    color: var(--text-dark) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Foco no Filtro (Efeito Verde-Menta idêntico aos teus inputs) */
+.dataTables_filter input:focus {
+    border-color: var(--mint-accent) !important;
+    box-shadow: 0 0 0 0.25rem rgba(129, 199, 132, 0.25) !important;
+}
+
+/* 2. Seletor de Quantidade (Mostrar X registos) */
+.dataTables_length select {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 50px !important;
+    padding: 0.375rem 2rem 0.375rem 1rem !important;
+    margin: 0 0.5rem !important;
+    background-color: #ffffff !important;
+    color: var(--text-dark) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.dataTables_length select:focus {
+    border-color: var(--mint-accent) !important;
+    box-shadow: 0 0 0 0.25rem rgba(129, 199, 132, 0.25) !important;
+}
+
+/* 3. Texto Informativo Inferior */
+.dataTables_info {
+    font-size: 0.875rem;
+    color: #64748b !important; /* Cor secundária do teu projeto */
+    font-weight: 500;
+    padding-top: 8px !important;
+}
+
+/* 4. Contentor dos Botões de Paginação */
+.dataTables_paginate {
+    padding-top: 4px !important;
+}
+
+/* Configuração Geral de cada Botão */
+.dataTables_paginate .paginate_button {
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 50px !important; /* Arredondado */
+    margin: 0 3px !important;
+    padding: 6px 14px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--text-dark) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02) !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Botão da Página Ativa (Verde-Menta institucional) */
+.dataTables_paginate .paginate_button.current, 
+.dataTables_paginate .paginate_button.current:hover {
+    background-color: var(--mint-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--mint-primary) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2) !important; /* Brilho verde suave */
+}
+
+/* Efeito Hover nos botões secundários da paginação */
+.dataTables_paginate .paginate_button:hover:not(.current):not(.disabled) {
+    background-color: var(--mint-light) !important; /* Fundo menta suave */
+    color: var(--mint-primary) !important; /* Texto em verde */
+    border-color: var(--mint-accent) !important;
+    cursor: pointer;
+}
+
+/* Botões Inativos (ex: "Anterior" quando estás na primeira página) */
+.dataTables_paginate .paginate_button.disabled, 
+.dataTables_paginate .paginate_button.disabled:hover {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}

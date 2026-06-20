@@ -32,17 +32,14 @@ require_once __DIR__ . '/../../config/config.php';
 
     <!-- Bootstrap CSS & custom CSS -->
     <link rel="stylesheet" href="/lusohealth/assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/lusohealth/assets/css/1241841.css">
+    <link rel="stylesheet" href="/lusohealth/assets/css/1241841.css?v=1">
 
-    <!-- jQuery -->
-    <script src="/lusohealth/assets/jquery/jquery-3.6.0.min.js"></script>
+        <!-- DICA IA: ?v=1 - o navegador é enganado, pensa que é um ficheiro completamente 
+         novo e descarrega a versão atualizada com os estilos -->
 
-    <!-- DataTables CSS + JS -->
+    <!-- DataTables CSS -->
     <link rel="stylesheet" href="/lusohealth/assets/datatables/datatables.min.css">
-    <script src="/lusohealth/assets/datatables/datatables.min.js"></script>
 
     <!-- CSS do Flatpickr -->
     <link rel="stylesheet" href="/lusohealth/assets/flatpickr/flatpickr.min.css">
-    <!-- JS do Flatpickr -->
-    <script src="/lusohealth/assets/flatpickr/flatpickr.js"></script>
 </head>

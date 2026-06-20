@@ -3,12 +3,12 @@ require_once __DIR__ . '/../../includes/funcoes.php';
 start_session();
 redirect_if_not_logged();
 
-$id_encriptado = $_GET['id_equipamentos'] ?? '';
+$id_encriptado = $_GET['id'] ?? '';
 $id_desencriptado = aes_decrypt($id_encriptado);
 
 if (!$id_desencriptado || !is_numeric($id_desencriptado)) {
     $_SESSION['error_message'] = "Identificador inválido.";
-    header("Location: equipamentos.php?modo=arquivados");
+    header("Location: contratos.php?modo=arquivados");
     exit;
 }
 
@@ -17,15 +17,15 @@ try {
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Restaura o registo definindo arquivado a 0
-    $sql = "UPDATE equipamentos SET estado = 'Ativo' WHERE id = :id";
+    $sql = "UPDATE garantias SET arquivado = 0 WHERE id = :id";
     $stmt = $ligacao->prepare($sql);
     $stmt->execute([':id' => $id_desencriptado]);
 
-    $_SESSION['success_message'] = "O equipamento foi restaurado com sucesso.";
+    $_SESSION['success_message'] = "O registo foi restaurado com sucesso.";
 } catch (PDOException $e) {
-    $_SESSION['error_message'] = "Erro interno ao tentar restaurar o equipamento.";
+    $_SESSION['error_message'] = "Erro interno ao tentar restaurar o registo.";
 }
 
-// Redireciona de volta para a lista de arquivados para ver o item a desaparecer
-header("Location: equipamentos.php?estado=ativo");
+// Redireciona de volta para a lista de arquivados para ver o item a sumir dali
+header("Location: contratos.php?modo=arquivados");
 exit;

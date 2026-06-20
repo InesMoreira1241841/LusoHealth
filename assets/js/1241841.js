@@ -220,6 +220,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Procura na página se existe algum alerta de sucesso ativo
         const alertaSucesso = $('.alert-success');
 
+        console.log("DataTables a iniciar..."); // Isto aparece na consola do navegador
+
         if (alertaSucesso.length) {
             // Executa uma contagem decrescente de 3000ms (3 segundos)
             setTimeout(function () {
@@ -232,74 +234,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // datatable
-        $('#tabela-equipamentos').DataTable({
-            "pageLength": 10,
-            "pagingType": "full_numbers",
-            "language": {
-                "decimal": "",
-                "emptyTable": "Nenhum equipamento encontrado.",
-                "info": "A mostrar _START_ até _END_ de _TOTAL_ equipamentos",
-                "infoEmpty": "A mostrar 0 até 0 de 0 equipamentos",
-                "infoFiltered": "(a filtar um total de _MAX_ equipamentos)",
-                "lengthMenu": "A mostrar _MENU_ registos por página.",
-                "loadingRecords": "A carregar...",
-                "processing": "A processar...",
-                "search": "Filtrar: ",
-                "zeroRecords": "Nenhum equipamento encontrado.",
-                "paginate": {
-                    "first": "Primeira",
-                    "last": "Última",
-                    "next": "Seguinte",
-                    "previous": "Anterior"
-                },
-            }
-        });
+        if ($.fn.DataTable) {
+            $('#tabela').DataTable({
+                "pageLength": 10,
+                "pagingType": "full_numbers",
 
-        $('#tabela-localizacoes-hospitalares').DataTable({
-            "pageLength": 10, // Limita estritamente a 10 por página
-            "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
-            "language": {
-                "decimal": "",
-                "emptyTable": "Nenhuma localização encontrada.",
-                "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ localizações", // Contador no final
-                "infoEmpty": "A apresentar 0 até 0 de 0 localizações",
-                "infoFiltered": "(a filtrar um total de _MAX_ localizações)",
-                "lengthMenu": "Mostrar _MENU_ localizações por página",
-                "loadingRecords": "A carregar...",
-                "processing": "A processar...",
-                "search": "Filtrar:", // A barra de pesquisa global
-                "zeroRecords": "Não foram encontrados resultados correspondentes",
-                "paginate": {
-                    "first": "Primeira",
-                    "last": "Última",
-                    "next": "Seguinte",
-                    "previous": "Anterior"
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Não foi encontrado nenhum registo.",
+                    "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ registos",
+                    "infoEmpty": "A apresentar 0 até 0 de 0 registos",
+                    "infoFiltered": "(a filtrar um total de _MAX_ garantias)",
+                    "lengthMenu": "Mostrar _MENU_ registos por página",
+                    "loadingRecords": "A carregar...",
+                    "processing": "A processar...",
+                    "search": "Filtrar:",
+                    "zeroRecords": "Não foram encontrados resultados correspondentes",
+                    "paginate": {
+                        "first": "Primeira",
+                        "last": "Última",
+                        "next": "Seguinte",
+                        "previous": "Anterior"
+                    }
                 }
-            }
-        });
-
-        $('#tabela-fornecedores').DataTable({
-            "pageLength": 10, // Limita estritamente a 10 por página
-            "pagingType": "full_numbers", // Desenha as setas e números de página nas pontas
-            "language": {
-                "decimal": "",
-                "emptyTable": "Nenhum fornecedor encontrado.",
-                "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ fornecedores", // Contador no final
-                "infoEmpty": "A apresentar 0 até 0 de 0 fornecedores",
-                "infoFiltered": "(a filtrar um total de _MAX_ fornecedores)",
-                "lengthMenu": "Mostrar _MENU_ fornecedores por página",
-                "loadingRecords": "A carregar...",
-                "processing": "A processar...",
-                "search": "Filtrar:", // A barra de pesquisa global
-                "zeroRecords": "Não foram encontrados resultados correspondentes",
-                "paginate": {
-                    "first": "Primeira",
-                    "last": "Última",
-                    "next": "Seguinte",
-                    "previous": "Anterior"
-                }
-            }
-        });
+            });
+            console.log("DataTables iniciado com sucesso!");
+        } else {
+            console.error("Erro: O plugin DataTables não foi carregado no footer.php!");
+        }
     })
 
 })
@@ -309,3 +271,10 @@ document.addEventListener("DOMContentLoaded", function () {
 flatpickr("#data_aquisicao", {
     dateFormat: "Y-m-d"
 });
+
+/* REMOVER FICHEIRO */
+function removerFicheiroAtual() {
+    document.getElementById('remover_ficheiro').value = '1';
+    document.getElementById('ficheiro_atual_wrapper').classList.add('d-none');
+    document.getElementById('ficheiro_contrato').value = ''; // limpa qualquer seleção pendente
+}

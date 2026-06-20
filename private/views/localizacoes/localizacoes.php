@@ -34,6 +34,7 @@ try {
     $error_message = "Erro ao aceder à base de dados.";
     $lista_localizacoes = [];
 }
+$ligacao = null;
 ?>
 
 <body class="bg-page-light">
@@ -52,7 +53,7 @@ try {
 
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <div class="btn-group shadow-sm rounded-pill p-1 bg-light border" role="group">
-                        <a href="localizacoes.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-primary shadow-sm' : 'text-secondary' ?>">
+                        <a href="localizacoes.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-success shadow-sm' : 'text-secondary' ?>">
                             <i class="fa-solid fa-folder-open me-1"></i> Ativas
                         </a>
                         <a href="localizacoes.php?modo=arquivados" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 1 ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
@@ -73,7 +74,7 @@ try {
                             <i class="fa-solid fa-plus me-2"></i>Nova Localização
                         </a>
                     </div>
- 
+
                     <?php if (!empty($success_message)) : ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <?= htmlspecialchars($success_message) ?>
@@ -81,16 +82,9 @@ try {
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!empty($error_message)) : ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($error_message) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    <?php endif; ?>
-
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle" id="tabela-localizacoes-hospitalares">
+                        <table class="table table-hover align-middle" id="tabela">
 
                             <thead class="table-light text-secondary small text-uppercase">
                                 <tr>
@@ -104,33 +98,27 @@ try {
                             </thead>
 
                             <tbody class="small text-secondary">
-                                <?php if (empty($lista_localizacoes)): ?>
+
+                                <?php foreach ($lista_localizacoes as $loc) : ?>
+
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">
-                                            Nenhuma localização ativa encontrada no sistema.
+                                        <td class="text-center fw-bold text-back"><?= htmlspecialchars($loc->codigo) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($loc->nome) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($loc->edificio) ?></td>
+                                        <td class="text-center">
+                                            <?= $loc->piso == 0 ? 'Piso 0 (R/C)' : 'Piso ' . htmlspecialchars($loc->piso) ?>
                                         </td>
-                                    </tr>
-
-                                <?php else: ?>
-                                    <?php foreach ($lista_localizacoes as $loc) : ?>
-
-                                        <tr>
-                                            <td class="text-center fw-bold text-back"><?= htmlspecialchars($loc->codigo) ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($loc->nome) ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($loc->edificio) ?></td>
-                                            <td class="text-center">
-                                                <?= $loc->piso == 0 ? 'Piso 0 (R/C)' : 'Piso ' . htmlspecialchars($loc->piso) ?>
-                                            </td>
-                                            <td class="text-center">
-                                                <?= !empty($loc->responsavel) ? htmlspecialchars($loc->responsavel) : '<span class="text-muted-italic">Não atribuído</span>' ?>
-                                            </td>
-                                            <td class="text-center">
+                                        <td class="text-center">
+                                            <?= !empty($loc->responsavel) ? htmlspecialchars($loc->responsavel) : '<span class="text-muted-italic">Não atribuído</span>' ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group gap-1">
                                                 <a href="detalhes.php?id=<?= aes_encrypt($loc->id) ?>" class="btn btn-sm btn-outline-secondary rounded-2" title="Visualizar Detalhes">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
 
                                                 <?php if ($ver_arquivados === 0): ?>
- 
+
                                                     <a href="editar.php?id=<?= aes_encrypt($loc->id) ?>" class="btn btn-sm btn-outline-success rounded-2" title="Editar">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </a>
@@ -146,12 +134,12 @@ try {
                                                     </a>
 
                                                 <?php endif; ?>
-                                            </td>
+                                            </div>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php endforeach; ?>
 
                             </tbody>
 

@@ -82,7 +82,7 @@ function validar_designacao(string $designacao): array
     }
     return $erros;
 }
- 
+
 function validar_codigo_inventario(string $codigo_inventario): array
 {
     $erros = [];
@@ -93,7 +93,7 @@ function validar_codigo_inventario(string $codigo_inventario): array
     }
     return $erros;
 }
- 
+
 function validar_marca(string $marca): array
 {
     $erros = [];
@@ -102,7 +102,7 @@ function validar_marca(string $marca): array
     }
     return $erros;
 }
- 
+
 function validar_modelo(string $modelo): array
 {
     $erros = [];
@@ -111,7 +111,7 @@ function validar_modelo(string $modelo): array
     }
     return $erros;
 }
- 
+
 function validar_num_serie(string $num_serie): array
 {
     $erros = [];
@@ -120,7 +120,7 @@ function validar_num_serie(string $num_serie): array
     }
     return $erros;
 }
- 
+
 function validar_fabricante(string $fabricante): array
 {
     $erros = [];
@@ -129,12 +129,12 @@ function validar_fabricante(string $fabricante): array
     }
     return $erros;
 }
- 
+
 function validar_ano_fabrico(string $ano_fabrico): array
 {
     $erros = [];
     $ano_atual = (int) date('Y');
- 
+
     if (trim($ano_fabrico) === '' || !ctype_digit($ano_fabrico)) {
         $erros[] = "O Ano de Fabrico deve ser um número válido.";
     } elseif ((int) $ano_fabrico < 1980 || (int) $ano_fabrico > $ano_atual + 1) {
@@ -142,18 +142,18 @@ function validar_ano_fabrico(string $ano_fabrico): array
     }
     return $erros;
 }
- 
+
 function validar_data_aquisicao(string $data_aquisicao): array
 {
     $erros = [];
     $data = DateTime::createFromFormat('Y-m-d', $data_aquisicao);
- 
+
     if (trim($data_aquisicao) === '' || !$data || $data->format('Y-m-d') !== $data_aquisicao) {
         $erros[] = "A Data de Aquisição deve ser uma data válida no formato AAAA-MM-DD.";
     }
     return $erros;
 }
- 
+
 /**
  * Converte o custo de aquisição de formato PT (ex: "1.250,00 €") para float.
  * Devolve null se o valor estiver vazio ou não puder ser convertido.
@@ -164,15 +164,15 @@ function normalizar_custo_aquisicao(string $custo_aquisicao): ?float
     if ($custo === '') {
         return null;
     }
- 
+
     $custo = str_replace('€', '', $custo);
     $custo = trim($custo);
     $custo = str_replace('.', '', $custo);   // remove separador de milhares
     $custo = str_replace(',', '.', $custo);  // vírgula decimal -> ponto
- 
+
     return is_numeric($custo) ? (float) $custo : null;
 }
- 
+
 function validar_custo_aquisicao(string $custo_aquisicao): array
 {
     $erros = [];
@@ -181,7 +181,7 @@ function validar_custo_aquisicao(string $custo_aquisicao): array
     }
     return $erros;
 }
- 
+
 function validar_categoria(string $categoria_id): array
 {
     $erros = [];
@@ -190,7 +190,7 @@ function validar_categoria(string $categoria_id): array
     }
     return $erros;
 }
- 
+
 function validar_localizacao_id(string $localizacao_id): array
 {
     $erros = [];
@@ -199,7 +199,7 @@ function validar_localizacao_id(string $localizacao_id): array
     }
     return $erros;
 }
- 
+
 function validar_tipo_entrada(string $tipo_entrada): array
 {
     $erros = [];
@@ -208,7 +208,7 @@ function validar_tipo_entrada(string $tipo_entrada): array
     }
     return $erros;
 }
- 
+
 function validar_estado(string $estado): array
 {
     $erros = [];
@@ -217,7 +217,7 @@ function validar_estado(string $estado): array
     }
     return $erros;
 }
- 
+
 function validar_criticidade(string $criticidade): array
 {
     $erros = [];
@@ -372,14 +372,6 @@ function validar_tipo_garantia(string $tipo): array
     return $erros;
 }
 
-function validar_tem_contrato_manutencao(string $tem_contrato): array
-{
-    $erros = [];
-    if (!in_array($tem_contrato, ['0', '1'], true)) {
-        $erros[] = "A indicação de Contrato de Manutenção é inválida.";
-    }
-    return $erros;
-}
 
 function validar_datas_garantia(string $data_inicio, string $data_fim): array
 {
@@ -409,26 +401,54 @@ function validar_periodicidade(string $periodicidade): array
     return $erros;
 }
 
-function validar_caminhos_garantia(string $ficheiro_path, string $url_externo): array
+function validar_caminhos_garantia(array $ficheiro, string $url_externo): array
 {
     $erros = [];
-    if (trim($ficheiro_path) !== '' && mb_strlen(trim($ficheiro_path)) > 255) {
-        $erros[] = "O caminho do ficheiro local excede o limite de 255 caracteres.";
-    }
-    if (trim($url_externo) !== '') {
-        if (!filter_var(trim($url_externo), FILTER_VALIDATE_URL)) {
-            $url_externo = "O Link para a Cloud inserido não é um URL válido.";
-        } elseif (mb_strlen(trim($url_externo)) > 255) {
-            $erros[] = "O Link para a Cloud não pode exceder os 255 caracteres.";
+
+    // Validar ficheiro PDF (caso exista upload)
+    if (!empty($ficheiro) && isset($ficheiro['error']) && $ficheiro['error'] === UPLOAD_ERR_OK) {
+
+        $extensao = strtolower(pathinfo($ficheiro['name'], PATHINFO_EXTENSION));
+
+        if ($extensao !== 'pdf') {
+            $erros[] = "Apenas ficheiros PDF são permitidos.";
+        }
+
+        if ($ficheiro['size'] > 5 * 1024 * 1024) {
+            $erros[] = "O ficheiro não pode exceder 5 MB.";
+        }
+
+        if (!empty($ficheiro) && isset($ficheiro['error'])) {
+
+            if (
+                $ficheiro['error'] !== UPLOAD_ERR_OK &&
+                $ficheiro['error'] !== UPLOAD_ERR_NO_FILE
+            ) {
+                $erros[] = "Ocorreu um erro no upload do ficheiro.";
+            }
         }
     }
+
+    // Validar URL externo
+    if (trim($url_externo) !== '') {
+
+        if (!filter_var(trim($url_externo), FILTER_VALIDATE_URL)) {
+            $erros[] = "O link externo não é um URL válido.";
+        }
+
+        if (mb_strlen(trim($url_externo)) > 2000) {
+            $erros[] = "O URL externo não pode exceder 2000 caracteres.";
+        }
+    }
+
     return $erros;
 }
 
 
 // ------------------------------ LOCALIZACOES ------------------------------
 
-function validar_codigo(string $codigo) {
+function validar_codigo(string $codigo)
+{
     $erros = [];
     $codigo = trim($codigo);
 
@@ -440,11 +460,12 @@ function validar_codigo(string $codigo) {
         // Permite apenas letras, números e hífen (padrão para siglas hospitalares)
         $erros[] = "O ID da Localização apenas pode conter letras, números e hífens.";
     }
-    
+
     return $erros; // Devolve SEMPRE um array (vazio se não houver erros)
 }
 
-function validar_nome(string $nome) {
+function validar_nome(string $nome)
+{
     $erros = [];
     $nome = trim($nome);
 
@@ -453,24 +474,26 @@ function validar_nome(string $nome) {
     } elseif (strlen($nome) < 3 || strlen($nome) > 100) {
         $erros[] = "O Nome do Serviço deve conter entre 3 e 100 caracteres.";
     }
-    
+
     return $erros;
 }
 
-function validar_edificio(string $edificio) {
+function validar_edificio(string $edificio)
+{
     $erros = [];
     $edificio = trim($edificio);
 
     if (empty($edificio)) {
         $erros[] = "O campo Edifício / Bloco é obrigatório.";
     }
-    
+
     return $erros;
 }
 
-function validar_piso(string $piso) {
+function validar_piso(string $piso)
+{
     $erros = [];
-    
+
     // Como o piso pode ser "0", verificamos explicitamente se a string está vazia
     if (trim($piso) === "") {
         $erros[] = "O campo Piso é de preenchimento obrigatório.";
@@ -483,18 +506,19 @@ function validar_piso(string $piso) {
             $erros[] = "Piso inválido. O hospital apenas dispõe de pisos entre o -2 e o 7.";
         }
     }
-    
+
     return $erros;
 }
 
-function validar_responsavel(string $responsavel) : array {
+function validar_responsavel(string $responsavel): array
+{
     $erros = [];
     $responsavel = trim($responsavel);
 
     if (empty($responsavel)) {
         $erros[] = "O campo Responsável é obrigatório.";
     }
-    
+
     return $erros;
 }
 

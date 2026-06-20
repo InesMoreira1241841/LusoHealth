@@ -40,6 +40,7 @@ try {
     $error_message = "Erro ao aceder à base de dados.";
     $lista_fornecedores = [];
 }
+$ligacao = null;
 ?>
 
 <body class="bg-page-light">
@@ -54,8 +55,8 @@ try {
 
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <div class="btn-group shadow-sm rounded-pill p-1 bg-light border" role="group">
-                        <a href="fornecedores.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-primary shadow-sm' : 'text-secondary' ?>">
-                            <i class="fa-solid fa-folder-open me-1"></i> Ativas
+                        <a href="fornecedores.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-success shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-folder-open me-1"></i> Ativos
                         </a>
                         <a href="fornecedores.php?modo=arquivados" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 1 ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
                             <i class="fa-solid fa-box-archive me-1"></i> Arquivados
@@ -91,7 +92,7 @@ try {
 
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle" id="tabela-fornecedores">
+                        <table class="table table-hover align-middle" id="tabela">
 
                             <thead class="table-light text-secondary small text-uppercase">
                                 <tr>
@@ -106,30 +107,23 @@ try {
 
                             <tbody class="small text-secondary">
 
-                                <?php if (empty($lista_fornecedores)): ?>
+                                <?php foreach ($lista_fornecedores as $forn) : ?>
+
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">
-                                            Nenhum fornecedor encontrado no sistema.
+                                        <td class="text-center fw-bold text-dark"><?= htmlspecialchars($forn->nif) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($forn->nome) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($forn->telefone ?? 'N/A') ?></td>
+                                        <td class="text-center">
+                                            <?php if (!empty($forn->email)): ?>
+                                                <code class="text-success"><?= htmlspecialchars($forn->email) ?></code>
+                                            <?php else: ?>
+                                                <span class="text-muted small">Não associado</span>
+                                            <?php endif; ?>
                                         </td>
-                                    </tr>
+                                        <td class="text-center"><?= htmlspecialchars($forn->tipo) ?></td>
 
-                                <?php else: ?>
-                                    <?php foreach ($lista_fornecedores as $forn) : ?>
-
-                                        <tr>
-                                            <td class="text-center fw-bold text-dark"><?= htmlspecialchars($forn->nif) ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($forn->nome) ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($forn->telefone ?? 'N/A') ?></td>
-                                            <td class="text-center">
-                                                <?php if (!empty($forn->email)): ?>
-                                                    <code class="text-success"><?= htmlspecialchars($forn->email) ?></code>
-                                                <?php else: ?>
-                                                    <span class="text-muted small">Não associado</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="text-center"><?= htmlspecialchars($forn->tipo) ?></td>
-
-                                            <td class="text-center">
+                                        <td class="text-center">
+                                            <div class="btn-group gap-1">
                                                 <a href="detalhes.php?id_fornecedores=<?= aes_encrypt($forn->id) ?>" class="btn btn-sm btn-outline-secondary rounded-2" title="Visualizar Detalhes">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
@@ -151,12 +145,13 @@ try {
                                                     </a>
 
                                                 <?php endif; ?>
-                                            </td>
+                                            </div>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php endforeach; ?>
+
 
                             </tbody>
 

@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h2 class="h3 fw-bold text-dark border-bottom-custom pb-2 mb-3">Autor do Projeto</h2>
+                    <h2 class="h3 fw-bold text-dark border-bottom-custom pb-2 mb-3">Autora do Projeto</h2>
                     <div class="card bg-light border-0 rounded-4 shadow-sm p-4">
                         <div class="row align-items-center g-4">
                             <div class="col-sm-4 text-center">

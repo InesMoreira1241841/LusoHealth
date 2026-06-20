@@ -12,8 +12,8 @@ $success_message = $_SESSION['success_message'] ?? '';
 $error_message = $_SESSION['error_message'] ?? '';
 unset($_SESSION['success_message'], $_SESSION['error_message']);
 
-// Captura o modo de visualização. Se não for especificado "arquivados", mostra os em circulação (0)
-$ver_arquivados = (isset($_GET['modo']) && $_GET['modo'] === 'arquivados') ? 1 : 0;
+// Captura o modo de visualização. Se não vier nada por defeito mostra os equipamentos ativos
+$ver_estado = $_GET['estado'] ?? 'Ativo';
 
 try {
     $ligacao = new PDO(
@@ -23,10 +23,9 @@ try {
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // O valor de 'arquivado = :arquivado' muda dinamicamente
-    $sql = "SELECT * FROM equipamentos WHERE arquivado = :arquivado ORDER BY designacao ASC";
+    $sql = "SELECT * FROM equipamentos WHERE estado = :estado ORDER BY designacao ASC";
     $stmt = $ligacao->prepare($sql);
-    $stmt->execute([':arquivado' => $ver_arquivados]);
+    $stmt->execute([':estado' => $ver_estado]);
     $lista_equipamentos = $stmt->fetchAll(PDO::FETCH_OBJ);
 } catch (PDOException $e) {
     $error_message = "Erro ao aceder à base de dados.";
@@ -47,14 +46,32 @@ $ligacao = null;
             <main class="col-md-9 col-lg-10">
 
                 <div class="mb-3 d-flex justify-content-between align-items-center">
+
                     <div class="btn-group shadow-sm rounded-pill p-1 bg-light border" role="group">
-                        <a href="equipamentos.php" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 0 ? 'btn-primary shadow-sm' : 'text-secondary' ?>">
-                            <i class="fa-solid fa-folder-open me-1"></i> Em Circulação
+
+                        <a href="equipamentos.php?estado=Ativo" class="btn btn-sm px-3 rounded-pill fw-medium 
+                        <?= $ver_estado === 'Ativo' ? 'btn-success shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-heart-pulse me-1"></i>Ativos
                         </a>
-                        <a href="equipamentos.php?modo=arquivados" class="btn btn-sm px-3 rounded-pill fw-medium <?= $ver_arquivados === 1 ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
-                            <i class="fa-solid fa-box-archive me-1"></i> Arquivados
+                        <a href="equipamentos.php?estado=Em Manutenção" class="btn btn-sm px-3 rounded-pill fw-medium 
+                        <?= $ver_estado === 'Em Manutenção' ? 'btn-warning shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-screwdriver-wrench me-1"></i>Em Manutenção
                         </a>
+                        <a href="equipamentos.php?estado=Em Calibração" class="btn btn-sm px-3 rounded-pill fw-medium 
+                        <?= $ver_estado === 'Em Calibração' ? 'btn-warning shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-scale-balanced me-1"></i>Em Calibração
+                        </a>
+                        <a href="equipamentos.php?estado=Em Quarentena" class="btn btn-sm px-3 rounded-pill fw-medium 
+                        <?= $ver_estado === 'Em Quarentena' ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i>Em Quarentena
+                        </a>
+                        <a href="equipamentos.php?estado=Abatido" class="btn btn-sm px-3 rounded-pill fw-medium 
+                        <?= $ver_estado === 'Abatido' ? 'btn-danger shadow-sm' : 'text-secondary' ?>">
+                            <i class="fa-solid fa-box-archive me-1"></i>Abatidos
+                        </a>
+
                     </div>
+
                 </div>
 
                 <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
@@ -85,7 +102,7 @@ $ligacao = null;
 
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle" id="tabela-equipamentos">
+                        <table class="table table-hover align-middle" id="tabela">
 
                             <thead class="table-light text-secondary small text-uppercase">
                                 <tr>
@@ -99,58 +116,58 @@ $ligacao = null;
                             </thead>
 
                             <tbody class="small text-secondary">
-                                <?php if (empty($lista_equipamentos)): ?>
+
+                                <?php foreach ($lista_equipamentos as $equip) : ?>
+
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">
-                                            Nenhum equipamento <?= $ver_arquivados === 1 ? 'arquivado' : 'em circulação' ?> encontrado no sistema.
+                                        <td class="text-center fw-semibold text-dark"><?= htmlspecialchars($equip->designacao) ?></td>
+                                        <td class="text-center font-monospace small"><?= htmlspecialchars($equip->codigo_inventario) ?></td>
+                                        <td class="text-center"><?= htmlspecialchars($equip->marca . ' | ' . $equip->modelo) ?></td>
+
+                                        <td class="text-center">
+                                            <span class="text-center badge <?= $equip->estado === 'Ativo' ? 'bg-success-subtle text-success border' : 'bg-warning-subtle text-warning border' ?> rounded-3 px-2">
+                                                <?= htmlspecialchars($equip->estado) ?>
+                                            </span>
                                         </td>
-                                    </tr>
-
-                                <?php else: ?>
-                                    <?php foreach ($lista_equipamentos as $equip) : ?>
-
-                                        <tr>
-                                            <td class="text-center fw-semibold text-dark"><?= htmlspecialchars($equip->designacao) ?></td>
-                                            <td class="text-center font-monospace small"><?= htmlspecialchars($equip->codigo_inventario) ?></td>
-                                            <td><?= htmlspecialchars($equip->marca . ' | ' . $equip->modelo) ?></td>
-                                            <td>
-                                                <span class="text-center badge <?= $equip->estado === 'Operacional' ? 'bg-success-subtle text-success border' : 'bg-warning-subtle text-warning border' ?> rounded-3 px-2">
-                                                    <?= htmlspecialchars($equip->estado) ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="text-center badge <?= $equip->criticidade === 'Alta' ? 'bg-danger text-white' : 'bg-light text-secondary border' ?> rounded-pill px-2">
-                                                    <?= htmlspecialchars($equip->criticidade) ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="detalhes.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>" class="btn btn-sm btn-outline-secondary rounded-2" title="Visualizar Detalhes">
+                                        <td class="text-center">
+                                            <span class="text-center badge <?= $equip->criticidade === 'Alta' ? 'bg-danger text-white' : 'bg-light text-secondary border' ?> rounded-pill px-2">
+                                                <?= htmlspecialchars($equip->criticidade) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group gap-1">
+                                                <a href="detalhes.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>"
+                                                    class="btn btn-sm btn-outline-secondary rounded-2"
+                                                    title="Visualizar Detalhes">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
 
-                                                <?php if ($ver_arquivados === 0): ?>
+                                                <?php if ($ver_estado === 'Abatido'): ?>
+
+                                                    <a href="desarquivar.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>"
+                                                        class="btn btn-sm btn-outline-primary rounded-2"
+                                                        title="Ativar"
+                                                        onclick="return confirm('Deseja restaurar este equipamento o estado em circulação?');">
+                                                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                                    </a>
+
+                                                <?php else: ?>
 
                                                     <a href="editar.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>" class="btn btn-sm btn-outline-success rounded-2" title="Editar">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </a>
                                                     <a href="arquivar.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>" class="btn btn-sm btn-outline-danger rounded-2"
-                                                        title="Arquivar" onclick="return confirm('Tem a certeza que deseja arquivar este equipamento?');">
+                                                        title="Abataer" onclick="return confirm('Tem a certeza que deseja abater este equipamento?');">
                                                         <i class="fa-solid fa-box-archive"></i>
                                                     </a>
 
-                                                <?php else: ?>
-                                                    <a href="desarquivar.php?id_equipamentos=<?= aes_encrypt($equip->id) ?>" class="btn btn-sm btn-outline-primary rounded-2"
-                                                        title="Desarquivar" onclick="return confirm('Deseja restaurar este equipamento o estado em circulação?');">
-                                                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                                                    </a>
-
                                                 <?php endif; ?>
-                                            </td>
+                                            </div>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php endforeach; ?>
 
                             </tbody>
 
