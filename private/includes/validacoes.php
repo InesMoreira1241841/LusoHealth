@@ -2,72 +2,132 @@
 
 // ------------------------------ DOCUMENTAÇÃO ------------------------------
 
-function validar_documento_equipamento_id(string $equipamento_id): array
+function validar_nome_documento(string $nome_documento): array
 {
     $erros = [];
-    if (trim($equipamento_id) === '' || !ctype_digit($equipamento_id)) {
-        $erros[] = "O documento deve estar associado a um Equipamento válido.";
-    }
-    return $erros;
-}
+    $nome_documento = trim($nome_documento);
 
-function validar_documento_fornecedor_id(string $fornecedor_id): array
-{
-    $erros = [];
-    if (trim($fornecedor_id) !== '' && !ctype_digit($fornecedor_id)) {
-        $erros[] = "O Fornecedor associado ao documento é inválido.";
+    if ($nome_documento === '') {
+        $erros[] = "O Nome do Documento é obrigatório.";
+    } elseif (mb_strlen($nome_documento) > 255) {
+        $erros[] = "O Nome do Documento não pode exceder os 255 caracteres.";
     }
+
     return $erros;
 }
 
 function validar_tipo_documento(string $tipo): array
 {
     $erros = [];
+    $tipos_validos = ['Manual', 'Calibracao', 'Conformidade', 'Relatorio'];
+
     if (trim($tipo) === '') {
         $erros[] = "O Tipo de Documento é obrigatório.";
-    } elseif (mb_strlen(trim($tipo)) > 50) {
-        $erros[] = "O Tipo de Documento não pode exceder os 50 caracteres.";
+    } elseif (!in_array($tipo, $tipos_validos, true)) {
+        $erros[] = "O Tipo de Documento selecionado é inválido.";
     }
+
     return $erros;
 }
 
-function validar_nome_documento(string $nome_documento): array
+function validar_documento_equipamento_id(string $equipamento_id): array
 {
     $erros = [];
-    if (trim($nome_documento) === '') {
-        $erros[] = "O Nome do Documento é obrigatório.";
-    } elseif (mb_strlen(trim($nome_documento)) > 255) {
-        $erros[] = "O Nome do Documento não pode exceder os 255 caracteres.";
+    $equipamento_id = trim($equipamento_id);
+
+    if ($equipamento_id !== '' && !ctype_digit($equipamento_id)) {
+        $erros[] = "O Equipamento associado ao documento é inválido.";
     }
+
     return $erros;
 }
 
-function validar_ficheiro_documento(string $caminho): array
+function validar_documento_fornecedor_id(string $fornecedor_id): array
 {
     $erros = [];
-    if (trim($caminho) === '') {
-        $erros[] = "O ficheiro do documento ou o seu caminho é obrigatório.";
-    } elseif (mb_strlen(trim($caminho)) > 255) {
-        $erros[] = "O caminho do ficheiro não pode exceder os 255 caracteres.";
+    $fornecedor_id = trim($fornecedor_id);
+
+    if ($fornecedor_id !== '' && !ctype_digit($fornecedor_id)) {
+        $erros[] = "O Fornecedor associado ao documento é inválido.";
     }
+
     return $erros;
 }
 
-function validar_datas_documento(string $data_doc, string $data_val): array
+function validar_associacao_documento(string $equipamento_id, string $fornecedor_id): array
 {
     $erros = [];
-    if (trim($data_doc) !== '') {
-        $d = DateTime::createFromFormat('Y-m-d', $data_doc);
-        if (!$d || $d->format('Y-m-d') !== $data_doc) {
-            $erros[] = "A Data do Documento introduzida é inválida.";
+
+    if (trim($equipamento_id) === '' && trim($fornecedor_id) === '') {
+        $erros[] = "O documento tem de estar associado a pelo menos um Equipamento ou um Fornecedor.";
+    }
+
+    return $erros;
+}
+
+function validar_datas_documento(string $data_documento, string $data_validade): array
+{
+    $erros = [];
+    $data_documento = trim($data_documento);
+    $data_validade = trim($data_validade);
+    $doc = null;
+
+    if ($data_documento === '') {
+        $erros[] = "A Data de Emissão do Documento é obrigatória.";
+    } else {
+        $doc = DateTime::createFromFormat('Y-m-d', $data_documento);
+        if (!$doc || $doc->format('Y-m-d') !== $data_documento) {
+            $erros[] = "A Data de Emissão introduzida é inválida.";
+            $doc = null;
         }
     }
-    if (trim($data_val) !== '') {
-        $v = DateTime::createFromFormat('Y-m-d', $data_val);
-        if (!$v || $v->format('Y-m-d') !== $data_val) {
+
+    if ($data_validade !== '') {
+        $val = DateTime::createFromFormat('Y-m-d', $data_validade);
+        if (!$val || $val->format('Y-m-d') !== $data_validade) {
             $erros[] = "A Data de Validade introduzida é inválida.";
+        } elseif ($doc && $val < $doc) {
+            $erros[] = "A Data de Validade não pode ser anterior à Data de Emissão.";
         }
     }
+
+    return $erros;
+}
+
+function validar_caminhos_documento(array $ficheiro, string $url_externo): array
+{
+    $erros = [];
+    $url_externo = trim($url_externo);
+
+    $tem_ficheiro = !empty($ficheiro) && isset($ficheiro['error']) && $ficheiro['error'] === UPLOAD_ERR_OK;
+    $erro_upload_real = !empty($ficheiro) && isset($ficheiro['error'])
+        && $ficheiro['error'] !== UPLOAD_ERR_OK
+        && $ficheiro['error'] !== UPLOAD_ERR_NO_FILE;
+
+    if ($erro_upload_real) {
+        $erros[] = "Ocorreu um erro ao carregar o ficheiro selecionado. Tenta novamente.";
+        return $erros;
+    }
+
+    if (!$tem_ficheiro && $url_externo === '') {
+        $erros[] = "Tens de anexar um ficheiro PDF ou indicar um link externo para o documento.";
+        return $erros;
+    }
+
+    if ($tem_ficheiro) {
+        $ext = strtolower(pathinfo($ficheiro['name'], PATHINFO_EXTENSION));
+
+        if ($ext !== 'pdf') {
+            $erros[] = "Apenas ficheiros PDF são permitidos.";
+        } elseif ($ficheiro['size'] > 5 * 1024 * 1024) {
+            $erros[] = "O PDF não pode exceder 5MB.";
+        }
+    }
+
+    if ($url_externo !== '' && !filter_var($url_externo, FILTER_VALIDATE_URL)) {
+        $erros[] = "O Link para a Cloud inserido não é válido.";
+    }
+
     return $erros;
 }
 

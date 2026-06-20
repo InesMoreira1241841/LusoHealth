@@ -115,19 +115,19 @@ try {
             $fornecedor_final = trim($fornecedor_id) === '' ? null : (int)$fornecedor_id;
             $url_final = trim($url_externo) === '' ? null : trim($url_externo);
 
-            $stmt = $ligacao->prepare("
-            UPDATE garantias
-            SET num_contrato = :num_contrato,
-                equipamento_id = :equipamento_id,
-                fornecedor_id = :fornecedor_id,
-                tipo = :tipo,
-                data_inicio = :data_inicio,
-                data_fim = :data_fim,
-                periodicidade = :periodicidade,
-                ficheiro_path = :ficheiro_path,
-                url_externo = :url_externo,
-                observacoes = :observacoes
-            WHERE id = :id
+            $stmt = $ligacao->prepare("UPDATE garantias SET 
+                                        num_contrato = :num_contrato,
+                                        equipamento_id = :equipamento_id,
+                                        fornecedor_id = :fornecedor_id,
+                                        tipo = :tipo,
+                                        data_inicio = :data_inicio,
+                                        data_fim = :data_fim,
+                                        periodicidade = :periodicidade,
+                                        ficheiro_path = :ficheiro_path,
+                                        url_externo = :url_externo,
+                                        observacoes = :observacoes
+                                        atualizado_em = NOW()
+                                    WHERE id = :id
         ");
 
             $stmt->execute([
