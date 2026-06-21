@@ -35,3 +35,9 @@ ALTER TABLE `documentos`
     ADD COLUMN `ficheiro_path` VARCHAR(255) DEFAULT NULL COMMENT 'Caminho do PDF local (Forma 1)' AFTER `notas`,
     ADD COLUMN `url_externo` VARCHAR(2000) DEFAULT NULL COMMENT 'Link para a Cloud/OneDrive (Forma 2)' AFTER `ficheiro_path`;
     ADD COLUMN `arquivado` TINYINT(1) NOT NULL DEFAULT 0 AFTER `url_externo`;
+
+ALTER TABLE `utilizadores`
+    DROP COLUMN `nome`;
+
+INSERT INTO utilizadores (username, password) 
+VALUES ('inesmoreira', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');

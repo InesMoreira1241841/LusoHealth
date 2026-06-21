@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../private/includes/funcoes.php';
 
 redirect_if_not_logged();
 
-$nome = $_SESSION['utilizador'];
+$nome = $_SESSION['username'];
 ?>
 
 <header class="container-fluid bg-white border-bottom p-3 shadow-sm">
@@ -34,7 +34,7 @@ $nome = $_SESSION['utilizador'];
                     </li>
                     <li>
                         <a class="dropdown-item text-danger d-flex align-items-center gap-2 px-3 py-2 text-decoration-none small"
-                            href="/lusohealth/public/logout.php">
+                            href="<?= BASE_URL ?>/public/logout.php">
                             <i class="fa-solid fa-right-from-bracket"></i>
                             <span class="fw-medium">Terminar Sessão</span>
                         </a>

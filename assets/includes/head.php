@@ -18,7 +18,7 @@ require_once __DIR__ . '/../../config/config.php';
     <title><?php echo APP_NAME; ?></title>
 
     <!-- favicon -->
-    <link rel="shortcut icon" href="/lusohealth/assets/img/logo.png" type="image/png">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>/assets/img/logo.png" type="image/png">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,18 +28,18 @@ require_once __DIR__ . '/../../config/config.php';
         rel="stylesheet">
 
     <!-- Font Awesome (local) -->
-    <link rel="stylesheet" href="/lusohealth/assets/fontawesome/all.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/fontawesome/all.min.css">
 
     <!-- Bootstrap CSS & custom CSS -->
-    <link rel="stylesheet" href="/lusohealth/assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/lusohealth/assets/css/1241841.css?v=1">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/1241841.css?v=1">
 
         <!-- DICA IA: ?v=1 - o navegador é enganado, pensa que é um ficheiro completamente 
          novo e descarrega a versão atualizada com os estilos -->
 
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="/lusohealth/assets/datatables/datatables.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/datatables/datatables.min.css">
 
     <!-- CSS do Flatpickr -->
-    <link rel="stylesheet" href="/lusohealth/assets/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/flatpickr/flatpickr.min.css">
 </head>

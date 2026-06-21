@@ -416,7 +416,7 @@ include '../../../assets/includes/head.php'; ?>
                 const btnGuardar = document.getElementById('btnGuardarCategoria');
                 
                 // Rota direta e correta para o controlador AJAX privado
-                const urlAjax = '/lusohealth/private/includes/guardar_categoria_ajax.php';
+                const urlAjax = '<?= BASE_URL ?>/private/includes/guardar_categoria_ajax.php';
 
                 btnGuardar.disabled = true;
                 btnGuardar.innerText = 'A guardar...';

@@ -50,7 +50,7 @@ if (!empty($_SESSION['server_error'])) {
 
                         <div class="mb-3">
 
-                            <label for="utilizador" class="form-label fw-semibold text-muted small">Utilizador</label>
+                            <label for="username" class="form-label fw-semibold text-muted small">Utilizador</label>
 
                             <div class="input-group">
 
@@ -58,8 +58,8 @@ if (!empty($_SESSION['server_error'])) {
                                     <i class="fa-solid fa-user small"></i>
                                 </span>
 
-                                <input type="text" id="utilizador" name="utilizador"
-                                    class="form-control bg-light border-start-0 rounded-end-3 focus-custom" placeholder="Ex: ines.moreira" required>
+                                <input type="text" id="username" name="username"
+                                    class="form-control bg-light border-start-0 rounded-end-3 focus-custom" placeholder="Ex: teste@isep.pt">
 
                             </div>
 
@@ -75,7 +75,7 @@ if (!empty($_SESSION['server_error'])) {
                                 </span>
 
                                 <input type="password" id="password" name="password"
-                                    class="form-control bg-light border-start-0 rounded-end-3 focus-custom" placeholder="*******" required>
+                                    class="form-control bg-light border-start-0 rounded-end-3 focus-custom" placeholder="*******">
                             </div>
                         </div>
 

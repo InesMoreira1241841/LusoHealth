@@ -13,7 +13,7 @@ function start_session()
 // Verifica se a sessão do utilizador está ativa
 function check_session()
 {
-    return isset($_SESSION['utilizador']);
+    return isset($_SESSION['username']);
 }
 
 // Redireciona automaticamente se não houver sessão iniciada
@@ -48,14 +48,16 @@ function aes_encrypt($value)
         OPENSSL_IV
     ));
 }
+
 function aes_decrypt($value)
 {
-    if (!is_string($value) || strlen($value) % 2 !== 0) return false; // proteção básica return openssl_decrypt(
+    if (!is_string($value) || strlen($value) % 2 !== 0) return false; 
+    
     return openssl_decrypt( 
         hex2bin($value),
-    OPENSSL_METHOD,
-    OPENSSL_KEY,
-    OPENSSL_RAW_DATA,
-    OPENSSL_IV
+        OPENSSL_METHOD,
+        OPENSSL_KEY,
+        OPENSSL_RAW_DATA,
+        OPENSSL_IV
     );
 }

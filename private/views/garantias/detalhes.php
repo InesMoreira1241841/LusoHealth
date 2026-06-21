@@ -54,14 +54,15 @@ try {
 $ligacao = null;
 
 $hoje = new DateTime();
-$fim = new DateTime($contrato->data_fim);
-
-if ($fim < $hoje) {
-    $estado = "Expirado";
-    $badge = "danger";
-} else {
-    $estado = "Ativo";
-    $badge = "success";
+$estado = '';
+$badge = '';
+if ($contrato) {
+    $fim = new DateTime($contrato->data_fim);
+    if ($fim < $hoje) {
+        $estado = "Expirado"; $badge = "danger";
+    } else {
+        $estado = "Ativo"; $badge = "success";
+    }
 }
 
 include '../../../assets/includes/head.php';
