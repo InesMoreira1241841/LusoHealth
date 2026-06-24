@@ -219,8 +219,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // 1. Primeiro procura-se o botão de submissão da página
     const btnSubmitGlobal = document.querySelector('button[type="submit"]');
 
-    // 2. Só cria o botão "Preencher Dados de Teste" se o botão existir E NÃO for a página de login
-    if (btnSubmitGlobal && !window.location.pathname.includes('login.php')) {
+    // 2. Só cria o botão "Preencher Dados de Teste" se o botão existir E NÃO forem as páginas entre ''
+    if (btnSubmitGlobal 
+            && !window.location.pathname.includes('login.php') 
+            && !window.location.pathname.includes('conteudos.php')
+            && !window.location.pathname.includes('editar.php')) {
         const btnAuto = document.createElement('button');
         btnAuto.type = 'button';
         btnAuto.className = 'btn btn-outline-secondary btn-sm rounded-pill mt-2 d-block';

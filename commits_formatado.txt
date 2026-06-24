@@ -1,3 +1,5 @@
+0fb57c0 - Inês Maria Fernandes Moreira - 2026-06-24 15:47:19 +0100 - Backend: Retificação de uma virgula em falta na linha 128 da página editar.php da pasta garantias
+
 7d947b7 - Inês Maria Fernandes Moreira - 2026-06-24 15:36:49 +0100 - Backend: Correção de erro na ligação de documentos aos equipamentos na página detalhes.php da pasta equipamentos
 
 88db9c6 - Inês Maria Fernandes Moreira - 2026-06-24 14:55:30 +0100 - Backend: Alteração função .js 7 e 8

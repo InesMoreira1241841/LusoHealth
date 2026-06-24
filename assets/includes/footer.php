@@ -5,7 +5,7 @@
     <script src="<?= BASE_URL ?>/assets/datatables/datatables.min.js"></script>
     <!-- Flatpickr JS -->
     <script src="<?= BASE_URL ?>/assets/flatpickr/flatpickr.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/1241841.js?v=8"></script>
+    <script src="<?= BASE_URL ?>/assets/js/1241841.js?v=10"></script>
     
 </body>
 
