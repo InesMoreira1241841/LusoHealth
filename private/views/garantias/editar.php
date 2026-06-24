@@ -125,7 +125,7 @@ try {
                                         periodicidade = :periodicidade,
                                         ficheiro_path = :ficheiro_path,
                                         url_externo = :url_externo,
-                                        observacoes = :observacoes
+                                        observacoes = :observacoes,
                                         atualizado_em = NOW()
                                     WHERE id = :id
         ");
@@ -243,7 +243,7 @@ include '../../../assets/includes/head.php';
                                     type="text"
                                     class="form-control font-monospace text-uppercase"
                                     name="num_contrato"
-                                    value="<?= htmlspecialchars($contrato->num_contrato) ?>">
+                                    value="<?= htmlspecialchars($contrato->num_contrato) ?> ">
                             </div>
 
                             <div class="col-md-4">

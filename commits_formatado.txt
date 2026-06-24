@@ -1,3 +1,5 @@
+7d947b7 - Inês Maria Fernandes Moreira - 2026-06-24 15:36:49 +0100 - Backend: Correção de erro na ligação de documentos aos equipamentos na página detalhes.php da pasta equipamentos
+
 88db9c6 - Inês Maria Fernandes Moreira - 2026-06-24 14:55:30 +0100 - Backend: Alteração função .js 7 e 8
 
 79ace43 - Inês Maria Fernandes Moreira - 2026-06-24 03:17:10 +0100 - Frontend e Backend: Últimas alterações
