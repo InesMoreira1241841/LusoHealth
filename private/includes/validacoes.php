@@ -119,7 +119,9 @@ function validar_caminhos_documento(array $ficheiro, string $url_externo): array
 
         if ($ext !== 'pdf') {
             $erros[] = "Apenas ficheiros PDF são permitidos.";
+
         } elseif ($ficheiro['size'] > 5 * 1024 * 1024) {
+            
             $erros[] = "O PDF não pode exceder 5MB.";
         }
     }

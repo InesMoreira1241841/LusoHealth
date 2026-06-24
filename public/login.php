@@ -101,7 +101,6 @@ if (!empty($_SESSION['server_error'])) {
                         <!-- -------------------------------------------------------------------- -->
 
                         <!-- Verifica se existem erros de validação -->
-                        <!-- Verifica se existem erros de validação -->
                         <?php if (!empty($validation_errors)) : ?>
                             <!-- Se existirem, apresenta um alerta de erro (vermelho) usando as classes do Bootstrap -->
                             <div class="mt-4 alert alert-danger p-2 text-center">

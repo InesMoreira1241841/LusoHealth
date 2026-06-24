@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
          */
         function formatarCodigo(valor) {
             let miolo;
-            
+
             // Remove o prefixo para tratar apenas os dados úteis
             if (valor.startsWith(PREFIXO_COD)) {
                 miolo = valor.slice(PREFIXO_COD.length);
@@ -135,38 +135,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 body: dados
             })
-            .then(response => response.text()) // Captura como texto puro para mitigar notices/errors do PHP
-            .then(texto => {
-                console.log("--- RESPOSTA BRUTA DO SERVIDOR ---", texto);
+                .then(response => response.text()) // Captura como texto puro para mitigar notices/errors do PHP
+                .then(texto => {
+                    console.log("--- RESPOSTA BRUTA DO SERVIDOR ---", texto);
 
-                try {
-                    const data = JSON.parse(texto);
+                    try {
+                        const data = JSON.parse(texto);
 
-                    if (data.sucesso) {
-                        // Adiciona dinamicamente a nova opção ao Select e seleciona-a
-                        const novaOpcao = new Option(data.nome, data.id, true, true);
-                        selectCategoria.add(novaOpcao);
-                        document.getElementById("nome_categoria").value = "";
+                        if (data.sucesso) {
+                            // Adiciona dinamicamente a nova opção ao Select e seleciona-a
+                            const novaOpcao = new Option(data.nome, data.id, true, true);
+                            selectCategoria.add(novaOpcao);
+                            document.getElementById("nome_categoria").value = "";
 
-                        // Fecha o Modal do Bootstrap de forma limpa
-                        const modalElement = document.getElementById("modalNovaCategoria");
-                        const modal = bootstrap.Modal.getInstance(modalElement);
-                        if (modal) modal.hide();
-                    } else {
-                        alert("Erro no PHP: " + data.erro);
+                            // Fecha o Modal do Bootstrap de forma limpa
+                            const modalElement = document.getElementById("modalNovaCategoria");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            if (modal) modal.hide();
+                        } else {
+                            alert("Erro no PHP: " + data.erro);
+                        }
+                    } catch (erroJson) {
+                        alert("--- RESPOSTA DO PHP (Erro JSON) ---\n" + texto);
                     }
-                } catch (erroJson) {
-                    alert("--- RESPOSTA DO PHP (Erro JSON) ---\n" + texto);
-                }
-            })
-            .catch(error => {
-                console.error("Erro na requisição FETCH:", error);
-            })
-            .finally(() => {
-                // Restaura o estado do botão
-                btnGuardar.disabled = false;
-                btnGuardar.innerHTML = "Guardar";
-            });
+                })
+                .catch(error => {
+                    console.error("Erro na requisição FETCH:", error);
+                })
+                .finally(() => {
+                    // Restaura o estado do botão
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = "Guardar";
+                });
         });
     }
 
@@ -214,27 +214,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /* ============================================================ 
-       5. MÓDULO: BOTÕES DE PREENCHIMENTO AUTOMÁTICO (TESTES)
-       ============================================================ */
-    const btnSubmit = document.querySelector('button[type="submit"]');
-    
-    // Só injeta o botão de testes global se existir um formulário de submissão na página
-    if (btnSubmit) {
+   5. MÓDULO: BOTÕES DE PREENCHIMENTO AUTOMÁTICO (TESTES GERIAS)
+   ============================================================ */
+    // 1. Primeiro procura-se o botão de submissão da página
+    const btnSubmitGlobal = document.querySelector('button[type="submit"]');
+
+    // 2. Só cria o botão "Preencher Dados de Teste" se o botão existir E NÃO for a página de login
+    if (btnSubmitGlobal && !window.location.pathname.includes('login.php')) {
         const btnAuto = document.createElement('button');
         btnAuto.type = 'button';
         btnAuto.className = 'btn btn-outline-secondary btn-sm rounded-pill mt-2 d-block';
         btnAuto.innerHTML = '<i class="fa-solid fa-magic-wand-sparkles me-1"></i> Preencher Dados de Teste';
-        
-        // Insere o botão logo antes do botão de submissão original
-        btnSubmit.parentNode.insertBefore(btnAuto, btnSubmit);
 
-        btnAuto.addEventListener('click', function() {
+        // Insere o botão logo antes do botão de submissão original
+        btnSubmitGlobal.parentNode.insertBefore(btnAuto, btnSubmitGlobal);
+
+        btnAuto.addEventListener('click', function () {
             // Helpers rápidos de preenchimento
             const setId = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
             const setIdx = (id, idx) => { const el = document.getElementById(id); if (el && el.options.length > idx) el.selectedIndex = idx; };
             const f = document.querySelector('form');
-            const setName = (name, val) => { if(f) { const el = f.querySelector('[name="' + name + '"]'); if (el) el.value = val; } };
-            const setNameIdx = (name, idx) => { if(f) { const el = f.querySelector('[name="' + name + '"]'); if (el && el.options.length > idx) el.selectedIndex = idx; } };
+            const setName = (name, val) => { if (f) { const el = f.querySelector('[name="' + name + '"]'); if (el) el.value = val; } };
+            const setNameIdx = (name, idx) => { if (f) { const el = f.querySelector('[name="' + name + '"]'); if (el && el.options.length > idx) el.selectedIndex = idx; } };
 
             // 5.1 - Teste para Documentos
             setId('nomeDocumento', 'Manual do Utilizador — Teste Automático');
@@ -255,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
             setId('ano_fabrico', '2022');
             setId('custo_aquisicao', '9800.00');
             setId('observacoes', 'Equipamento de teste — Unidade de Cuidados Intensivos.');
-            
+
             const dataInput = document.getElementById('data_aquisicao');
             if (dataInput) {
                 if (dataInput._flatpickr) dataInput._flatpickr.setDate('2022-06-15');
@@ -303,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnAdm) {
         btnAdm.addEventListener('click', () => {
             const formulario = document.forms['formulario_login'];
-            if(formulario) {
+            if (formulario) {
                 formulario['username'].value = "admin@isep.pt";
                 formulario['password'].value = "123456";
             }
@@ -313,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnUtilizador) {
         btnUtilizador.addEventListener('click', () => {
             const formulario = document.forms['formulario_login'];
-            if(formulario) {
+            if (formulario) {
                 formulario['username'].value = "utilizador@isep.pt";
                 formulario['password'].value = "123456";
             }
@@ -321,63 +322,63 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-/* ============================================================ 
-   7. COMPONENTES EXTERNOS E FUNÇÕES GLOBAIS (FORA DO DOM READY)
-   ============================================================ */
+    /* ============================================================ 
+       7. COMPONENTES EXTERNOS E FUNÇÕES GLOBAIS (FORA DO DOM READY)
+       ============================================================ */
 
-// Inicialização Segura do Seletor de Datas Flatpickr
-if (document.getElementById("data_aquisicao")) {
-    flatpickr("#data_aquisicao", {
-        dateFormat: "Y-m-d"
-    });
-}
+    // Inicialização Segura do Seletor de Datas Flatpickr
+    if (document.getElementById("data_aquisicao")) {
+        flatpickr("#data_aquisicao", {
+            dateFormat: "Y-m-d"
+        });
+    }
 
-/**
- * Remove visualmente o ficheiro atual anexado a um registo (Contratos)
- */
-function removerFicheiroAtual() {
-    const inputRemover = document.getElementById('remover_ficheiro');
-    const wrapper = document.getElementById('ficheiro_atual_wrapper');
-    const inputFicheiro = document.getElementById('ficheiro_contrato');
+    /**
+     * Remove visualmente o ficheiro atual anexado a um registo (Contratos)
+     */
+    function removerFicheiroAtual() {
+        const inputRemover = document.getElementById('remover_ficheiro');
+        const wrapper = document.getElementById('ficheiro_atual_wrapper');
+        const inputFicheiro = document.getElementById('ficheiro_contrato');
 
-    if (inputRemover) inputRemover.value = '1';
-    if (wrapper) wrapper.classList.add('d-none');
-    if (inputFicheiro) inputFicheiro.value = ''; // Limpa seleções pendentes
-}
+        if (inputRemover) inputRemover.value = '1';
+        if (wrapper) wrapper.classList.add('d-none');
+        if (inputFicheiro) inputFicheiro.value = ''; // Limpa seleções pendentes
+    }
 
-/**
- * Cria instâncias de gráficos através do Chart.js de forma parametrizada
- */
-function criarGrafico(canvasId, dados, tipo, cor) {
-    const ctx = document.getElementById(canvasId);
-    if (!ctx || !dados || dados.length === 0) return;
-    
-    new Chart(ctx, {
-        type: tipo,
-        data: {
-            labels: dados.map(d => d.label),
-            datasets: [{
-                label: 'Nº de equipamentos',
-                data: dados.map(d => d.total),
-                backgroundColor: cor
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: tipo === 'pie' // Só exibe legendas laterais se for gráfico circular
+    /**
+     * Cria instâncias de gráficos através do Chart.js de forma parametrizada
+     */
+    function criarGrafico(canvasId, dados, tipo, cor) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx || !dados || dados.length === 0) return;
+
+        new Chart(ctx, {
+            type: tipo,
+            data: {
+                labels: dados.map(d => d.label),
+                datasets: [{
+                    label: 'Nº de equipamentos',
+                    data: dados.map(d => d.total),
+                    backgroundColor: cor
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: tipo === 'pie' // Só exibe legendas laterais se for gráfico circular
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
 
-// Inicialização condicional dos gráficos gerados pelo PHP backend
-try {
-    if (typeof dadosServicos !== 'undefined') criarGrafico('graficoServicos', dadosServicos, 'bar', '#198754');
-    if (typeof dadosEdificios !== 'undefined') criarGrafico('graficoEdificios', dadosEdificios, 'pie', ['#198754', '#0d6efd', '#ffc107', '#dc3545', '#6c757d', '#20c997']);
-    if (typeof dadosSuporteVida !== 'undefined') criarGrafico('graficoSuporteVida', dadosSuporteVida, 'bar', '#dc3545');
-} catch(e) {
-    console.log("Gráficos ignorados nesta página ou variáveis em falta.");
-}
+    // Inicialização condicional dos gráficos gerados pelo PHP backend
+    try {
+        if (typeof dadosServicos !== 'undefined') criarGrafico('graficoServicos', dadosServicos, 'bar', '#198754');
+        if (typeof dadosEdificios !== 'undefined') criarGrafico('graficoEdificios', dadosEdificios, 'pie', ['#198754', '#0d6efd', '#ffc107', '#dc3545', '#6c757d', '#20c997']);
+        if (typeof dadosSuporteVida !== 'undefined') criarGrafico('graficoSuporteVida', dadosSuporteVida, 'bar', '#dc3545');
+    } catch (e) {
+        console.log("Gráficos ignorados nesta página ou variáveis em falta.");
+    }
