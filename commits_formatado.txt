@@ -1,0 +1,73 @@
+8dc8625 - Inês Maria Fernandes Moreira - 2026-06-21 10:08:09 +0100 - Backend: Conclusão módulo Equipamentos + Login
+
+6157795 - Inês Maria Fernandes Moreira - 2026-06-20 23:35:29 +0100 - Backend: Conclusão módulo Documentos
+
+859de39 - Inês Maria Fernandes Moreira - 2026-06-20 22:17:23 +0100 - Backend: Conclusão módulo Garantias
+
+350181d - Inês Maria Fernandes Moreira - 2026-06-18 14:53:01 +0100 - Backend: Conclusão módulo Fornecedores
+
+6773049 - Inês Maria Fernandes Moreira - 2026-06-18 10:27:12 +0100 - Backend: Módulo equipamentos s/ página detalhes.php
+
+b8547f0 - Inês Maria Fernandes Moreira - 2026-06-17 19:04:07 +0100 - Backend: Conclusão módulo Localizações
+
+8bfd766 - Inês Maria Fernandes Moreira - 2026-06-17 16:28:34 +0100 - Backend: Alteração da página validacoes.php
+
+7ed5f44 - Inês Maria Fernandes Moreira - 2026-06-17 02:44:29 +0100 - Backend: Alteração da tabela garantias na base de dados + Adição e Alteração de garantias
+
+ee944e8 - Inês Maria Fernandes Moreira - 2026-06-17 01:11:57 +0100 - Backend: Alteração da tabela equipamentos na base de dados + Ajuste do código
+
+c21b180 - Inês Maria Fernandes Moreira - 2026-06-16 23:54:07 +0100 - Backend: Adição e Edição de Fornecedores na base de dados
+
+8723968 - Inês Maria Fernandes Moreira - 2026-06-16 22:48:33 +0100 - Backend: Edição de Equipamentos na base de dados
+
+f8567f5 - Inês Maria Fernandes Moreira - 2026-06-16 22:19:19 +0100 - Backend: Adição de Equipamentos na base de dados
+
+64a7797 - Inês Maria Fernandes Moreira - 2026-06-15 00:04:40 +0100 - Backend: Edição de Localizações na base de dados
+
+93b62eb - Inês Maria Fernandes Moreira - 2026-06-14 21:59:15 +0100 - Backend: Interligação Localizações à base de dados
+
+cade6ee - Inês Maria Fernandes Moreira - 2026-06-14 17:04:18 +0100 - Backend: Interligação Equipamentos à base de dados
+
+24be8a2 - Inês Maria Fernandes Moreira - 2026-06-13 21:13:58 +0100 - Backend: Paginação e Filtros
+
+9f21102 - Inês Maria Fernandes Moreira - 2026-06-13 20:54:37 +0100 - Backend: Listar equipamentos
+
+bc5f248 - Inês Maria Fernandes Moreira - 2026-06-13 18:30:32 +0100 - Backend: Ligação da base de dados
+
+2dfffb8 - Inês Maria Fernandes Moreira - 2026-06-13 01:36:37 +0100 - Backend: Sessões em views
+
+ec266c0 - Inês Maria Fernandes Moreira - 2026-06-13 00:00:02 +0100 - Backend: Sessões
+
+3017d0c - Inês Maria Fernandes Moreira - 2026-06-12 22:47:05 +0100 - Backend: Envio de dados Formulário
+
+0753e8a - Inês Maria Fernandes Moreira - 2026-06-09 17:39:16 +0100 - Backend: Ficheiros Reutilizáveis + Integração do php em todas as páginas
+
+b376613 - Inês Maria Fernandes Moreira - 2026-06-08 00:58:12 +0100 - Frontend: Back Office
+
+6eda8e8 - Inês Maria Fernandes Moreira - 2026-06-05 13:19:05 +0100 - Frontend: Página login.html (com css)
+
+0e23d55 - Inês Maria Fernandes Moreira - 2026-06-05 11:56:49 +0100 - Frontend: Reestruturação e alteração da pasta public
+
+65837b5 - Inês Maria Fernandes Moreira - 2026-05-23 09:31:53 +0100 - Frontend: Página fornecedores.html (com css)
+
+1f09754 - Inês Maria Fernandes Moreira - 2026-05-23 09:25:01 +0100 - Frontend: Página localizacoes.html (com css)
+
+c5442a1 - Inês Maria Fernandes Moreira - 2026-05-23 09:13:57 +0100 - Frontend: Página equipamentos.html (com css)
+
+cee8878 - Inês Maria Fernandes Moreira - 2026-05-22 20:09:50 +0100 - Frontend: Página equipamentos.html (sem css)
+
+49e7cdc - Inês Maria Fernandes Moreira - 2026-05-22 19:41:09 +0100 - Frontend: Página servicos.html (com css)
+
+aa7e5dd - Inês Maria Fernandes Moreira - 2026-05-21 14:51:08 +0100 - Frontend: Página servicos.html (sem css)
+
+0ed5c92 - Inês Maria Fernandes Moreira - 2026-05-20 19:21:50 +0100 - Frontend: Página formulario.html (com css)
+
+53c8b7b - Inês Maria Fernandes Moreira - 2026-05-20 19:00:11 +0100 - Frontend: Página formulario.html (sem css)
+
+272c869 - Inês Maria Fernandes Moreira - 2026-05-20 17:56:31 +0100 - Frontend: Página sobre_nos.html (com css)
+
+65cd1af - Inês Maria Fernandes Moreira - 2026-05-20 11:58:57 +0100 - Frontend: Página sobre_nos.html (sem css)
+
+85c5f44 - Inês Maria Fernandes Moreira - 2026-05-20 00:28:16 +0100 - Frontend: Página index.html (com css)
+
+f30c4f5 - Inês Maria Fernandes Moreira - 2026-05-19 21:53:52 +0100 - Frontend: Criação da página index.html (sem css)

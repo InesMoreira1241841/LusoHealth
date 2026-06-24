@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../private/includes/funcoes.php';
+
+// Carrega todos os conteúdos editáveis guardados na BD
+$conteudos = get_conteudos_publicos();
+?>
+
 <?php include '../assets/includes/head.php'; ?>
 
 <body>
@@ -45,14 +52,15 @@
         <section id="home" class="bg-white p-5 rounded-4 shadow-sm mb-5">
             <div class="row align-items-center g-5">
                 <div class="col-lg-7">
-                    <h1 class="display-5 fw-bold text-dark mb-3">Inovação e Eficiência na Gestão de Equipamentos Médicos
+                    <h1 class="display-5 fw-bold text-dark mb-3">
+                        <?= c($conteudos, 'titulo_home', 'Inovação e Eficiência na Gestão de Equipamentos Médicos') ?>
                     </h1>
                     <p class="lead text-muted lh-base">
-                        A <strong class="text-success-custom"><?php echo APP_NAME; ?></strong> impulsiona a transformação digital no
+                        <?= c_html($conteudos, 'texto_home', 'A <strong class="text-success-custom">' . APP_NAME . '</strong> impulsiona a transformação digital no
                         setor da saúde através de soluções inteligentes para a gestão hospitalar.
                         O nosso sistema de inventário clínico foi desenvolvido para responder às
                         exigências da Engenharia Biomédica, garantindo segurança, rastreabilidade e
-                        maior eficiência na gestão de equipamentos médicos.
+                        maior eficiência na gestão de equipamentos médicos.') ?>
                     </p>
                 </div>
                 <div class="col-lg-5 text-center">
@@ -67,19 +75,19 @@
                 <div class="col-md-6">
                     <h2 class="h3 fw-bold text-dark border-bottom-custom pb-2 mb-3">Sobre o Projeto</h2>
                     <p class="text-muted text-justify lh-base">
-                        O <strong><?php echo APP_NAME; ?></strong> é um sistema web desenvolvido no âmbito da
+                        <?= c_html($conteudos, 'texto_sobre_projeto_1', 'O <strong>' . APP_NAME . '</strong> é um sistema web desenvolvido no âmbito da
                         unidade curricular de <strong>Sistemas de Informação e Bases de Dados Aplicados à Saúde
                             (SIBDAS)</strong>,
                         integrada no curso de Licenciatura em <strong>Engenharia Biomédica</strong> do
                         <a href="https://www.isep.ipp.pt" target="_blank"
                             class="text-success-custom fw-semibold text-decoration-none">Instituto Superior de
-                            Engenharia do Porto (ISEP)</a>.
+                            Engenharia do Porto (ISEP)</a>.') ?>
                     </p>
                     <p class="text-muted text-justify lh-base">
-                        Este projeto tem como objetivo principal o desenvolvimento de uma plataforma
+                        <?= c_html($conteudos, 'texto_sobre_projeto_2', 'Este projeto tem como objetivo principal o desenvolvimento de uma plataforma
                         inteligente para o inventário clínico hospitalar, otimizando a rastreabilidade,
                         gestão de fornecedores e controlo de criticidade de equipamentos médicos
-                        essenciais ao ecossistema de saúde.
+                        essenciais ao ecossistema de saúde.') ?>
                     </p>
                 </div>
 
@@ -128,9 +136,11 @@
         <section id="servicos" class="bg-white p-5 rounded-4 shadow-sm mb-5">
             <div class="text-center max-width-600 mx-auto mb-5">
                 <h2 class="fw-bold text-dark mb-3">Soluções para Gestão Hospitalar Inteligente</h2>
-                <p class="text-muted lh-base">A <strong><?php echo APP_NAME; ?></strong> disponibiliza uma plataforma integrada que
+                <p class="text-muted lh-base">
+                    <?= c_html($conteudos, 'texto_servicos', 'A <strong>' . APP_NAME . '</strong> disponibiliza uma plataforma integrada que
                     otimiza a gestão, rastreabilidade e controlo de equipamentos médicos, promovendo maior eficiência e
-                    segurança no ambiente hospitalar.</p>
+                    segurança no ambiente hospitalar.') ?>
+                </p>
             </div>
 
             <div class="row g-4">
@@ -140,12 +150,12 @@
                             <i class="fa-solid fa-stethoscope"></i>
                         </div>
                         <h3 class="h5 fw-bold text-dark mb-2">Gestão de Equipamentos</h3>
-                        <p class="card-text text-muted small flex-grow-1 lh-base">Consulta e gestão do inventário
-                            clínico, com monitorização de criticidade, localização e histórico de manutenção preventiva.
+                        <p class="card-text text-muted small flex-grow-1 lh-base">
+                            <?= c($conteudos, 'texto_servico_equipamentos', 'Consulta e gestão do inventário clínico, com monitorização de criticidade, localização e histórico de manutenção preventiva.') ?>
                         </p>
-                        <a href="equipamentos.php"
-                            class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
-                            Módulo</a>
+                        <a href="login.php"
+                            class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">
+                            Aceder ao Módulo</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -154,10 +164,10 @@
                             <i class="fa-solid fa-hospital"></i>
                         </div>
                         <h3 class="h5 fw-bold text-dark mb-2">Rastreabilidade de Localizações</h3>
-                        <p class="card-text text-muted small flex-grow-1 lh-base">Visualização da distribuição dos
-                            ativos por serviços hospitalares, garantindo resposta rápida e maior eficiência operacional.
+                        <p class="card-text text-muted small flex-grow-1 lh-base">
+                            <?= c($conteudos, 'texto_servico_localizacoes', 'Visualização da distribuição dos ativos por serviços hospitalares, garantindo resposta rápida e maior eficiência operacional.') ?>
                         </p>
-                        <a href="localizacoes.php"
+                        <a href="login.php"
                             class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
                             Módulo</a>
                     </div>
@@ -168,9 +178,10 @@
                             <i class="fa-solid fa-truck-ramp-box"></i>
                         </div>
                         <h3 class="h5 fw-bold text-dark mb-2">Controlo de Fornecedores</h3>
-                        <p class="card-text text-muted small flex-grow-1 lh-base">Centralização de contactos, contratos
-                            de manutenção e garantias equipamentos médicos essenciais.</p>
-                        <a href="fornecedores.php"
+                        <p class="card-text text-muted small flex-grow-1 lh-base">
+                            <?= c($conteudos, 'texto_servico_fornecedores', 'Centralização de contactos, contratos de manutenção e garantias equipamentos médicos essenciais.') ?>
+                        </p>
+                        <a href="login.php"
                             class="btn btn-outline-success-custom rounded-pill btn-sm fw-bold mt-3 px-4">Aceder ao
                             Módulo</a>
                     </div>
@@ -188,7 +199,9 @@
                         </div>
                         <div>
                             <span class="d-block small text-muted fw-semibold text-uppercase">Telefone</span>
-                            <a href="tel:+35196XXXXXXX" class="text-decoration-none text-dark fw-bold">96X XXX XXX</a>
+                            <a href="tel:<?= c($conteudos, 'telefone', '+35196XXXXXXX') ?>" class="text-decoration-none text-dark fw-bold">
+                                <?= c($conteudos, 'telefone_display', '96X XXX XXX') ?>
+                            </a>
                         </div>
                     </address>
                 </div>
@@ -199,8 +212,10 @@
                         </div>
                         <div>
                             <span class="d-block small text-muted fw-semibold text-uppercase">E-mail</span>
-                            <a href="mailto:contacto@lusohealth.pt"
-                                class="text-decoration-none text-dark fw-bold">contacto@lusohealth.pt</a>
+                            <a href="mailto:<?= c($conteudos, 'email', 'contacto@lusohealth.pt') ?>"
+                                class="text-decoration-none text-dark fw-bold">
+                                <?= c($conteudos, 'email', 'contacto@lusohealth.pt') ?>
+                            </a>
                         </div>
                     </address>
                 </div>
@@ -212,10 +227,10 @@
                 <div class="col-lg-8 text-center">
                     <h2 class="fw-bold text-dark mb-3">Fale Connosco</h2>
                     <p class="text-muted mb-4 max-width-600 mx-auto lh-base">
-                        Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos.
+                        <?= c_html($conteudos, 'texto_fale_connosco', 'Simplifique a gestão de inventário e a rastreabilidade de dispositivos médicos.
                         Desenvolvido para responder às reais exigências da Engenharia Biomédica, o
-                        <?php echo APP_NAME; ?> é o parceiro ideal para monitorizar a criticidade e conformidade das
-                        suas tecnologias de saúde.
+                        ' . APP_NAME . ' é o parceiro ideal para monitorizar a criticidade e conformidade das
+                        suas tecnologias de saúde.') ?>
                     </p>
 
                     <form class="text-start mx-auto style-form-width" action="#" method="POST">

@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tecnico_telefone = trim($tecnico_telefone) ?: null;
     $observacoes = trim($observacoes) ?: null;
 
-// 2. Validar todos os dados acumulando os erros corretamente
+    // 2. Validar todos os dados acumulando os erros corretamente
     $erros = [];
     $erros = array_merge($erros, validar_nome_fornecedor($nome) ?? []);
     $erros = array_merge($erros, validar_nif($nif) ?? []);
@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sqlCheck = "SELECT COUNT(*) FROM fornecedores WHERE nif = :nif";
             $stmtCheck = $ligacao->prepare($sqlCheck);
             $stmtCheck->execute([':nif' => $nif]);
-            
+
             if ($stmtCheck->fetchColumn() > 0) {
                 // Se já existir, injetamos o erro no teu array global de erros
                 $erros[] = "O NIF '$nif' já está registado para outro fornecedor. O NIF deve ser único.";
@@ -91,10 +91,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ]);
 
                 $_SESSION['success_message'] = "Fornecedor registado com sucesso.";
-                header('Location: fornecedores.php'); 
+                header('Location: fornecedores.php');
                 exit;
             }
-
         } catch (PDOException $err) {
             $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
         } finally {
@@ -116,7 +115,7 @@ include '../../../assets/includes/head.php'; ?>
             <main class="col-md-9 col-lg-10">
                 <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
-                   <div class="mb-4 pb-2 border-bottom">
+                    <div class="mb-4 pb-2 border-bottom">
                         <h2 class="fw-bold text-dark m-0">Registar Fornecedor / Fabricante</h2>
                         <p class="text-muted small m-0">Insira os dados da entidade externa para vinculação a equipamentos e contratos.</p>
                     </div>
@@ -139,14 +138,14 @@ include '../../../assets/includes/head.php'; ?>
 
                             <div class="col-md-5">
                                 <label for="nome_fornecedor" class="form-label fw-bold text-dark">Nome / Razão Social</label>
-                                <input type="text" id="nome_fornecedor" name="nome" class="form-control" 
+                                <input type="text" id="nome_fornecedor" name="nome" class="form-control"
                                     placeholder="Ex: Siemens Healthineers Portugal" required
                                     value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>">
                             </div>
 
                             <div class="col-md-3">
                                 <label for="nif_fornecedor" class="form-label fw-bold text-dark">NIF (Identificação Fiscal)</label>
-                                <input type="text" id="nif_fornecedor" name="nif" class="form-control font-monospace" 
+                                <input type="text" id="nif_fornecedor" name="nif" class="form-control font-monospace"
                                     placeholder="Ex: 500123456" required
                                     value="<?= htmlspecialchars($_POST['nif'] ?? '') ?>">
                             </div>
@@ -164,28 +163,28 @@ include '../../../assets/includes/head.php'; ?>
 
                             <div class="col-md-4">
                                 <label for="telefone_fornecedor" class="form-label fw-bold text-dark">Telefone Geral</label>
-                                <input type="tel" id="telefone_fornecedor" name="telefone" class="form-control" 
+                                <input type="tel" id="telefone_fornecedor" name="telefone" class="form-control"
                                     placeholder="Ex: +351 210 000 000"
                                     value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="email_fornecedor" class="form-label fw-bold text-dark">E-mail de Assistência</label>
-                                <input type="email" id="email_fornecedor" name="email" class="form-control" 
+                                <input type="email" id="email_fornecedor" name="email" class="form-control"
                                     placeholder="Ex: suporte@empresa.com"
                                     value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="website_fornecedor" class="form-label fw-bold text-dark">Website Oficial</label>
-                                <input type="url" id="website_fornecedor" name="website" class="form-control" 
+                                <input type="url" id="website_fornecedor" name="website" class="form-control"
                                     placeholder="Ex: https://www.empresa.com"
                                     value="<?= htmlspecialchars($_POST['website'] ?? '') ?>">
                             </div>
 
                             <div class="col-md-12">
                                 <label for="morada_fornecedor" class="form-label fw-bold text-dark">Endereço da Sede</label>
-                                <input type="text" id="morada_fornecedor" name="morada" class="form-control" 
+                                <input type="text" id="morada_fornecedor" name="morada" class="form-control"
                                     placeholder="Rua, Código Postal, Cidade"
                                     value="<?= htmlspecialchars($_POST['morada'] ?? '') ?>">
                             </div>
@@ -194,7 +193,7 @@ include '../../../assets/includes/head.php'; ?>
                                 <label for="tecnico_responsavel" class="form-label fw-bold text-success">
                                     <i class="fa-solid fa-user-gear me-2"></i>Gestor de Conta / Técnico Responsável
                                 </label>
-                                <input type="text" id="tecnico_responsavel" name="tecnico_nome" class="form-control font-monospace" 
+                                <input type="text" id="tecnico_responsavel" name="tecnico_nome" class="form-control font-monospace"
                                     placeholder="Ex: Eng. Carlos Mendes"
                                     value="<?= htmlspecialchars($_POST['tecnico_nome'] ?? '') ?>">
                             </div>
@@ -203,14 +202,14 @@ include '../../../assets/includes/head.php'; ?>
                                 <label for="telefone_tecnico" class="form-label fw-bold text-success">
                                     <i class="fa-solid fa-phone-volume me-2"></i>Linha Direta do Técnico
                                 </label>
-                                <input type="tel" id="telefone_tecnico" name="tecnico_telefone" class="form-control font-monospace" 
+                                <input type="tel" id="telefone_tecnico" name="tecnico_telefone" class="form-control font-monospace"
                                     placeholder="Ex: +351 912 345 678"
                                     value="<?= htmlspecialchars($_POST['tecnico_telefone'] ?? '') ?>">
                             </div>
 
                             <div class="col-md-12 mt-3">
                                 <label for="observacoes_fornecedor" class="form-label fw-bold text-dark">Observações Adicionais</label>
-                                <input type="text" id="observacoes_fornecedor" name="observacoes" class="form-control font-monospace text-uppercase" 
+                                <input type="text" id="observacoes_fornecedor" name="observacoes" class="form-control font-monospace text-uppercase"
                                     value="<?= htmlspecialchars($_POST['observacoes'] ?? '') ?>">
                             </div>
 
@@ -223,7 +222,7 @@ include '../../../assets/includes/head.php'; ?>
 
                         </div>
                     </form>
-                    
+
                 </div>
             </main>
         </div>

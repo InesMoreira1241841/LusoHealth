@@ -46,7 +46,7 @@ if (!empty($_SESSION['server_error'])) {
                         <p class="small text-muted">Introduza as suas credenciais de acesso</p>
                     </div>
 
-                    <form action="../private/processa_login.php" method="POST">
+                    <form action="../private/processa_login.php" name="formulario_login" method="POST">
 
                         <div class="mb-3">
 
@@ -79,13 +79,22 @@ if (!empty($_SESSION['server_error'])) {
                             </div>
                         </div>
 
-                        <div class="alert alert-danger p-2 text-center small rounded-3 mb-4 d-none" id="login-erro">
-                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Erro: Utilizador ou password incorretos.
-                        </div>
-
                         <button type="submit" class="btn btn-success-custom w-100 fw-bold py-2.5 rounded-pill shadow-sm">
                             Entrar <i class="fa-solid fa-right-to-bracket ms-2"></i>
                         </button>
+
+                        <!-- Botões de preenchimento automático (Fase de Testes) -->
+                        <div class="mt-2 text-center">
+                            <button
+                                type="button" id="preencher_adm" class="btn btn-outline-secondary btn-sm me-2">
+                                Preencher Admin
+                            </button>
+
+                            <button
+                                type="button" id="preencher_utilizador" class="btn btn-outline-secondary btn-sm">
+                                Preencher Utilizador
+                            </button>
+                        </div>
 
                         <!-- -------------------------------------------------------------------- -->
                         <!-- APRESENTAÇÃO DE MENSAGENS DE ERRO (VALIDAÇÃO E SERVIDOR) -->
@@ -96,7 +105,7 @@ if (!empty($_SESSION['server_error'])) {
                         <?php if (!empty($validation_errors)) : ?>
                             <!-- Se existirem, apresenta um alerta de erro (vermelho) usando as classes do Bootstrap -->
                             <div class="mt-4 alert alert-danger p-2 text-center">
-                            <!--
+                                <!--
                                 mt-4: dá um pequeno espaçamento só no topo
                                 alert: cria a "caixa" estrutural
                                 alert-danger: cor vermelha
@@ -132,15 +141,10 @@ if (!empty($_SESSION['server_error'])) {
                             <i class="fa-solid fa-arrow-left me-1"></i> Voltar à página inicial
                         </a>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-    </div>
-
     </div>
 
     <?php include '../assets/includes/footer.php'; ?>
+

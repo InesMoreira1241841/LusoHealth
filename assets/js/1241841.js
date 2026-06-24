@@ -1,155 +1,116 @@
-// Garante que o código só corre quando o HTML estiver pronto
+// Garante que todo o código DOM só corre quando o HTML estiver totalmente carregado
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Equipamentos - Código Interno
-
+    /* ============================================================ 
+       1. MÓDULO: EQUIPAMENTOS (CÓDIGO DE INVENTÁRIO)
+       ============================================================ */
     const inputCodigo = document.getElementById("codigo_inventario");
 
-    // Verifica se o input existe na página antes de aplicar lógica
     if (inputCodigo) {
+        const PREFIXO_COD = "EQ-"; // Prefixo obrigatório
 
-        const PREFIXO_COD = "EQ-"; // Prefixo fixo obrigatório para todas as séries
-
+        /**
+         * Formata o código do inventário no padrão: EQ-XXXXX-YYY (5 números, 3 letras)
+         * @param {string} valor - O texto bruto digitado pelo utilizador
+         * @returns {string} Texto formatado
+         */
         function formatarCodigo(valor) {
-
-            // Remove o prefixo e garante que só se trabalha com o conteúdo útil
-            let miolo; // let - guarda valores que podem mudar depois ao longo do código
+            let miolo;
+            
+            // Remove o prefixo para tratar apenas os dados úteis
             if (valor.startsWith(PREFIXO_COD)) {
                 miolo = valor.slice(PREFIXO_COD.length);
-            }
-            else {
+            } else {
                 miolo = valor;
             }
 
-            // Normaliza o texto: maiúsculas e remove caracteres inválidos
-            miolo = miolo
-                .toUpperCase()
-                .replace(/[^A-Z0-9]/g, ""); // substituiu qualquer coisa que não seja de A a Z ou de 0 a 9 por ""
+            // Normaliza o texto para maiúsculas e remove tudo o que não for alfanumérico
+            miolo = miolo.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
             let numeros = "";
             let letras = "";
 
-            // Percorre o valor e separa números e letras de forma sequencial
+            // Separa os primeiros 5 caracteres se forem números, e os 3 seguintes se forem letras
             for (let i = 0; i < miolo.length; i++) {
                 const char = miolo[i];
 
-                // Primeiro bloco: aceita apenas até 5 números
                 if (numeros.length < 5) {
-                    if (/[0-9]/.test(char)) { // .test() - função que testa a condição
+                    if (/[0-9]/.test(char)) {
                         numeros += char;
                     }
-                }
-
-                // Segundo bloco: após 5 números, aceita até 3 letras
-                else if (letras.length < 3) {
+                } else if (letras.length < 3) {
                     if (/[A-Z]/.test(char)) {
                         letras += char;
                     }
                 }
             }
 
-            // Construção final da string formatada
+            // Constrói o resultado final
             let resultado = PREFIXO_COD + numeros;
-
-            // Adiciona hífen apenas quando os 5 números estão completos
             if (numeros.length === 5) {
-                resultado += "-";
+                resultado += "-"; // Adiciona o hífen separador
             }
-
-            // Adiciona as letras finais (até 3)
             resultado += letras;
 
             return resultado;
         }
 
-        // Atualiza o valor em tempo real enquanto o utilizador escreve
+        // Listener: Formata em tempo real enquanto o utilizador digita
         inputCodigo.addEventListener("input", function () {
-            // “Sempre que o utilizador alterar o conteúdo do campo inputCodigo, executa esta função.”
             this.value = formatarCodigo(this.value);
-
-            // Mantém o cursor no fim para evitar comportamento estranho
+            // Evita que o cursor salte de forma intermitente
             this.setSelectionRange(this.value.length, this.value.length);
         });
 
-        // Garante que o prefixo existe ao entrar no campo
+        // Listener: Força a aparição do prefixo ao clicar no campo
         inputCodigo.addEventListener("focus", function () {
             if (!this.value) this.value = PREFIXO_COD;
-
             setTimeout(() => {
-                this.setSelectionRange(this.value.length, this.value.length); // coloca o curso no fim do texto ...
-            }, 0); // ... de forma instantânea
+                this.setSelectionRange(this.value.length, this.value.length);
+            }, 0);
         });
 
-        // Impede apagar o prefixo obrigatório
+        // Listener: Impede o utilizador de apagar o prefixo com Backspace ou Delete
         inputCodigo.addEventListener("keydown", function (e) {
-            // keydown - este evento acontece quando uma tecla é pressionada (antes de o browser alterar o input)
-            // function(e) - o e significa event (contém informação sobre a tecla pressionada)
-            if (this.selectionStart <= PREFIXO_COD.length && // "O cursor está dentro ou antes do prefixo?"
-                // this.selectionStart - indica a posição do cursor no input
-                (e.key === "Backspace" || e.key === "Delete")) { // "E a tecla pressionada foi backspace OU delete?"
-                e.preventDefault(); // "Cancela a ação normal do browser"
+            if (this.selectionStart <= PREFIXO_COD.length && (e.key === "Backspace" || e.key === "Delete")) {
+                e.preventDefault();
             }
         });
     }
 
-
-    // Equipamentos - Ano de Fabrico
-
-    // Procura o campo do ano de fabrico na página
+    /* ============================================================ 
+       2. MÓDULO: EQUIPAMENTOS (ANO DE FABRICO)
+       ============================================================ */
     const inputAno = document.getElementById("ano_fabrico");
 
-    // Verifica se o campo existe antes de aplicar a lógica
     if (inputAno) {
-
-        // Obtém o ano atual do sistema
         const anoAtual = new Date().getFullYear();
+        const anoMinimo = anoAtual - 40; // Limite de 40 anos de vida útil ativa
 
-        // Define o limite mínimo (40 anos anteriores)
-        const anoMinimo = anoAtual - 40;
-
-        // Configura os limites e o exemplo do campo
+        // Configura atributos nativos do HTML5
         inputAno.min = anoMinimo;
         inputAno.max = anoAtual;
         inputAno.placeholder = "Ex: " + anoAtual;
 
-        // “Sempre que o utilizador escrever ou alterar o valor do campo inputAno, executa esta função.”
+        // Validação customizada em tempo real
         inputAno.addEventListener("input", function () {
-
-            // Converte o valor inserido para número inteiro
             const anoInserido = parseInt(this.value, 10);
-            // parseInt - significa “parse integer” → converter para número inteiro
 
-            // Remove erros se o campo estiver vazio ou inválido
             if (isNaN(anoInserido)) {
-                // isNaN - significa “is Not a Number”
                 this.setCustomValidity("");
-            }
-
-            // Valida anos inferiores ao mínimo permitido
-            else if (anoInserido < anoMinimo) {
-                this.setCustomValidity(
-                    "O ano de fabrico deve ser igual ou superior a " +
-                    anoMinimo + " para registo de equipamentos ativos."
-                );
-            }
-
-            // Impede anos superiores ao ano atual
-            else if (anoInserido > anoAtual) {
-                this.setCustomValidity(
-                    "O ano de fabrico não pode ser superior ao ano atual (" +
-                    anoAtual + ")."
-                );
-            }
-
-            // Remove mensagens de erro se o valor for válido
-            else {
-                this.setCustomValidity("");
+            } else if (anoInserido < anoMinimo) {
+                this.setCustomValidity("O ano de fabrico deve ser igual ou superior a " + anoMinimo + " para registo de equipamentos ativos.");
+            } else if (anoInserido > anoAtual) {
+                this.setCustomValidity("O ano de fabrico não pode ser superior ao ano atual (" + anoAtual + ").");
+            } else {
+                this.setCustomValidity(""); // Campo válido, limpa erros
             }
         });
     }
 
-    // Equipamentos - Custo de Aquisição
-
+    /* ============================================================ 
+       3. MÓDULO: AJAX — GUARDAR NOVA CATEGORIA (MODAL)
+       ============================================================ */
     const formCategoria = document.getElementById("formNovaCategoria");
 
     if (formCategoria) {
@@ -162,119 +123,261 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (nomeCategoria === "") return;
 
+            // Bloqueia o botão para evitar cliques duplos
             btnGuardar.disabled = true;
             btnGuardar.innerHTML = "A guardar...";
 
             const dados = new FormData();
             dados.append("nome_categoria", nomeCategoria);
 
-            // Rota absoluta que descobrimos que funciona
+            // Submissão assíncrona via FETCH API
             fetch('/lusohealth/assets/includes/guardar_categoria_ajax.php', {
                 method: "POST",
                 body: dados
             })
-                .then(response => {
-                    // Lemos a resposta como texto bruto primeiro para apanhar erros do PHP
-                    return response.text();
-                })
-                .then(texto => {
-                    console.log("--- RESPOSTA BRUTA DO SERVIDOR ---");
-                    console.log(texto);
-                    console.log("----------------------------------");
+            .then(response => response.text()) // Captura como texto puro para mitigar notices/errors do PHP
+            .then(texto => {
+                console.log("--- RESPOSTA BRUTA DO SERVIDOR ---", texto);
 
-                    try {
-                        // Tenta converter o texto para JSON
-                        const data = JSON.parse(texto);
+                try {
+                    const data = JSON.parse(texto);
 
-                        if (data.sucesso) {
-                            const novaOpcao = new Option(data.nome, data.id, true, true);
-                            selectCategoria.add(novaOpcao);
-                            document.getElementById("nome_categoria").value = "";
+                    if (data.sucesso) {
+                        // Adiciona dinamicamente a nova opção ao Select e seleciona-a
+                        const novaOpcao = new Option(data.nome, data.id, true, true);
+                        selectCategoria.add(novaOpcao);
+                        document.getElementById("nome_categoria").value = "";
 
-                            const modalElement = document.getElementById("modalNovaCategoria");
-                            const modal = bootstrap.Modal.getInstance(modalElement);
-                            modal.hide();
-                        } else {
-                            alert("Erro no PHP: " + data.erro);
-                        }
-                    } catch (erroJson) {
-                        // MUDANÇA AQUI: Vamos ver o texto bruto num alert para não haver dúvidas!
-                        alert("--- RESPOSTA DO PHP ---\n" + texto + "\n------------------------");
+                        // Fecha o Modal do Bootstrap de forma limpa
+                        const modalElement = document.getElementById("modalNovaCategoria");
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        if (modal) modal.hide();
+                    } else {
+                        alert("Erro no PHP: " + data.erro);
                     }
-                })
-                .catch(error => {
-                    console.error("Erro na requisição FETCH:", error);
-                })
-                .finally(() => {
-                    btnGuardar.disabled = false;
-                    btnGuardar.innerHTML = "Guardar";
-                });
+                } catch (erroJson) {
+                    alert("--- RESPOSTA DO PHP (Erro JSON) ---\n" + texto);
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição FETCH:", error);
+            })
+            .finally(() => {
+                // Restaura o estado do botão
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = "Guardar";
+            });
         });
     }
 
-    // Filtros
+    /* ============================================================ 
+       4. MÓDULO INTERNO: JQUERY — DATATABLES & ALERTAS
+       ============================================================ */
+    if (typeof $ !== 'undefined') {
+        $(document).ready(function () {
+            // Desaparecer alertas de sucesso automaticamente após 2 segundos
+            const alertaSucesso = $('.alert-success');
+            if (alertaSucesso.length) {
+                setTimeout(function () {
+                    alertaSucesso.fadeOut(500, function () {
+                        $(this).remove();
+                    });
+                }, 2000);
+            }
 
-    // tradução para português
-    $(document).ready(function () {
-
-        // Procura na página se existe algum alerta de sucesso ativo
-        const alertaSucesso = $('.alert-success');
-
-        console.log("DataTables a iniciar..."); // Isto aparece na consola do navegador
-
-        if (alertaSucesso.length) {
-            // Executa uma contagem decrescente de 3000ms (3 segundos)
-            setTimeout(function () {
-                // Efeito visual suave de desaparecimento (fade) ao longo de 500ms
-                alertaSucesso.fadeOut(500, function () {
-                    // Remove completamente o elemento do HTML após desaparecer
-                    $(this).remove();
-                });
-            }, 2000); // 3000 milissegundos = 3 segundos
-        }
-
-        // datatable
-        if ($.fn.DataTable) {
-            $('#tabela').DataTable({
-                "pageLength": 10,
-                "pagingType": "full_numbers",
-
-                "language": {
-                    "decimal": "",
-                    "emptyTable": "Não foi encontrado nenhum registo.",
-                    "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ registos",
-                    "infoEmpty": "A apresentar 0 até 0 de 0 registos",
-                    "infoFiltered": "(a filtrar um total de _MAX_ garantias)",
-                    "lengthMenu": "Mostrar _MENU_ registos por página",
-                    "loadingRecords": "A carregar...",
-                    "processing": "A processar...",
-                    "search": "Filtrar:",
-                    "zeroRecords": "Não foram encontrados resultados correspondentes",
-                    "paginate": {
-                        "first": "Primeira",
-                        "last": "Última",
-                        "next": "Seguinte",
-                        "previous": "Anterior"
+            // Inicialização segura do DataTables em Português
+            if ($.fn.DataTable && $('#tabela').length) {
+                $('#tabela').DataTable({
+                    "pageLength": 10,
+                    "pagingType": "full_numbers",
+                    "language": {
+                        "emptyTable": "Não foi encontrado nenhum registo.",
+                        "info": "A apresentar _START_ até _END_ de um total de _TOTAL_ registos",
+                        "infoEmpty": "A apresentar 0 até 0 de 0 registos",
+                        "infoFiltered": "(a filtrar um total de _MAX_ garantias)",
+                        "lengthMenu": "Mostrar _MENU_ registos por página",
+                        "loadingRecords": "A carregar...",
+                        "processing": "A processar...",
+                        "search": "Filtrar:",
+                        "zeroRecords": "Não foram encontrados resultados correspondentes",
+                        "paginate": {
+                            "first": "Primeira",
+                            "last": "Última",
+                            "next": "Seguinte",
+                            "previous": "Anterior"
+                        }
                     }
-                }
-            });
-            console.log("DataTables iniciado com sucesso!");
-        } else {
-            console.error("Erro: O plugin DataTables não foi carregado no footer.php!");
-        }
-    })
+                });
+                console.log("DataTables iniciado com sucesso!");
+            }
+        });
+    }
 
-})
+    /* ============================================================ 
+       5. MÓDULO: BOTÕES DE PREENCHIMENTO AUTOMÁTICO (TESTES)
+       ============================================================ */
+    const btnSubmit = document.querySelector('button[type="submit"]');
+    
+    // Só injeta o botão de testes global se existir um formulário de submissão na página
+    if (btnSubmit) {
+        const btnAuto = document.createElement('button');
+        btnAuto.type = 'button';
+        btnAuto.className = 'btn btn-outline-secondary btn-sm rounded-pill mt-2 d-block';
+        btnAuto.innerHTML = '<i class="fa-solid fa-magic-wand-sparkles me-1"></i> Preencher Dados de Teste';
+        
+        // Insere o botão logo antes do botão de submissão original
+        btnSubmit.parentNode.insertBefore(btnAuto, btnSubmit);
 
+        btnAuto.addEventListener('click', function() {
+            // Helpers rápidos de preenchimento
+            const setId = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+            const setIdx = (id, idx) => { const el = document.getElementById(id); if (el && el.options.length > idx) el.selectedIndex = idx; };
+            const f = document.querySelector('form');
+            const setName = (name, val) => { if(f) { const el = f.querySelector('[name="' + name + '"]'); if (el) el.value = val; } };
+            const setNameIdx = (name, idx) => { if(f) { const el = f.querySelector('[name="' + name + '"]'); if (el && el.options.length > idx) el.selectedIndex = idx; } };
 
-// Inicializar o seletor de data
-flatpickr("#data_aquisicao", {
-    dateFormat: "Y-m-d"
+            // 5.1 - Teste para Documentos
+            setId('nomeDocumento', 'Manual do Utilizador — Teste Automático');
+            setId('dataEmissao', '2025-03-15');
+            setId('dataValidade', '2027-03-15');
+            setId('notas', 'Documento de teste inserido automaticamente.');
+            setId('url_externo', 'https://drive.google.com/manual-teste');
+            setIdx('tipoDocumento', 1);
+            setIdx('equipamentoAlvo', 1);
+            setIdx('fornecedorAlvo', 1);
+
+            // 5.2 - Teste para Equipamentos
+            setId('designacao', 'Monitor de Sinais Vitais');
+            setId('codigo_inventario', 'EQ-99999-XYZ');
+            setId('marca', 'Philips');
+            setId('modelo', 'IntelliVue MP5');
+            setId('num_serie', 'MP5-TESTE-' + Math.floor(Math.random() * 90000 + 10000));
+            setId('ano_fabrico', '2022');
+            setId('custo_aquisicao', '9800.00');
+            setId('observacoes', 'Equipamento de teste — Unidade de Cuidados Intensivos.');
+            
+            const dataInput = document.getElementById('data_aquisicao');
+            if (dataInput) {
+                if (dataInput._flatpickr) dataInput._flatpickr.setDate('2022-06-15');
+                else dataInput.value = '2022-06-15';
+            }
+            ['categoria_id', 'tipo_entrada', 'localizacao_id', 'estado', 'criticidade', 'forn_fabricante'].forEach(id => setIdx(id, 1));
+
+            // 5.3 - Teste para Fornecedores
+            setId('nome_fornecedor', 'MedTest Portugal S.A.');
+            setId('nif_fornecedor', '500' + Math.floor(Math.random() * 900000 + 100000));
+            setId('telefone_fornecedor', '+351 21 000 1234');
+            setId('email_fornecedor', 'teste@medtest.pt');
+            setId('website_fornecedor', 'https://www.medtest.pt');
+            setId('morada_fornecedor', 'Rua da Inovação, 42, 4000-123 Porto');
+            setId('tecnico_responsavel', 'Eng. João Moreira');
+            setId('telefone_tecnico', '+351 910 123 456');
+            setId('observacoes_fornecedor', 'Fornecedor de teste criado automaticamente.');
+            setIdx('tipo_fornecedor', 1);
+
+            // 5.4 - Teste para Contratos (via atributos Name)
+            setName('num_contrato', 'CTR-TESTE-' + Math.floor(Math.random() * 90000 + 10000));
+            setName('data_inicio', '2025-01-01');
+            setName('data_fim', '2027-12-31');
+            setName('periodicidade', 'Anual');
+            setName('observacoes', 'Contrato de teste criado automaticamente.');
+            setName('url_externo', 'https://drive.google.com/exemplo-contrato-teste');
+            ['equipamento_id', 'fornecedor_id', 'tipo'].forEach(name => setNameIdx(name, 1));
+
+            // 5.5 - Teste para Localizações
+            setName('codigo', 'TST-' + Math.floor(Math.random() * 900 + 100));
+            setName('nome', 'Serviço de Medicina de Teste');
+            setName('edificio', 'Bloco de Testes');
+            setName('piso', '2');
+            setName('responsavel', 'Enf. Inês Moreira');
+            setName('observacoes', 'Localização criada automaticamente para testes.');
+        });
+    }
+
+    /* ============================================================ 
+       6. MÓDULO: LOGIN (PREENCHIMENTO RÁPIDO)
+       ============================================================ */
+    const btnAdm = document.querySelector("#preencher_adm");
+    const btnUtilizador = document.querySelector("#preencher_utilizador");
+
+    if (btnAdm) {
+        btnAdm.addEventListener('click', () => {
+            const formulario = document.forms['formulario_login'];
+            if(formulario) {
+                formulario['username'].value = "admin@isep.pt";
+                formulario['password'].value = "123456";
+            }
+        });
+    }
+
+    if (btnUtilizador) {
+        btnUtilizador.addEventListener('click', () => {
+            const formulario = document.forms['formulario_login'];
+            if(formulario) {
+                formulario['username'].value = "utilizador@isep.pt";
+                formulario['password'].value = "123456";
+            }
+        });
+    }
 });
 
-/* REMOVER FICHEIRO */
+/* ============================================================ 
+   7. COMPONENTES EXTERNOS E FUNÇÕES GLOBAIS (FORA DO DOM READY)
+   ============================================================ */
+
+// Inicialização Segura do Seletor de Datas Flatpickr
+if (document.getElementById("data_aquisicao")) {
+    flatpickr("#data_aquisicao", {
+        dateFormat: "Y-m-d"
+    });
+}
+
+/**
+ * Remove visualmente o ficheiro atual anexado a um registo (Contratos)
+ */
 function removerFicheiroAtual() {
-    document.getElementById('remover_ficheiro').value = '1';
-    document.getElementById('ficheiro_atual_wrapper').classList.add('d-none');
-    document.getElementById('ficheiro_contrato').value = ''; // limpa qualquer seleção pendente
+    const inputRemover = document.getElementById('remover_ficheiro');
+    const wrapper = document.getElementById('ficheiro_atual_wrapper');
+    const inputFicheiro = document.getElementById('ficheiro_contrato');
+
+    if (inputRemover) inputRemover.value = '1';
+    if (wrapper) wrapper.classList.add('d-none');
+    if (inputFicheiro) inputFicheiro.value = ''; // Limpa seleções pendentes
+}
+
+/**
+ * Cria instâncias de gráficos através do Chart.js de forma parametrizada
+ */
+function criarGrafico(canvasId, dados, tipo, cor) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx || !dados || dados.length === 0) return;
+    
+    new Chart(ctx, {
+        type: tipo,
+        data: {
+            labels: dados.map(d => d.label),
+            datasets: [{
+                label: 'Nº de equipamentos',
+                data: dados.map(d => d.total),
+                backgroundColor: cor
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: tipo === 'pie' // Só exibe legendas laterais se for gráfico circular
+                }
+            }
+        }
+    });
+}
+
+// Inicialização condicional dos gráficos gerados pelo PHP backend
+try {
+    if (typeof dadosServicos !== 'undefined') criarGrafico('graficoServicos', dadosServicos, 'bar', '#198754');
+    if (typeof dadosEdificios !== 'undefined') criarGrafico('graficoEdificios', dadosEdificios, 'pie', ['#198754', '#0d6efd', '#ffc107', '#dc3545', '#6c757d', '#20c997']);
+    if (typeof dadosSuporteVida !== 'undefined') criarGrafico('graficoSuporteVida', dadosSuporteVida, 'bar', '#dc3545');
+} catch(e) {
+    console.log("Gráficos ignorados nesta página ou variáveis em falta.");
 }

@@ -44,6 +44,7 @@ try {
         LEFT JOIN localizacoes l ON e.localizacao_id = l.id
         WHERE e.id = :id
     ");
+
     $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
     $stmt->execute();
     $equipamento = $stmt->fetch(PDO::FETCH_OBJ);
@@ -63,7 +64,8 @@ try {
         WHERE ef.equipamento_id = :id
         ORDER BY ef.tipo_relacao ASC
     ");
-    $stmt_forn->execute([':id' => $idEquipamento]);
+    // CORRIGIDO: Retirado os dois pontos (:) da chave do array
+    $stmt_forn->execute(['id' => $idEquipamento]); 
     $fornecedores_vinculados = $stmt_forn->fetchAll(PDO::FETCH_OBJ);
 
     // ----------------------------------------------------------------
@@ -76,7 +78,8 @@ try {
         WHERE g.equipamento_id = :id
         ORDER BY g.data_fim DESC
     ");
-    $stmt_gar->execute([':id' => $idEquipamento]);
+    // CORRIGIDO: Retirado os dois pontos (:) da chave do array
+    $stmt_gar->execute(['id' => $idEquipamento]);
     $garantias = $stmt_gar->fetchAll(PDO::FETCH_OBJ);
 
     // ----------------------------------------------------------------
@@ -89,12 +92,13 @@ try {
         WHERE d.equipamento_id = :id
         ORDER BY d.data_documento DESC
     ");
-    $stmt_doc->execute([':id' => $idEquipamento]);
+    // CORRIGIDO: Retirado os dois pontos (:) da chave do array
+    $stmt_doc->execute(['id' => $idEquipamento]);
     $documentos = $stmt_doc->fetchAll(PDO::FETCH_OBJ);
 
 } catch (PDOException $err) {
     $erro = "Erro ao aceder à base de dados.";
-    // Em produção: error_log($err->getMessage()); em vez de mostrar ao utilizador
+    // Em produção, isto é excelente: error_log($err->getMessage());
 }
 
 $ligacao = null;

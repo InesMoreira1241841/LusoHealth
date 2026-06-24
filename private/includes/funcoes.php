@@ -61,3 +61,41 @@ function aes_decrypt($value)
         OPENSSL_IV
     );
 }
+
+// --------------------------------------------------------------------
+// CONTEÚDOS PÚBLICOS (chave => valor) — para edição dinâmica do site público
+// --------------------------------------------------------------------
+
+// Vai à BD e devolve todos os conteúdos como array associativo ['chave' => 'valor']
+function get_conteudos_publicos(): array
+{
+    try {
+        $ligacao = new PDO(
+            "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
+            DB_USER,
+            DB_PASS
+        );
+        $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $stmt = $ligacao->query("SELECT chave, valor FROM conteudos_publicos");
+        return $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // ['chave' => 'valor', ...]
+    } catch (PDOException $err) {
+        error_log($err->getMessage());
+        return []; // Se a BD falhar, devolve vazio — o index.php usa os valores por defeito
+    } finally {
+        $ligacao = null;
+    }
+}
+
+// Para texto simples (sempre escapado — telefone, email, nomes, etc.)
+function c(array $conteudos, string $chave, string $default = ''): string
+{
+    return htmlspecialchars($conteudos[$chave] ?? $default);
+}
+
+// Para conteúdo que pode conter HTML simples (parágrafos com <strong>, etc.)
+// Usar apenas para texto inserido por ti no admin, nunca para input de utilizadores externos
+function c_html(array $conteudos, string $chave, string $default = ''): string
+{
+    return $conteudos[$chave] ?? $default;
+}

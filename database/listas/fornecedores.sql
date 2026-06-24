@@ -1,9 +1,6 @@
 -- NOTA: Este código foi gerado com recurso a IA a fim de facilitar o
 --      processo de inserção de fornecedores à base de dados
 
--- --------------------------------------------------------------------
--- INSERÇÃO EM MASSA: 50 FORNECEDORES (LusoHealth)
--- --------------------------------------------------------------------
 
 
 INSERT INTO `fornecedores` (

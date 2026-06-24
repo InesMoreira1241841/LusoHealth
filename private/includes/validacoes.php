@@ -281,7 +281,7 @@ function validar_estado(string $estado): array
 function validar_criticidade(string $criticidade): array
 {
     $erros = [];
-    if (!in_array($criticidade, ['Baixa', 'Médio', 'Alta', 'Suporte de vida'], true)) {
+    if (!in_array($criticidade, ['Baixa', 'Média', 'Alta', 'Suporte de vida'], true)) {
         $erros[] = "Selecione um nível de Criticidade válido.";
     }
     return $erros;

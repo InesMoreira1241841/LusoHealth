@@ -11,11 +11,13 @@ redirect_if_not_logged();
 
 require_once __DIR__ . '/../../includes/validacoes.php';
 
+// Garante que $erros existe desde o início, evitando avisos no HTML
+$erros = [];
 
-// Verificar se o formulário foi submetido
+// Verificar se o formulário foi submetido via POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 1. Recolher dados principais do Equipamento
+    // 1. Recolher dados principais do Equipamento (com operador de coalescência nula)
     $codigo_inventario = $_POST["codigo_inventario"] ?? "";
     $designacao        = $_POST["designacao"] ?? "";
     $categoria_id      = $_POST["categoria_id"] ?? "";
@@ -34,18 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recolher as associações dinâmicas de fornecedores [Papel => Fornecedor_ID]
     $fornecedores_post = $_POST["fornecedores"] ?? [];
 
-    // A. Normalizar entrada 
-    $codigo_inventario = strtoupper($codigo_inventario);
-    $designacao = ucwords(strtolower($designacao));
-    $marca = ucwords(strtolower($marca));
-    $modelo = ucwords(strtolower($modelo));
+    // A. Normalizar entradas de texto
+    $codigo_inventario = strtoupper(trim($codigo_inventario));
+    $designacao = ucwords(strtolower(trim($designacao)));
+    $marca = ucwords(strtolower(trim($marca)));
+    $modelo = ucwords(strtolower(trim($modelo)));
 
+    // Converter formato de moeda europeu (vírgula) para o padrão de base de dados (ponto)
     if (!empty($custo_aquisicao)) {
         $custo_aquisicao = str_replace(',', '.', $custo_aquisicao);
     }
 
     // 2. Validar os dados acumulando os erros de forma estrita
-    $erros = [];
     $erros = array_merge($erros, validar_designacao($designacao) ?? []);
     $erros = array_merge($erros, validar_codigo_inventario($codigo_inventario) ?? []);
     $erros = array_merge($erros, validar_marca($marca) ?? []);
@@ -60,12 +62,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $erros = array_merge($erros, validar_estado($estado) ?? []);
     $erros = array_merge($erros, validar_criticidade($criticidade) ?? []);
 
-    // Validar se pelo menos o Fabricante de seleção foi indicado (Requisito de Integridade)
+    // Validar se pelo menos o Fabricante foi indicado (Requisito de Integridade)
     if (empty($fornecedores_post['Fabricante'])) {
         $erros[] = "Deve selecionar obrigatoriamente um Fabricante na secção de Entidades Vinculadas.";
     }
 
-    // 3. Se não houver erros, iniciar o processo de gravação segura
+    // 3. Se não houver erros de validação, iniciar o processo de gravação
     if (empty($erros)) {
         try {
             $ligacao = new PDO(
@@ -75,82 +77,87 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             );
             $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            // Iniciar a transação antes de qualquer leitura/escrita dependente
+            $ligacao->beginTransaction();
+
             // Verifica se já existe um equipamento com o mesmo código de inventário
             $sqlCheck = "SELECT COUNT(*) FROM equipamentos WHERE codigo_inventario = :codigo_inventario";
             $stmtCheck = $ligacao->prepare($sqlCheck);
             $stmtCheck->execute([':codigo_inventario' => $codigo_inventario]);
 
             if ($stmtCheck->fetchColumn() > 0) {
-                $erros[] = "O Código de Inventário '$codigo_inventario' já está registado. Escolha um código único.";
+                // Lança uma exceção para interromper o fluxo e fazer o rollback automaticamente
+                throw new Exception("O Código de Inventário '$codigo_inventario' já está registado. Escolha um código único.");
             }
 
-            // 4. Se continuar sem erros, avança-se estruturalmente com uma TRANSAÇÃO
-            if (empty($erros)) {
-                $ligacao->beginTransaction();
+            // Inserção do Equipamento Principal
+            $sql = "INSERT INTO equipamentos (
+                        codigo_inventario, designacao, categoria_id, marca, modelo, 
+                        num_serie, ano_fabrico, data_aquisicao, 
+                        custo_aquisicao, tipo_entrada, estado, criticidade, 
+                        localizacao_id, observacoes) 
+                    VALUES (
+                        :codigo_inventario, :designacao, :categoria_id, :marca, :modelo, 
+                        :num_serie, :ano_fabrico, :data_aquisicao, 
+                        :custo_aquisicao, :tipo_entrada, :estado, :criticidade, 
+                        :localizacao_id, :observacoes)";
 
-                $sql = "INSERT INTO equipamentos (
-                            codigo_inventario, designacao, categoria_id, marca, modelo, 
-                            num_serie, ano_fabrico, data_aquisicao, 
-                            custo_aquisicao, tipo_entrada, estado, criticidade, 
-                            localizacao_id, observacoes) 
-                        VALUES (
-                            :codigo_inventario, :designacao, :categoria_id, :marca, :modelo, 
-                            :num_serie, :ano_fabrico, :data_aquisicao, 
-                            :custo_aquisicao, :tipo_entrada, :estado, :criticidade, 
-                            :localizacao_id, :observacoes)";
+            $stmt = $ligacao->prepare($sql);
+            $stmt->execute([
+                ':codigo_inventario' => $codigo_inventario,
+                ':designacao'        => $designacao,
+                ':categoria_id'      => $categoria_id,
+                ':marca'             => $marca,
+                ':modelo'            => $modelo,
+                ':num_serie'         => $num_serie,
+                ':ano_fabrico'       => $ano_fabrico,
+                ':data_aquisicao'    => $data_aquisicao,
+                ':custo_aquisicao'   => $custo_aquisicao,
+                ':tipo_entrada'      => $tipo_entrada,
+                ':estado'            => $estado,
+                ':criticidade'       => $criticidade,
+                ':localizacao_id'    => $localizacao_id,
+                ':observacoes'       => $observacoes
+            ]);
 
-                $stmt = $ligacao->prepare($sql);
-                $stmt->execute([
-                    ':codigo_inventario' => $codigo_inventario,
-                    ':designacao'        => $designacao,
-                    ':categoria_id'      => $categoria_id,
-                    ':marca'             => $marca,
-                    ':modelo'            => $modelo,
-                    ':num_serie'         => $num_serie,
-                    ':ano_fabrico'       => $ano_fabrico,
-                    ':data_aquisicao'    => $data_aquisicao,
-                    ':custo_aquisicao'   => $custo_aquisicao,
-                    ':tipo_entrada'      => $tipo_entrada,
-                    ':estado'            => $estado,
-                    ':criticidade'       => $criticidade,
-                    ':localizacao_id'    => $localizacao_id,
-                    ':observacoes'       => $observacoes
-                ]);
+            // Obter o ID gerado automaticamente para o novo dispositivo
+            $equipamento_id = $ligacao->lastInsertId();
 
-                // Obter o ID gerado automaticamente para o novo dispositivo
-                $equipamento_id = $ligacao->lastInsertId();
-
-                // Inserir os registros associados na tabela pivot equipamento_fornecedor
-                $stmtPivot = $ligacao->prepare("INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_relacao) VALUES (:equip_id, :forn_id, :tipo)");
-                foreach ($fornecedores_post as $tipo_relacao => $fornecedor_id) {
-                    if (!empty($fornecedor_id)) {
-                        $stmtPivot->execute([
-                            ':equip_id' => $equipamento_id,
-                            ':forn_id'  => $fornecedor_id,
-                            ':tipo'     => $tipo_relacao
-                        ]);
-                    }
+            // Inserir os registos associados na tabela pivot (relação N-N)
+            $stmtPivot = $ligacao->prepare("INSERT INTO equipamento_fornecedor (equipamento_id, fornecedor_id, tipo_relacao) VALUES (:equip_id, :forn_id, :tipo)");
+            foreach ($fornecedores_post as $tipo_relacao => $fornecedor_id) {
+                if (!empty($fornecedor_id)) {
+                    $stmtPivot->execute([
+                        ':equip_id' => $equipamento_id,
+                        ':forn_id'  => $fornecedor_id,
+                        ':tipo'     => $tipo_relacao
+                    ]);
                 }
-
-                // Submeter todas as operações simultaneamente
-                $ligacao->commit();
-
-                $_SESSION['success_message'] = "Equipamento biomédico registado com sucesso.";
-                header('Location: equipamentos.php');
-                exit;
             }
+
+            // Confirmar todas as operações na base de dados
+            $ligacao->commit();
+
+            $_SESSION['success_message'] = "Equipamento biomédico registado com sucesso.";
+            header('Location: equipamentos.php');
+            exit;
         } catch (PDOException $err) {
             if (isset($ligacao) && $ligacao->inTransaction()) {
                 $ligacao->rollBack();
             }
-            $erros[] = "Erro ao gravar os dados no system: " . $err->getMessage();
+            $erros[] = "Erro ao gravar os dados no sistema: " . $err->getMessage();
+        } catch (Exception $errGeral) {
+            if (isset($ligacao) && $ligacao->inTransaction()) {
+                $ligacao->rollBack();
+            }
+            $erros[] = $errGeral->getMessage();
         } finally {
-            $ligacao = null;
+            $ligacao = null; // Fecha a ligação
         }
     }
 }
 
-// Carregar tabelas auxiliares para alimentar os Selects do HTML
+// Carregar tabelas auxiliares para alimentar os Selects dinâmicos do HTML
 try {
     $ligacao = new PDO(
         "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
@@ -161,10 +168,12 @@ try {
 
     $categorias_existentes   = $ligacao->query("SELECT id, nome FROM categorias ORDER BY nome ASC")->fetchAll(PDO::FETCH_OBJ);
     $localizacoes_existentes = $ligacao->query("SELECT id, nome, edificio, piso FROM localizacoes ORDER BY edificio ASC")->fetchAll(PDO::FETCH_OBJ);
-    $fornecedores_existentes = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC")->fetchAll(PDO::FETCH_OBJ); 
-
+    $fornecedores_existentes = $ligacao->query("SELECT id, nome, tipo FROM fornecedores ORDER BY nome ASC")->fetchAll(PDO::FETCH_OBJ);
 } catch (PDOException $err) {
-    $erros[] = "Erro ao gravar os dados: " . $err->getMessage();
+    $erros[] = "Erro ao carregar dados auxiliares: " . $err->getMessage();
+    $categorias_existentes   = [];
+    $localizacoes_existentes = [];
+    $fornecedores_existentes = [];
 } finally {
     $ligacao = null;
 }
@@ -245,6 +254,7 @@ include '../../../assets/includes/head.php'; ?>
                         <div class="col-md-3">
                             <label for="data_aquisicao" class="form-label text-dark">Data de Aquisição</label>
                             <input type="text" id="data_aquisicao" name="data_aquisicao" class="form-control rounded-3"
+                                placeholder="YYYY-MM-DD"
                                 value="<?= htmlspecialchars($_POST['data_aquisicao'] ?? '') ?>" required>
                         </div>
 
@@ -301,7 +311,6 @@ include '../../../assets/includes/head.php'; ?>
                                 <option value="" selected disabled>Selecione um estado...</option>
                                 <option value="Ativo" <?= (($_POST['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
                                 <option value="Em manutenção" <?= (($_POST['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
-                                <option value="Inativo" <?= (($_POST['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
                                 <option value="Em calibração" <?= (($_POST['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
                                 <option value="Em quarentena" <?= (($_POST['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
                                 <option value="Abatido" <?= (($_POST['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
@@ -330,7 +339,7 @@ include '../../../assets/includes/head.php'; ?>
 
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <label for="forn_fabricante" class="form-label text-dark fw-bold">Fabricante Oficial (Entidade Relacionada)</label>
+                                    <label for="forn_fabricante" class="form-label text-dark fw-bold">Fabricante Oficial (Obrigatório)</label>
                                     <select id="forn_fabricante" name="fornecedores[Fabricante]" class="form-select rounded-3" required>
                                         <option value="" selected disabled>Selecione o Fabricante...</option>
                                         <?php foreach ($fornecedores_existentes as $f): ?>
@@ -404,64 +413,62 @@ include '../../../assets/includes/head.php'; ?>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Escuta o ID exclusivo para evitar interferências de scripts antigos globais
-        const formNovaCategoria = document.getElementById('formNovaCategoriaExclusivo');
-        
-        if (formNovaCategoria) {
-            formNovaCategoria.addEventListener('submit', function(e) {
-                e.preventDefault(); // Impede o comportamento de submissão do formulário principal
+        document.addEventListener('DOMContentLoaded', function() {
+            const formNovaCategoria = document.getElementById('formNovaCategoriaExclusivo');
 
-                const nomeCategoria = document.getElementById('nome_categoria').value;
-                const btnGuardar = document.getElementById('btnGuardarCategoria');
-                
-                // Rota direta e correta para o controlador AJAX privado
-                const urlAjax = '<?= BASE_URL ?>/private/includes/guardar_categoria_ajax.php';
+            if (formNovaCategoria) {
+                formNovaCategoria.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-                btnGuardar.disabled = true;
-                btnGuardar.innerText = 'A guardar...';
+                    const nomeCategoria = document.getElementById('nome_categoria').value;
+                    const btnGuardar = document.getElementById('btnGuardarCategoria');
 
-                fetch(urlAjax, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'nome=' + encodeURIComponent(nomeCategoria)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro no servidor (Status: ' + response.status + ')');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Inserir a nova categoria no Select e selecioná-la
-                        const selectCategoria = document.getElementById('categoria_id');
-                        const novaOpcao = new Option(data.nome, data.id, false, true);
-                        selectCategoria.add(novaOpcao);
+                    // Rota protegida do AJAX (Garanta que a constante BASE_URL é estática e segura)
+                    const urlAjax = '<?= defined("BASE_URL") ? htmlspecialchars(BASE_URL, ENT_QUOTES, "UTF-8") : "" ?>/private/includes/guardar_categoria_ajax.php';
 
-                        // Fechar o Modal de forma limpa pelo Bootstrap
-                        const modalElement = document.getElementById('modalNovaCategoria');
-                        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-                        modal.hide();
+                    btnGuardar.disabled = true;
+                    btnGuardar.innerText = 'A guardar...';
 
-                        formNovaCategoria.reset();
-                    } else {
-                        alert('Aviso: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro detetado:', error);
-                    alert('Erro ao tentar comunicar com o servidor.');
-                })
-                .finally(() => {
-                    btnGuardar.disabled = false;
-                    btnGuardar.innerText = 'Guardar';
+                    fetch(urlAjax, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'nome=' + encodeURIComponent(nomeCategoria)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Erro no servidor (Status: ' + response.status + ')');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                const selectCategoria = document.getElementById('categoria_id');
+                                const novaOpcao = new Option(data.nome, data.id, false, true);
+                                selectCategoria.add(novaOpcao);
+
+                                const modalElement = document.getElementById('modalNovaCategoria');
+                                const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+                                modal.hide();
+
+                                formNovaCategoria.reset();
+                            } else {
+                                alert('Aviso: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro detetado:', error);
+                            alert('Erro ao tentar comunicar com o servidor.');
+                        })
+                        .finally(() => {
+                            btnGuardar.disabled = false;
+                            btnGuardar.innerText = 'Guardar';
+                        });
                 });
-            });
-        }
-    });
+            }
+        });
     </script>
 
     <?php include '../../../assets/includes/footer.php'; ?>
+

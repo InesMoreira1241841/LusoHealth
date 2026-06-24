@@ -1,371 +1,176 @@
-// LusoHealth - Diagrama de Base de Dados
+// ------------------------- LUSOHEALTH -------------------------
 
 
-// ------------------------------ TABELA: UTILIZADORES ------------------------------
-Table utilizadores {
+// ENUMERAÇÕES (domínios de valores controlados)
 
-  // - guarda os dados de autenticação dos utilizadores do sistema
-  // - tabela responsável pelo controlo de acesso à área privada
-  // - inclui: username; password encriptada e nome de utilizador
+Enum tipo_entrada_equipamento {
+  "Compra"
+  "Doação"
+  "Aluguer"
+  "Empréstimo"
+}
 
-  // indicador único do utilizador
-  // pk = valor único (1,2,3,...)
-  // increment - o número aumenta automaticamente
-  id int [pk, increment]
+Enum estado_equipamento {
+  "Ativo"
+  "Em manutenção"
+  "Em calibração"
+  "Em quarentena"
+  "Abatido"
+}
 
-  // nome de utilizador usado no login
-  // deve ser único para evitar dupliação de contas
-  username varchar(50) [not null, unique] 
+Enum criticidade_equipamento {
+  "Baixa"
+  "Média"
+  "Alta"
+  "Suporte de vida"
+}
 
-  // palavra-passe encriptada com algoritmo bcrypt
-  // nunca deve ser armazenada em texto simples
-  // hash: transforma a password para um código “baralhado” e praticamente impossível de reverter - ex: $2y$10$wP3e9VhM8Y7xK...
-  // neste caso usa-se varchar(225) pq o hash bcrypt fica grande, sendo um tamanho seguro para guardar hashes
-  password varchar(225) [not null, note: 'hash bcrypt'] 
+Enum tipo_relacao_fornecedor {
+  "Fabricante"
+  "Distribuidor"
+  "Assistência técnica"
+}
 
-  // nome completo do utilizador
-  nome varchar(100) [not null]
+Enum tipo_fornecedor {
+  "Fabricante"
+  "Distribuidor"
+  "Assistência Técnica"
+  "Consumíveis"
+}
 
-  // Data e hora de criação do utilizador
-  // O valor é preenchido automaticamente
-  criado_em datetime [not null, default: `now()`]
+Enum tipo_garantia {
+  "Garantia de Fábrica"
+  "Contrato de Manutenção"
+  "Outro"
 }
 
 
-// ------------------------------ TABELA: CATEGORIAS ------------------------------
+// TABELAS
+
 Table categorias {
-
-  // - as categorias dos equipamentos médicos
-  // - permite classificar equipamentos por tipo/função
-
-  // identificador único da categoria
-  // pk = valor único (1,2,3,...)
-  // increment - o número aumenta automaticamente
   id int [pk, increment]
+  nome varchar(100) [unique, not null, note: 'Ex: Monitorização, Suporte de vida']
 
-  // nome da categoria
-  // exemplo: Monitorização, Suporte de vida
-  // não pode haver categorias repetidas
-  nome varchar(100) [not null, unique, note: 'Ex: Monitorização, Suporte de vida']
-
+  Note: 'Categorias/famílias funcionais de equipamentos médicos (ex: Diagnóstico, Esterilização, Laboratório).'
 }
 
-
-// ------------------------------ TABELA: LOCALIZACOES ------------------------------
 Table localizacoes {
-
-  // - guarda as localizações físicas dos equipamentos no hospital
-  // - permite saber onde um equipamento está instalado
-
-  // identificador único da localização
   id int [pk, increment]
-
-  // código interno da localização
-  codigo varchar(20) [not null, unique, note: 'Ex: SRV-UCI']
-
-  // nome do serviço ou unidade
-  nome varchar(100) [not null, note: 'Ex: Unidade de Cuidados Intensivos']
-
-  // edifício ou bloco hospitalar
-  edificio varchar(50) [not null, note: 'Ex: Bloco B - Cirúrgico']
-
-  // piso onde se encontra a localização
-  // valor por defeito = 0
+  codigo varchar(20) [unique, not null, note: 'Ex: SRV-UCI']
+  nome varchar(100) [not null]
+  edificio varchar(50) [not null]
   piso tinyint [not null, default: 0]
-
-  // nome do responsável pelo espaço
-  // campo opcional
   responsavel varchar(100)
-
-  // campo livre para observações adicionais
   observacoes text
-
-  // data de criação do registo
+  arquivado tinyint [not null, default: 0]
   criado_em datetime [not null, default: `now()`]
+  atualizado_em timestamp
 
-  // data da última atualização
-  atualizado_em datetime
+  Note: 'Localizações físicas hospitalares (serviço, edifício, piso) onde os equipamentos podem estar instalados.'
 }
 
-
-// ------------------------------ TABELA: EQUIPAMENTOS ------------------------------
-Table equipamentos {
-
-  // - tabela principal do sistema
-  // - guarda todas as informações sobre os equipamentos médicos
-
-  // identificador único do equipamento
-  id int [pk, increment]
-
-  // código interno de inventário
-  codigo_inventario varchar(30) [not null, unique, note: 'Ex: EQ-02091-XWZ']
-
-  // nome / designação do equipamento
-  designacao varchar(150) [not null]
-
-  // categoria do equipamento
-  // chave estrangeira para a tabela categorias
-  categoria_id int [ref: > categorias.id]
-
-  // marca do equipamento
-  marca varchar(100) [not null]
-
-  // modelo do equipamento
-  modelo varchar(100) [not null]
-
-  // número de série único do fabricante
-  num_serie varchar(100) [not null, unique]
-
-  // nome do fabricante
-  fabricante varchar(100)
-
-  // ano de fabrico do equipamento
-  ano_fabrico year
-
-  // data em que o equipamento foi adquirido
-  data_aquisicao date
-
-  // custo de aquisição do equipamento
-  custo_aquisicao decimal(10,2)
-
-  // tipo de entrada no hospital
-  tipo_entrada enum(
-    'Compra',
-    'Doação',
-    'Aluguer',
-    'Empréstimo') [not null]
-
-  // estado atual do equipamento
-  estado enum(
-    'Ativo',
-    'Em manutenção',
-    'Inativo',
-    'Em calibração',
-    'Em quarentena',
-    'Abatido') [not null]
-
-  // grau de criticidade clínica do equipamento
-  criticidade enum(
-    'Baixa',
-    'Média',
-    'Alta',
-    'Suporte de vida') [not null]
-
-  // localização atual do equipamento
-  // chave estrangeira para localizacoes
-  localizacao_id int [ref: > localizacoes.id]
-
-  // define se o equipamento está arquivado
-  // 0 = ativo | 1 = arquivado
-  arquivado tinyint [not null, default: 0, note: '0 = ativo, 1 = arquivado']
-
-  // observações adicionais
-  observacoes text
-
-  // data de criação do registo
-  criado_em datetime [not null, default: `now()`]
-
-  // data da última atualização
-  atualizado_em datetime
-}
-
-
-// ------------------------------ TABELA: FORNECEDORES ------------------------------
 Table fornecedores {
-  
-  // - guarda os dados dos fornecedores associados aos equipamentos
-  // - pode incluir fabricantes, distribuidores, assistência técnica ou fornecedores de consumíveis
-
-  // identificador único do fornecedor
   id int [pk, increment]
-
-  // nome da empresa fornecedora
   nome varchar(150) [not null]
-
-  // número de Identificação Fiscal (NIF)
-  // deve ser único para evitar duplicações
-  nif varchar(20) [not null, unique]
-
-  // tipo de fornecedor
-  tipo enum(
-    'Fabricante',
-    'Distribuidor',
-    'Assistência Técnica',
-    'Consumíveis') [not null]
-
-  // número de telefone do fornecedor
+  nif varchar(20) [unique, not null]
+  tipo tipo_fornecedor [not null]
   telefone varchar(30)
-
-  // endereço de email do fornecedor
   email varchar(100)
-
-  // morada física da empresa
   morada varchar(200)
-
-  // website oficial do fornecedor
   website varchar(150)
-
-  // nome do técnico responsável ou contacto principal
   tecnico_nome varchar(100)
-
-  // contacto telefónico do técnico responsável
   tecnico_telefone varchar(30)
-
-  // observações adicionais
   observacoes text
-
-  // data de criação do registo
+  arquivado tinyint [not null, default: 0]
   criado_em datetime [not null, default: `now()`]
-
-  // data da última atualização do registo
   atualizado_em datetime
+
+  Note: 'Entidades externas associadas aos equipamentos: fabricantes, distribuidores, assistência técnica ou fornecedores de consumíveis.'
 }
 
+Table equipamentos {
+  id int [pk, increment]
+  codigo_inventario varchar(30) [unique, not null, note: 'Ex: INV-0091']
+  designacao varchar(150) [not null]
+  categoria_id int [ref: > categorias.id, note: 'ON DELETE SET NULL']
+  marca varchar(100) [not null]
+  modelo varchar(100) [not null]
+  num_serie varchar(100) [unique, not null]
+  ano_fabrico year
+  data_aquisicao date
+  custo_aquisicao "decimal(10,2)" [note: 'CHECK custo_aquisicao >= 0']
+  tipo_entrada tipo_entrada_equipamento [not null]
+  estado estado_equipamento [not null]
+  criticidade criticidade_equipamento [not null]
+  localizacao_id int [ref: > localizacoes.id, note: 'ON DELETE SET NULL']
+  observacoes text
+  criado_em datetime [not null, default: `now()`]
+  atualizado_em datetime
 
-// ------------------------------ TABELA: EQUIPAMENTOS_FORNECEDOR ------------------------------
+  Note: 'Entidade central do sistema: cada dispositivo médico registado no inventário hospitalar.'
+}
+
 Table equipamento_fornecedor {
-
-  // - tabela intermédia responsável por ligar equipamentos aos seus fornecedores
-  // - esta tabela existe porque um equipamento pode ter vários fornecedores e 
-  // um fornecedor pode estar associado a vários equipamentos
-  
-  // - exemplo:
-    // - Equipamento → Ventilador
-    // - Fabricante → Philips
-    // - Assistência técnica → Siemens
-
-  // ID do equipamento associado
-  // chave estrangeira para a tabela equipamentos
-  equipamento_id int [not null, ref: > equipamentos.id]
-
-  // ID do fornecedor associado
-  // chave estrangeira para a tabela fornecedores
-  fornecedor_id int [not null, ref: > fornecedores.id]
-
-  // tipo de relação entre equipamento e fornecedor
-  tipo_relacao enum(
-    'Fabricante', 
-    'Distribuidor', 
-    'Assistência Técnica') [not null]
+  equipamento_id int [ref: > equipamentos.id, note: 'ON DELETE CASCADE']
+  fornecedor_id int [ref: > fornecedores.id, note: 'ON DELETE CASCADE']
+  tipo_relacao tipo_relacao_fornecedor [not null]
 
   indexes {
-    // chave primária composta 
-    // garante que não existem relações duplicadas 
-    // entre o mesmo equipamento e fornecedor
     (equipamento_id, fornecedor_id) [pk]
   }
+
+  Note: 'Tabela de associação N:M entre equipamentos e fornecedores, qualificada pelo papel desempenhado (Fabricante, Distribuidor, Assistência técnica).'
 }
 
-
-// ------------------------------ TABELA: DOCUMENTOS ------------------------------
 Table documentos {
-
-  // - guarda documentos associados aos equipamentos
-
-  // identificador único do documento
   id int [pk, increment]
-
-  // equipamento ao qual o documento pertence
-  equipamento_id int [not null, ref: > equipamentos.id]
-
-  // fornecedor relacionado com o documento
-  // campo opcional
-  fornecedor_id int [ref: > fornecedores.id]
-
-  // tipo de documento
+  equipamento_id int [not null, ref: > equipamentos.id, note: 'ON DELETE CASCADE']
+  fornecedor_id int [ref: > fornecedores.id, note: 'ON DELETE SET NULL']
   tipo varchar(50) [not null, note: 'Manual do Utilizador / Manual de Serviço / Certificado de Calibração / etc.']
- 
-  // nome do ficheiro ou localização do ficheiro
-  nome_ficheiro_caminho varchar(255) [not null]
-
-  // nome visível do documento
   nome_documento varchar(255) [not null]
-
-  // data do documento
   data_documento date
-
-  // data de validade do documento
   data_validade date
-
-  // notas adicionais sobre o documento
   notas text
-
-  // data de criação do registo
+  ficheiro_path varchar(255) [note: 'Caminho do PDF local (Forma 1)']
+  url_externo varchar(2000) [note: 'Link para Cloud/OneDrive (Forma 2)']
+  arquivado tinyint [not null, default: 0]
   criado_em datetime [not null, default: `now()`]
+
+  Note: 'Documentação técnica e administrativa associada a um equipamento e, opcionalmente, a um fornecedor.'
 }
 
-
-// ------------------------------ TABELA: GARANTIAS ------------------------------
 Table garantias {
-
-  // - guarda contratos e garantias
-
-  // identificador único da garantia
   id int [pk, increment]
-
-  // identificador único do contrato (ex: CTR-DRG-0001)
-  num_contrato varchar(50) [not null, unique, note: 'Ex: CTR-DRG-0001']
-
-  // equipamento associado à garantia
-  equipamento_id int [not null, ref: > equipamentos.id]
-
-  // fornecedor responsável pela garantia
-  // fornecedor opcional - pode ser null
-  fornecedor_id int [ref: > fornecedores.id, note: 'opcional'] 
-
-  // nome da entidade responsável, utilizado quando não existe fornecedor registado
-  entidade_responsavel varchar(150) [note: 'quando não é um fornecedor registado']
-
-  // tipo de garantia/contrato
-  tipo ENUM(
-    'Garantias de Fábrica',
-    'Contrato de Manutenção',
-    'Outro') [not null] 
-  
-  // define se existe contrato de manutenção
-  // 0 = Não | 1 = Sim
-  tem_contrato_manutencao tinyint [not null, default: 0, note: '0 = Não, 1 = Sim']
-
-  // data de início do contrato
+  num_contrato varchar(50) [unique, not null, note: 'Ex: CTR-DRG-0001']
+  equipamento_id int [not null, ref: > equipamentos.id, note: 'ON DELETE CASCADE']
+  fornecedor_id int [ref: > fornecedores.id, note: 'ON DELETE SET NULL, opcional']
+  tipo tipo_garantia [not null]
   data_inicio date [not null]
-
-  // data de fim do contrato
-  data_fim date [not null]
-
-  // frequência das manutenções
+  data_fim date [not null, note: 'CHECK data_fim > data_inicio']
   periodicidade varchar(50)
-  
-  // termos do contrato (ex: "resposta em 4h, peças incluídas")
-  clausulas text
-
-  // observações adicionais
+  ficheiro_path varchar(255) [note: 'Caminho do PDF local (Forma 1)']
+  url_externo varchar(2000) [note: 'Link para Cloud/OneDrive (Forma 2)']
   observacoes text
-
-  // data de criação do registo
+  arquivado tinyint [not null, default: 0]
   criado_em datetime [not null, default: `now()`]
-
-  // data da última atualização
   atualizado_em datetime
-  
+
+  Note: 'Garantias de fábrica e contratos de manutenção associados a um equipamento.'
 }
 
-
-// ------------------------------ TABELA: CONTEUDOS_PUBLICOS ------------------------------
 Table conteudos_publicos {
-
-  // - guarda conteúdos dinâmicos do website público
-  // - permite alterar textos do website sem necessidade de modificar código-fonte
-
-  // identificador único do conteúdo
   id int [pk, increment]
-
-  // chave identificadora do conteúdo
-  chave varchar(50) [not null, unique, note: 'Ex: nome_lusohelth, telefone, email, texto_home']
-
-  // valor associado à chave
-  // pode guardar texto simples ou conteúdo longo
+  chave varchar(50) [unique, not null, note: 'Ex: nome_hospital, telefone, email, texto_home']
   valor text [not null]
-
-  // data da última atualização do conteúdo
   atualizado_em datetime
+
+  Note: 'Conteúdos editáveis do website público (Front Office), geridos via Back Office sem necessidade de editar HTML diretamente.'
+}
+
+Table utilizadores {
+  id int [pk, increment]
+  username varchar(50) [unique, not null]
+  password varchar(255) [not null, note: 'Hash gerado com password_hash() (bcrypt)']
+
+  Note: 'Contas de acesso à área privada (Back Office) da aplicação.'
 }

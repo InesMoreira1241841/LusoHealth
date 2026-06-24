@@ -1,8 +1,10 @@
 <?php 
 
+// Deteta se o projeto está a correr localmente (127.0.0.1 ou localhost)
+$isLocal = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['REMOTE_ADDR'] === '::1' || $_SERVER['SERVER_NAME'] === 'localhost');
 // Configurações globais da aplicação 
 
-define('BASE_URL', '/lusohealth');
+define('BASE_URL', '/sibdas/1241841/lusohealth');
 
 define('APP_NAME', 'LusoHealth'); 
 define('APP_VERSION', '1.0.0'); 

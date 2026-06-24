@@ -10,7 +10,7 @@ require_once __DIR__ . '/funcoes.php';
 start_session();
 
 // CORREÇÃO: Verifica se a sessão 'utilizador' existe (conforme definido no seu processa_login.php)
-if (!isset($_SESSION['utilizador']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+if (!isset($_SESSION['username']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Acesso não autorizado ou sessão expirada.']);
     exit;
 }

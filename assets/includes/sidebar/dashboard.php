@@ -27,6 +27,9 @@
                         <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="views/garantias/contratos.php">
                             <i class="fa-solid fa-file-contract me-2"></i>Garantias e Contratos
                         </a>
+                        <a class="nav-link text-secondary fw-medium px-3 py-2 rounded-3" href="views/conteudos/conteudos.php">
+                            <i class="fa-solid fa-file-pen me-2"></i>Conteúdos Públicos
+                        </a>
                     </nav>
 
                 </div>
