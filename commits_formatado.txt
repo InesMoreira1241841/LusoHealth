@@ -1,3 +1,5 @@
+88db9c6 - Inês Maria Fernandes Moreira - 2026-06-24 14:55:30 +0100 - Backend: Alteração função .js 7 e 8
+
 79ace43 - Inês Maria Fernandes Moreira - 2026-06-24 03:17:10 +0100 - Frontend e Backend: Últimas alterações
 
 8dc8625 - Inês Maria Fernandes Moreira - 2026-06-21 10:08:09 +0100 - Backend: Conclusão módulo Equipamentos + Login

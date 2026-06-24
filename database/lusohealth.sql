@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   UNIQUE KEY `UQ_categorias_nome` (`nome`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- A despejar dados para tabela db1241841.categorias: ~13 rows (aproximadamente)
+-- A despejar dados para tabela db1241841.categorias: ~11 rows (aproximadamente)
 INSERT INTO `categorias` (`id`, `nome`) VALUES
 	(9, 'Consumíveis Médicos Descartáveis'),
 	(18, 'Equipamento De Diagnóstico Por Imagem'),
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `documentos` (
   CONSTRAINT `FK_documentos_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `fornecedores` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- A despejar dados para tabela db1241841.documentos: ~1 rows (aproximadamente)
+-- A despejar dados para tabela db1241841.documentos: ~0 rows (aproximadamente)
 INSERT INTO `documentos` (`id`, `equipamento_id`, `fornecedor_id`, `tipo`, `nome_documento`, `data_documento`, `data_validade`, `notas`, `ficheiro_path`, `url_externo`, `arquivado`, `criado_em`) VALUES
 	(1, 153, 6, 'Manual', 'Product Brochure Philips IntelliVue Portable patient monitor MPr', '2026-04-07', NULL, '', NULL, 'https://www.documents.philips.com/assets/20170523/bff818aacaea49339049a77c014f219d.pdf', 0, '2026-06-20 22:03:06');
 
@@ -131,7 +131,7 @@ INSERT INTO `equipamentos` (`id`, `codigo_inventario`, `designacao`, `categoria_
 	(1245, 'EQ-00008-QWH', 'Monitor de Pressão Arterial Não Invasiva', 20, 'Welch Allyn', 'Connex ProBP 3400', 'WA-2020-66543', '2020', '2020-07-01', 1200.00, 'Compra', 'Em calibração', 'Média', 26, 'Em calibração anual - retorno previsto 5 dias', '2026-06-24 00:08:48', NULL),
 	(1246, 'EQ-00009-PRI', 'Monitor Fetal Cardiotocógrafo', 20, 'GE Healthcare', 'Corometrics 250cx', 'GE-CTG-2022-98765', '2022', '2022-02-28', 7800.00, 'Compra', 'Ativo', 'Alta', 40, 'Bloco de Partos - sala 2', '2026-06-24 00:08:48', NULL),
 	(1247, 'EQ-00010-QAJ', 'Oxímetro de Pulso de Mesa', 20, 'Masimo', 'Radical-7', 'MAS-2021-22334', '2021', '2021-08-14', 2100.00, 'Compra', 'Ativo', 'Alta', 23, 'UCI - posto 7', '2026-06-24 00:08:48', NULL),
-	(1248, 'EQ-00011-GTK', 'Ventilador Pulmonar de UCI', 19, 'Dräger', 'Evita V500', 'EV500-2021-9934', '2021', '2021-01-10', 45000.00, 'Compra', 'Ativo', 'Suporte de vida', 23, 'UCI - box 1, ventilação invasiva', '2026-06-24 00:08:48', NULL),
+	(1248, 'EQ-00011-GTK', 'Ventilador Pulmonar De Uci', 19, 'Dräger', 'Evita V500', 'EV500-2021-9934', '2021', '2021-01-10', 45000.00, 'Compra', 'Ativo', 'Suporte de vida', 23, 'UCI - box 1, ventilação invasiva', '2026-06-24 00:08:48', '2026-06-24 12:53:14'),
 	(1249, 'EQ-00012-PEL', 'Ventilador de Transporte Portátil', 19, 'Hamilton Medical', 'T1', 'HAM-2022-31245', '2022', '2022-05-20', 18000.00, 'Compra', 'Ativo', 'Suporte de vida', 22, 'Urgência - transporte intra-hospitalar', '2026-06-24 00:08:48', NULL),
 	(1250, 'EQ-00013-BIM', 'Ventilador Neonatal', 19, 'Dräger', 'VN500', 'VN-2023-44556', '2023', '2023-03-01', 38000.00, 'Compra', 'Ativo', 'Suporte de vida', 35, 'UCIN - incubadora 1', '2026-06-24 00:08:48', NULL),
 	(1251, 'EQ-00014-QRN', 'CPAP de Alto Fluxo', 19, 'Fisher & Paykel', 'Airvo 2', 'FP-AIR-2022-55667', '2022', '2022-09-15', 4500.00, 'Compra', 'Ativo', 'Alta', 23, 'UCI - pós-extubação', '2026-06-24 00:08:48', NULL),
@@ -151,7 +151,7 @@ INSERT INTO `equipamentos` (`id`, `codigo_inventario`, `designacao`, `categoria_
 	(1265, 'EQ-00028-BSA', 'Sistema de Perfusão Multichannel', 21, 'Fresenius Kabi', 'Agilia', 'FK-AG-2023-55670', '2023', '2023-06-20', 12000.00, 'Compra', 'Ativo', 'Alta', 23, 'UCI - rack principal', '2026-06-24 00:08:48', NULL),
 	(1266, 'EQ-00029-CNJ', 'Bomba de Nutrição Entérica', 21, 'Kangaroo', 'Joey', 'KAN-2021-22341', '2021', '2021-07-15', 1100.00, 'Compra', 'Ativo', 'Média', 25, 'Medicina Interna A - nutrição pós-cirúrgica', '2026-06-24 00:08:48', NULL),
 	(1267, 'EQ-00030-DNM', 'Bomba de Seringa de Alta Precisão', 21, 'Medtronic', 'SynchroMed II', 'MED-SYN-2022-77650', '2022', '2022-10-01', 3600.00, 'Compra', 'Ativo', 'Alta', 23, 'UCI - box 4', '2026-06-24 00:08:48', NULL),
-	(1268, 'EQ-00031-EVB', 'Analgesia Controlada pelo Paciente (PCA)', 21, 'Hospira', 'Plum A+', 'HOS-2021-44330', '2021', '2021-05-22', 2200.00, 'Compra', 'Ativo', 'Alta', 38, 'Cirurgia - pós-operatório', '2026-06-24 00:08:48', NULL),
+	(1268, 'EQ-00031-EVB', 'Analgesia Controlada Pelo Paciente (pca)', 21, 'Hospira', 'Plum A+', 'HOS-2021-44330', '2021', '2021-05-22', 2200.00, 'Compra', 'Ativo', 'Alta', 38, 'Cirurgia - pós-operatório', '2026-06-24 00:08:48', '2026-06-24 00:46:06'),
 	(1269, 'EQ-00032-FCD', 'Bomba de Diálise Peritoneal', 21, 'Baxter', 'HomeChoice Claria', 'BAX-HC-2023-11220', '2023', '2023-01-30', 5800.00, 'Compra', 'Ativo', 'Alta', 34, 'Nefrologia - sala de diálise', '2026-06-24 00:08:48', NULL),
 	(1270, 'EQ-00033-GXZ', 'Bomba de Perfusão Neonatal', 21, 'B. Braun', 'Perfusor Compact Plus', 'BB-CP-2022-66543', '2022', '2022-08-09', 3100.00, 'Compra', 'Ativo', 'Suporte de vida', 35, 'UCIN - incubadora 4', '2026-06-24 00:08:48', NULL),
 	(1271, 'EQ-00034-HKM', 'Bomba Volumétrica para Nutrição Parentérica', 21, 'Fresenius Kabi', 'Volumat MC Agilia', 'FK-VM-2020-99871', '2020', '2020-12-15', 2500.00, 'Compra', 'Em manutenção', 'Alta', 23, 'Em manutenção preventiva - B.Braun tecnico', '2026-06-24 00:08:48', NULL),
@@ -171,13 +171,13 @@ INSERT INTO `equipamentos` (`id`, `codigo_inventario`, `designacao`, `categoria_
 	(1285, 'EQ-00048-VKI', 'Lavadora Ultrassónica de Instrumentos', 12, 'Miele', 'PG 8582 AOS', 'MIE-2020-88654', '2020', '2020-10-10', 18000.00, 'Compra', 'Ativo', 'Média', 48, 'Central de Esterilização - pré-lavagem', '2026-06-24 00:08:48', NULL),
 	(1286, 'EQ-00049-WGF', 'Seladora de Embalagens Esterilizáveis', 12, 'Hawo', 'HTI 600', 'HAW-2022-55321', '2022', '2022-07-20', 4500.00, 'Compra', 'Ativo', 'Média', 48, 'Central de Esterilização - embalagem', '2026-06-24 00:08:48', NULL),
 	(1287, 'EQ-00050-XZA', 'Indicador Biológico de Esterilização (leitor)', 12, '3M', 'Attest 490', '3M-AT-2021-33120', '2021', '2021-09-01', 1800.00, 'Compra', 'Ativo', 'Média', 48, 'Central de Esterilização - controlo de qualidade', '2026-06-24 00:08:48', NULL),
-	(1288, 'EQ-00051-YPL', 'Analisador Bioquímico Automático', 15, 'Roche', 'Cobas c 702', 'ROC-702-2022-66542', '2022', '2022-01-25', 280000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - bancada principal', '2026-06-24 00:08:48', NULL),
+	(1288, 'EQ-00051-YPL', 'Analisador Bioquímico Automático', 15, 'Roche', 'Cobas C 702', 'ROC-702-2022-66542', '2022', '2022-01-25', 280000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - bancada principal', '2026-06-24 00:08:48', '2026-06-24 00:46:15'),
 	(1289, 'EQ-00052-ZAQ', 'Analisador Hematológico 5-Diff', 15, 'Sysmex', 'XN-1000', 'SYS-XN-2021-44213', '2021', '2021-03-18', 75000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - hematologia', '2026-06-24 00:08:48', NULL),
 	(1290, 'EQ-00053-ADE', 'Centrífuga de Tubos', 15, 'Eppendorf', '5910 R', 'EPP-2020-22110', '2020', '2020-07-12', 8500.00, 'Compra', 'Ativo', 'Média', 47, 'Laboratório - preparação de amostras', '2026-06-24 00:08:48', NULL),
 	(1291, 'EQ-00054-BJU', 'Gasómetro / Analisador de Gases', 15, 'Abbott', 'Architect STAT', 'ABB-2022-88654', '2022', '2022-10-30', 55000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - urgência 24h', '2026-06-24 00:08:48', NULL),
-	(1292, 'EQ-00055-CPB', 'Analisador de Coagulação', 15, 'Stago', 'STA-R Max 3', 'STA-2021-55310', '2021', '2021-05-25', 65000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - hemostase', '2026-06-24 00:08:48', NULL),
+	(1292, 'EQ-00055-CPB', 'Analisador De Coagulação', 15, 'Stago', 'Sta-r Max 3', 'STA-2021-55310', '2021', '2021-05-25', 65000.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - hemostase', '2026-06-24 00:08:48', '2026-06-24 00:47:40'),
 	(1293, 'EQ-00056-DUJ', 'Microscópio Ótico de Fluorescência', 15, 'Leica', 'DM2000', 'LEI-DM-2020-33120', '2020', '2020-04-08', 18000.00, 'Compra', 'Ativo', 'Média', 47, 'Laboratório - microbiologia', '2026-06-24 00:08:48', NULL),
-	(1294, 'EQ-00057-EBY', 'Agitador de Plaquetas', 15, 'Helmer', 'PC100i', 'HEL-2022-11230', '2022', '2022-06-06', 5200.00, 'Compra', 'Ativo', 'Alta', 47, 'Laboratório - banco de sangue', '2026-06-24 00:08:48', NULL),
+	(1294, 'EQ-00057-EBY', 'Agitador De Plaquetas', 15, 'Helmer', 'Pc100i', 'HEL-2022-11230', '2022', '2022-06-06', 5200.00, 'Compra', 'Em calibração', 'Alta', 47, 'Laboratório - banco de sangue', '2026-06-24 00:08:48', '2026-06-24 00:24:32'),
 	(1295, 'EQ-00058-FED', 'Incubadora de Culturas Bacteriológicas', 15, 'Thermo Fisher', 'Heracell 150i', 'TF-2023-44567', '2023', '2023-02-22', 12000.00, 'Compra', 'Ativo', 'Média', 47, 'Laboratório - microbiologia', '2026-06-24 00:08:48', NULL),
 	(1296, 'EQ-00059-GLP', 'Eletrocardiográfo de 12 Derivações', 17, 'Mortara', 'ELI 380', 'MOR-2021-66789', '2021', '2021-08-30', 4800.00, 'Compra', 'Ativo', 'Alta', 25, 'Medicina Interna A - consulta', '2026-06-24 00:08:48', NULL),
 	(1297, 'EQ-00060-HJU', 'Espirômetro de Diagnóstico', 17, 'Jaeger', 'MasterScope', 'JAE-2020-44321', '2020', '2020-11-01', 9500.00, 'Compra', 'Ativo', 'Alta', 46, 'Pneumologia - função respiratória', '2026-06-24 00:08:48', NULL),
@@ -195,7 +195,7 @@ INSERT INTO `equipamentos` (`id`, `codigo_inventario`, `designacao`, `categoria_
 	(1309, 'EQ-00072-TCR', 'Mesa Cirúrgica Hidráulica', 16, 'Maquet', 'Magnus', 'MAQ-MAG-2020-22106', '2020', '2020-03-10', 65000.00, 'Compra', 'Ativo', 'Alta', 37, 'Bloco Operatório - sala 3', '2026-06-24 00:08:48', NULL),
 	(1310, 'EQ-00073-UMY', 'Foco Cirúrgico LED', 16, 'Dräger', 'Polaris 100', 'DRA-POL-2022-44321', '2022', '2022-06-28', 18000.00, 'Compra', 'Ativo', 'Média', 37, 'Bloco Operatório - sala 1', '2026-06-24 00:08:48', NULL),
 	(1311, 'EQ-00074-VBY', 'Termorregulador de Soro Intraoperatório', 16, 'Smiths Medical', 'Level 1 H-1200', 'SM-L1-2023-66543', '2023', '2023-03-05', 3800.00, 'Compra', 'Ativo', 'Alta', 37, 'Bloco Operatório - anestesia', '2026-06-24 00:08:48', NULL),
-	(1312, 'EQ-00075-WUJ', 'Aspirador Cirúrgico de Alta Potência', 16, 'Stryker', 'Neptune 3', 'STR-N3-2021-88765', '2021', '2021-10-10', 12000.00, 'Compra', 'Ativo', 'Alta', 37, 'Bloco Operatório - sala 2', '2026-06-24 00:08:48', NULL),
+	(1312, 'EQ-00075-WUJ', 'Aspirador Cirúrgico De Alta Potência', 16, 'Stryker', 'Neptune 3', 'STR-N3-2021-88765', '2021', '2021-10-10', 12000.00, 'Compra', 'Ativo', 'Alta', 37, 'Bloco Operatório - sala 2', '2026-06-24 00:08:48', '2026-06-24 00:48:03'),
 	(1313, 'EQ-00076-XDE', 'Incubadora Neonatal Fechada', 19, 'Dräger', 'Caleo', 'DRA-CAL-2023-55432', '2023', '2023-01-10', 28000.00, 'Compra', 'Ativo', 'Suporte de vida', 35, 'UCIN - incubadora 5', '2026-06-24 00:08:48', NULL),
 	(1314, 'EQ-00077-YSE', 'Berço Aquecido Neonatal', 19, 'GE Healthcare', 'Giraffe OmniBed Carestation', 'GE-GIR-2022-33210', '2022', '2022-04-14', 32000.00, 'Compra', 'Ativo', 'Suporte de vida', 35, 'UCIN - incubadora 6', '2026-06-24 00:08:48', NULL),
 	(1315, 'EQ-00078-ZTB', 'Fototerapia LED Neonatal', 19, 'Philips', 'BiliBlanket Plus', 'PH-BIL-2021-11230', '2021', '2021-07-22', 2800.00, 'Compra', 'Ativo', 'Alta', 35, 'UCIN - icterícia neonatal', '2026-06-24 00:08:48', NULL),
@@ -237,15 +237,15 @@ INSERT INTO `equipamentos` (`id`, `codigo_inventario`, `designacao`, `categoria_
 	(1351, 'EQ-00114-JIR', 'Maca de Transporte com Raio-X', 11, 'Stryker', 'Transport Chair', 'STR-TC-2021-44321', '2021', '2021-05-30', 8500.00, 'Compra', 'Ativo', 'Média', 22, 'Urgência - transporte interno', '2026-06-24 00:08:48', NULL),
 	(1352, 'EQ-00115-KIW', 'Cadeira de Banho Hospitalar', 11, 'Arjo', 'Carendo', 'ARJ-CAR-2020-22104', '2020', '2020-08-18', 1200.00, 'Compra', 'Ativo', 'Baixa', 26, 'Medicina Interna B - higiene', '2026-06-24 00:08:48', NULL),
 	(1353, 'EQ-00116-LSK', 'Glucómetro de Controlo Laboratorial', 17, 'Roche', 'Accu-Chek Inform II', 'ROC-ACC-2022-55342', '2022', '2022-06-14', 2800.00, 'Compra', 'Ativo', 'Média', 47, 'Laboratório - Point of Care', '2026-06-24 00:08:48', NULL),
-	(1354, 'EQ-00117-MOE', 'Analisador Portátil i-STAT', 15, 'Abbott', 'i-STAT 1', 'ABB-IST-2021-33120', '2021', '2021-09-22', 5800.00, 'Compra', 'Ativo', 'Alta', 22, 'Urgência - gases urgência', '2026-06-24 00:08:48', NULL),
+	(1354, 'EQ-00117-MOE', 'Analisador Portátil I-stat', 15, 'Abbott', 'I-stat 1', 'ABB-IST-2021-33120', '2021', '2021-09-22', 5800.00, 'Compra', 'Ativo', 'Alta', 22, 'Urgência - gases urgência', '2026-06-24 00:08:48', '2026-06-24 00:47:49'),
 	(1355, 'EQ-00118-NIW', 'Otoscópio Diagnóstico LED', 17, 'Welch Allyn', 'PanOptic', 'WA-PAN-2022-11230', '2022', '2022-04-18', 580.00, 'Compra', 'Ativo', 'Baixa', 25, 'Medicina Interna A - consulta', '2026-06-24 00:08:48', NULL),
 	(1356, 'EQ-00119-OUR', 'Oftalmoscópio Direto LED', 17, 'Keeler', 'All Pupil II', 'KEE-2020-88543', '2020', '2020-11-30', 450.00, 'Compra', 'Ativo', 'Baixa', 43, 'Consulta Externa - oftalmologia', '2026-06-24 00:08:48', NULL),
 	(1357, 'EQ-00120-PWS', 'Dermascópio Polarizado', 17, 'Dermlite', 'DL4', 'DER-2023-66342', '2023', '2023-06-08', 380.00, 'Compra', 'Ativo', 'Baixa', 43, 'Consulta Externa - dermatologia', '2026-06-24 00:08:48', NULL),
 	(1358, 'EQ-00121-QIE', 'Ventilador UCI (em manutenção)', 19, 'Dräger', 'Evita 4', 'EV4-2019-33210', '2019', '2019-08-01', 38000.00, 'Compra', 'Em manutenção', 'Suporte de vida', 23, 'Preventiva anual - Dräger Portugal prevista até fim do mês', '2026-06-24 00:08:48', NULL),
 	(1359, 'EQ-00122-RED', 'Autoclave (em manutenção)', 12, 'Getinge', 'GSS67H-B', 'GET-B-2020-44213', '2020', '2020-06-15', 34000.00, 'Compra', 'Em manutenção', 'Alta', 48, 'Falha no ciclo de vácuo - peça em encomenda', '2026-06-24 00:08:48', NULL),
 	(1360, 'EQ-00123-SGQ', 'Monitor UCI (em calibração)', 20, 'Mindray', 'BeneVision N22', 'MR-N22-2021-55432', '2021', '2021-11-10', 12000.00, 'Compra', 'Em calibração', 'Alta', 23, 'Calibração semestral IPAC - retorno 3 dias', '2026-06-24 00:08:48', NULL),
-	(1361, 'EQ-00124-TUE', 'Bomba de Perfusão (quarentena)', 21, 'B. Braun', 'Infusomat Space', 'BB-INF-2019-77654', '2019', '2019-04-15', 1800.00, 'Compra', 'Em quarentena', 'Alta', 23, 'Alarme de oclusão falso positivo - aguarda validação técnica', '2026-06-24 00:08:48', NULL),
-	(1362, 'EQ-00125-UPR', 'Ecógrafo Portátil (quarentena)', 18, 'GE Healthcare', 'LOGIQ e R8', 'GE-LR8-2020-88765', '2020', '2020-09-20', 28000.00, 'Compra', 'Em quarentena', 'Alta', 22, 'Imagem com artefactos - aguarda decisão técnica', '2026-06-24 00:08:48', NULL),
+	(1361, 'EQ-00124-TUE', 'Bomba De Perfusão (quarentena)', 21, 'B. Braun', 'Infusomat Space', 'BB-INF-2019-77654', '2019', '2019-04-15', 1800.00, 'Compra', 'Em quarentena', 'Alta', 23, 'Alarme de oclusão falso positivo - aguarda validação técnica', '2026-06-24 00:08:48', '2026-06-24 00:48:17'),
+	(1362, 'EQ-00125-UPR', 'Ecógrafo Portátil (quarentena)', 18, 'Ge Healthcare', 'Logiq E R8', 'GE-LR8-2020-88765', '2020', '2020-09-20', 28000.00, 'Compra', 'Em quarentena', 'Alta', 22, 'Imagem com artefactos - aguarda decisão técnica', '2026-06-24 00:08:48', '2026-06-24 00:48:39'),
 	(1363, 'EQ-00126-VTW', 'Monitor Sinais Vitais (Abatido)', 20, 'Datex-Ohmeda', 'S/5 Light', 'DOH-2012-22341', '2012', '2012-05-10', 8500.00, 'Compra', 'Abatido', 'Média', 23, 'Substituído por modelo mais recente - 2021', '2026-06-24 00:08:48', NULL),
 	(1364, 'EQ-00127-WFF', 'Ventilador Antigo (Abatido)', 19, 'Dräger', 'Evita 2 Dura', 'EV2D-2010-33210', '2010', '2010-03-20', 28000.00, 'Compra', 'Abatido', 'Suporte de vida', 23, 'Fim de vida útil - peças descontinuadas', '2026-06-24 00:08:48', NULL),
 	(1365, 'EQ-00128-XKF', 'ECG (Abatido)', 17, 'Marquette', 'MAC 5000', 'MAQ-2008-44321', '2008', '2008-07-15', 3800.00, 'Compra', 'Abatido', 'Média', 25, 'Substituído digitalmente em 2022', '2026-06-24 00:08:48', NULL),
@@ -283,11 +283,20 @@ CREATE TABLE IF NOT EXISTS `equipamento_fornecedor` (
   CONSTRAINT `FK_equip_fornec_fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `fornecedores` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- A despejar dados para tabela db1241841.equipamento_fornecedor: ~3 rows (aproximadamente)
+-- A despejar dados para tabela db1241841.equipamento_fornecedor: ~12 rows (aproximadamente)
 INSERT INTO `equipamento_fornecedor` (`equipamento_id`, `fornecedor_id`, `tipo_relacao`) VALUES
 	(2, 35, 'Fabricante'),
 	(153, 6, 'Fabricante'),
-	(1281, 27, 'Fabricante');
+	(1248, 13, 'Fabricante'),
+	(1268, 17, 'Fabricante'),
+	(1281, 27, 'Fabricante'),
+	(1288, 26, 'Fabricante'),
+	(1292, 14, 'Fabricante'),
+	(1294, 27, 'Fabricante'),
+	(1312, 14, 'Fabricante'),
+	(1354, 27, 'Fabricante'),
+	(1361, 28, 'Fabricante'),
+	(1362, 12, 'Fabricante');
 
 -- A despejar estrutura para tabela db1241841.fornecedores
 CREATE TABLE IF NOT EXISTS `fornecedores` (
@@ -309,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `fornecedores` (
   UNIQUE KEY `UQ_fornecedores_nif` (`nif`)
 ) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- A despejar dados para tabela db1241841.fornecedores: ~52 rows (aproximadamente)
+-- A despejar dados para tabela db1241841.fornecedores: ~51 rows (aproximadamente)
 INSERT INTO `fornecedores` (`id`, `nome`, `nif`, `tipo`, `telefone`, `email`, `morada`, `website`, `tecnico_nome`, `tecnico_telefone`, `observacoes`, `arquivado`, `criado_em`, `atualizado_em`) VALUES
 	(6, 'Philips Medical Systems Portugal', '501234567', 'Fabricante', '+351 210 300 400', 'suporte.pt@philips.com', 'Av. da Liberdade, 120 - 4º Esq, 1250-145 Lisboa', '', 'Eng. Ricardo Silva', '+351 910 111 222', '', 0, '2026-06-16 22:37:41', '2026-06-18 13:02:03'),
 	(7, 'Siemens Healthineers Portugal Lda', '502345678', 'Fabricante', '+351 214 178 000', 'service.pt@siemens-healthineers.com', 'Rua Lopo Soares de Albergaria, 300, 2710-089 Sintra', 'https://www.siemens-healthineers.com/pt', 'Eng.ª Sofia Martins', '+351 920 333 444', 'Responsável pelos equipamentos de Imagiologia (TAC, Ressonância e Raio-X).', 0, '2026-06-16 22:37:41', NULL),
@@ -471,7 +480,7 @@ CREATE TABLE IF NOT EXISTS `utilizadores` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- A despejar dados para tabela db1241841.utilizadores: ~1 rows (aproximadamente)
+-- A despejar dados para tabela db1241841.utilizadores: ~0 rows (aproximadamente)
 INSERT INTO `utilizadores` (`id`, `username`, `password`) VALUES
 	(1, 'admin@isep.pt', '$2y$10$vTA9GfDf6MkYoCP37bYenupg0bMFdTI99S8maZJd/KPullEJbEsFG');
 

@@ -65,7 +65,7 @@ try {
         ORDER BY ef.tipo_relacao ASC
     ");
     // CORRIGIDO: Retirado os dois pontos (:) da chave do array
-    $stmt_forn->execute(['id' => $idEquipamento]); 
+    $stmt_forn->execute(['id' => $idEquipamento]);
     $fornecedores_vinculados = $stmt_forn->fetchAll(PDO::FETCH_OBJ);
 
     // ----------------------------------------------------------------
@@ -95,7 +95,6 @@ try {
     // CORRIGIDO: Retirado os dois pontos (:) da chave do array
     $stmt_doc->execute(['id' => $idEquipamento]);
     $documentos = $stmt_doc->fetchAll(PDO::FETCH_OBJ);
-
 } catch (PDOException $err) {
     $erro = "Erro ao aceder à base de dados.";
     // Em produção, isto é excelente: error_log($err->getMessage());
@@ -132,202 +131,208 @@ include '../../../assets/includes/head.php';
 
                 <?php if ($equipamento): ?>
 
-                <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
+                    <div class="bg-white p-4 shadow-sm border border-light-subtle main-container-height custom-card-rounded">
 
-                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                        <div>
-                            <h2 class="fw-bold text-dark m-0">Ficha Técnica e Documental</h2>
-                            <p class="text-muted small m-0">Rastreabilidade completa, manuais e garantias associadas.</p>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <a href="equipamentos.php" class="btn btn-light border btn-sm rounded-pill px-3 fw-medium">
-                                <i class="fa-solid fa-arrow-left me-2"></i>Voltar
-                            </a>
-                            <a href="editar.php?id_equipamentos=<?= urlencode($idEquipamentoEncrypted) ?>" class="btn btn-success btn-sm rounded-pill px-3 fw-medium">
-                                <i class="fa-solid fa-pen-to-square me-2"></i>Editar Equipamento
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- ============================================================ -->
-                    <!-- DADOS GERAIS -->
-                    <!-- ============================================================ -->
-                    <div class="row g-4 text-secondary small mb-5">
-                        <div class="col-md-3">
-                            <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Equipamento</span>
-                            <p class="text-dark fw-bold fs-5 m-0">
-                                <?= htmlspecialchars($equipamento->designacao) ?>
-                            </p>
-                            <small class="text-muted font-monospace">#<?= htmlspecialchars($equipamento->codigo_inventario) ?></small>
-                        </div>
-
-                        <div class="col-md-3">
-                            <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Criticidade Atribuída</span>
-                            <p class="m-0 mt-1">
-                                <span class="badge <?= $equipamento->criticidade === 'Suporte de vida' || $equipamento->criticidade === 'Alta' ? 'bg-danger' : 'bg-secondary' ?> text-white rounded-pill px-2 py-1">
-                                    <?= htmlspecialchars($equipamento->criticidade) ?>
-                                </span>
-                            </p>
-                        </div>
-
-                        <div class="col-md-3">
-                            <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Fornecedor (Fabricante)</span>
-                            <p class="text-dark fw-semibold m-0 mt-1">
-                                <i class="fa-solid fa-industry me-1 text-success"></i>
-                                <?= $fabricante ? htmlspecialchars($fabricante->nome) : 'Não definido' ?>
-                            </p>
-                        </div>
-
-                        <div class="col-md-3">
-                            <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Localização Atual</span>
-                            <p class="text-dark fw-semibold m-0 mt-1">
-                                <i class="fa-solid fa-location-dot me-1 text-success"></i>
-                                <?php if ($equipamento->localizacao_nome): ?>
-                                    <?= htmlspecialchars($equipamento->localizacao_edificio) ?> |
-                                    <?= htmlspecialchars($equipamento->localizacao_nome) ?>
-                                    (Piso <?= htmlspecialchars($equipamento->localizacao_piso) ?>)
-                                <?php else: ?>
-                                    Sem localização definida
-                                <?php endif; ?>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- ============================================================ -->
-                    <!-- ENTIDADES / FORNECEDORES VINCULADOS -->
-                    <!-- ============================================================ -->
-                    <div class="mb-5 pt-3 border-top">
-                        <h5 class="fw-bold text-dark mb-3">
-                            <i class="fa-solid fa-handshake text-success me-2"></i>Entidades Vinculadas
-                        </h5>
-
-                        <?php if (empty($fornecedores_vinculados)): ?>
-                            <p class="text-muted small">Nenhuma entidade associada a este equipamento.</p>
-                        <?php else: ?>
-                            <div class="row g-3">
-                                <?php foreach ($fornecedores_vinculados as $f): ?>
-                                    <div class="col-md-4">
-                                        <div class="p-3 bg-light border rounded-3">
-                                            <span class="d-block text-muted small fw-bold text-uppercase opacity-75">
-                                                <?= htmlspecialchars($f->tipo_relacao) ?>
-                                            </span>
-                                            <p class="text-dark fw-semibold m-0">
-                                                <?= htmlspecialchars($f->nome) ?>
-                                            </p>
-                                            <small class="text-muted"><?= htmlspecialchars($f->tipo) ?></small>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                            <div>
+                                <h2 class="fw-bold text-dark m-0">Ficha Técnica e Documental</h2>
+                                <p class="text-muted small m-0">Rastreabilidade completa, manuais e garantias associadas.</p>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                            <div class="d-flex gap-2">
+                                <a href="equipamentos.php" class="btn btn-light border btn-sm rounded-pill px-3 fw-medium">
+                                    <i class="fa-solid fa-arrow-left me-2"></i>Voltar
+                                </a>
+                                <a href="editar.php?id_equipamentos=<?= urlencode($idEquipamentoEncrypted) ?>" class="btn btn-success btn-sm rounded-pill px-3 fw-medium">
+                                    <i class="fa-solid fa-pen-to-square me-2"></i>Editar Equipamento
+                                </a>
+                            </div>
+                        </div>
 
-                    <!-- ============================================================ -->
-                    <!-- DOCUMENTOS -->
-                    <!-- ============================================================ -->
-                    <div class="mb-5 pt-3 border-top">
-                        <h5 class="fw-bold text-dark mb-3">
-                            <i class="fa-solid fa-folder-open text-success me-2"></i>Repositório de Documentação Obrigatória
-                        </h5>
+                        <!-- ============================================================ -->
+                        <!-- DADOS GERAIS -->
+                        <!-- ============================================================ -->
+                        <div class="row g-4 text-secondary small mb-5">
+                            <div class="col-md-3">
+                                <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Equipamento</span>
+                                <p class="text-dark fw-bold fs-5 m-0">
+                                    <?= htmlspecialchars($equipamento->designacao) ?>
+                                </p>
+                                <small class="text-muted font-monospace">#<?= htmlspecialchars($equipamento->codigo_inventario) ?></small>
+                            </div>
 
-                        <?php if (empty($documentos)): ?>
-                            <p class="text-muted small">Nenhum documento associado a este equipamento.</p>
-                        <?php else: ?>
-                            <div class="row g-3">
-                                <?php foreach ($documentos as $doc): ?>
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light border rounded-3 d-flex align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <i class="fa-solid fa-file-pdf fa-2xl text-danger"></i>
-                                                <div>
-                                                    <h6 class="m-0 fw-bold text-dark small">
-                                                        <?= htmlspecialchars($doc->nome_documento) ?>
-                                                    </h6>
-                                                    <small class="text-muted">
-                                                        <?= htmlspecialchars($doc->tipo) ?> •
-                                                        <?= date('d/m/Y', strtotime($doc->data_documento)) ?>
-                                                    </small>
+                            <div class="col-md-3">
+                                <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Criticidade Atribuída</span>
+                                <p class="m-0 mt-1">
+                                    <span class="badge <?= $equipamento->criticidade === 'Suporte de vida' || $equipamento->criticidade === 'Alta' ? 'bg-danger' : 'bg-secondary' ?> text-white rounded-pill px-2 py-1">
+                                        <?= htmlspecialchars($equipamento->criticidade) ?>
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="col-md-3">
+                                <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Fornecedor (Fabricante)</span>
+                                <p class="text-dark fw-semibold m-0 mt-1">
+                                    <i class="fa-solid fa-industry me-1 text-success"></i>
+                                    <?= $fabricante ? htmlspecialchars($fabricante->nome) : 'Não definido' ?>
+                                </p>
+                            </div>
+
+                            <div class="col-md-3">
+                                <span class="d-block text-muted small fw-bold text-uppercase opacity-75">Localização Atual</span>
+                                <p class="text-dark fw-semibold m-0 mt-1">
+                                    <i class="fa-solid fa-location-dot me-1 text-success"></i>
+                                    <?php if ($equipamento->localizacao_nome): ?>
+                                        <?= htmlspecialchars($equipamento->localizacao_edificio) ?> |
+                                        <?= htmlspecialchars($equipamento->localizacao_nome) ?>
+                                        (Piso <?= htmlspecialchars($equipamento->localizacao_piso) ?>)
+                                    <?php else: ?>
+                                        Sem localização definida
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================ -->
+                        <!-- ENTIDADES / FORNECEDORES VINCULADOS -->
+                        <!-- ============================================================ -->
+                        <div class="mb-5 pt-3 border-top">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="fa-solid fa-handshake text-success me-2"></i>Entidades Vinculadas
+                            </h5>
+
+                            <?php if (empty($fornecedores_vinculados)): ?>
+                                <p class="text-muted small">Nenhuma entidade associada a este equipamento.</p>
+                            <?php else: ?>
+                                <div class="row g-3">
+                                    <?php foreach ($fornecedores_vinculados as $f): ?>
+                                        <div class="col-md-4">
+                                            <div class="p-3 bg-light border rounded-3">
+                                                <span class="d-block text-muted small fw-bold text-uppercase opacity-75">
+                                                    <?= htmlspecialchars($f->tipo_relacao) ?>
+                                                </span>
+                                                <p class="text-dark fw-semibold m-0">
+                                                    <?= htmlspecialchars($f->nome) ?>
+                                                </p>
+                                                <small class="text-muted"><?= htmlspecialchars($f->tipo) ?></small>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- ============================================================ -->
+                        <!-- DOCUMENTOS -->
+                        <!-- ============================================================ -->
+                        <div class="mb-5 pt-3 border-top">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="fa-solid fa-folder-open text-success me-2"></i>Repositório de Documentação Obrigatória
+                            </h5>
+
+                            <?php if (empty($documentos)): ?>
+                                <p class="text-muted small">Nenhum documento associado a este equipamento.</p>
+                            <?php else: ?>
+                                <div class="row g-3">
+                                    <?php foreach ($documentos as $doc): ?>
+                                        <div class="col-md-6">
+                                            <div class="p-3 bg-light border rounded-3 d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <i class="fa-solid fa-file-pdf fa-2xl text-danger"></i>
+                                                    <div>
+                                                        <h6 class="m-0 fw-bold text-dark small">
+                                                            <?= htmlspecialchars($doc->nome_documento) ?>
+                                                        </h6>
+                                                        <small class="text-muted">
+                                                            <?= htmlspecialchars($doc->tipo) ?> •
+                                                            <?= date('d/m/Y', strtotime($doc->data_documento)) ?>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex gap-1">
+                                                    
+                                                    <?php if (!empty($doc->ficheiro_path)): ?>
+                                                        <a href="<?= BASE_URL . '/uploads/' . urlencode($doc->ficheiro_path) ?>"
+                                                            target="_blank"
+                                                            class="btn btn-sm btn-white border shadow-sm rounded-circle text-secondary"
+                                                            title="Ver Detalhes">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+
+                                                    <?php if (!empty($doc->url_externo)): ?>
+                                                        <a href="<?= htmlspecialchars($doc->url_externo) ?>"
+                                                            target="_blank"
+                                                            class="btn btn-sm btn-white border shadow-sm rounded-circle text-secondary"
+                                                            title="Ver Detalhes">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+
                                                 </div>
                                             </div>
-                                            <div class="d-flex gap-1">
-                                                <a href="../documentos/detalhes.php?id=<?= urlencode(aes_encrypt($doc->id)) ?>"
-                                                    class="btn btn-sm btn-white border shadow-sm rounded-circle text-secondary"
-                                                    title="Ver detalhes">
-                                                    <i class="fa-solid fa-eye"></i>
-                                                </a>
-                                                <?php if (!empty($doc->ficheiro_path)): ?>
-                                                    <a href="<?= BASE_URL . '/uploads/' . urlencode($doc->ficheiro_path) ?>"
-                                                        target="_blank"
-                                                        class="btn btn-sm btn-white border shadow-sm rounded-circle text-secondary"
-                                                        title="Descarregar">
-                                                        <i class="fa-solid fa-download"></i>
-                                                    </a>
-                                                <?php endif; ?>
-                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
-                    <!-- ============================================================ -->
-                    <!-- GARANTIAS / CONTRATOS DE MANUTENÇÃO -->
-                    <!-- ============================================================ -->
-                    <div class="pt-3 border-top">
-                        <h5 class="fw-bold text-dark mb-3">
-                            <i class="fa-solid fa-file-signature text-success me-2"></i>Apólices de Garantia e Contratos de Manutenção
-                        </h5>
+                        <!-- ============================================================ -->
+                        <!-- GARANTIAS / CONTRATOS DE MANUTENÇÃO -->
+                        <!-- ============================================================ -->
+                        <div class="pt-3 border-top">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="fa-solid fa-file-signature text-success me-2"></i>Apólices de Garantia e Contratos de Manutenção
+                            </h5>
 
-                        <?php if (empty($garantias)): ?>
-                            <p class="text-muted small">Nenhuma garantia ou contrato associado a este equipamento.</p>
-                        <?php else: ?>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered align-middle small text-secondary">
-                                    <thead class="table-light text-uppercase font-monospace" style="font-size: 0.75rem;">
-                                        <tr>
-                                            <th>Nº Referência</th>
-                                            <th>Tipo de Contrato</th>
-                                            <th>Fornecedor</th>
-                                            <th>Data Início</th>
-                                            <th>Vigência Fim</th>
-                                            <th>Estado</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($garantias as $g): ?>
-                                            <?php
+                            <?php if (empty($garantias)): ?>
+                                <p class="text-muted small">Nenhuma garantia ou contrato associado a este equipamento.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered align-middle small text-secondary">
+                                        <thead class="table-light text-uppercase font-monospace" style="font-size: 0.75rem;">
+                                            <tr>
+                                                <th>Nº Referência</th>
+                                                <th>Tipo de Contrato</th>
+                                                <th>Fornecedor</th>
+                                                <th>Data Início</th>
+                                                <th>Vigência Fim</th>
+                                                <th>Estado</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($garantias as $g): ?>
+                                                <?php
                                                 $hoje = new DateTime();
                                                 $fim = new DateTime($g->data_fim);
                                                 $expirado = $fim < $hoje;
-                                            ?>
-                                            <tr>
-                                                <td class="fw-bold text-dark">#<?= htmlspecialchars($g->num_contrato) ?></td>
-                                                <td><?= htmlspecialchars($g->tipo) ?></td>
-                                                <td><?= htmlspecialchars($g->fornecedor_nome ?? 'N/D') ?></td>
-                                                <td><?= date('d/m/Y', strtotime($g->data_inicio)) ?></td>
-                                                <td><?= date('d/m/Y', strtotime($g->data_fim)) ?></td>
-                                                <td>
-                                                    <span class="badge <?= $expirado ? 'bg-danger' : 'bg-success' ?> text-white px-2 rounded-pill">
-                                                        <?= $expirado ? 'Expirado' : 'Ativa e Válida' ?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <a href="../garantias/detalhes.php?id=<?= urlencode(aes_encrypt($g->id)) ?>"
-                                                        class="btn btn-sm btn-outline-secondary rounded-2" title="Ver detalhes">
-                                                        <i class="fa-solid fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                                                ?>
+                                                <tr>
+                                                    <td class="fw-bold text-dark">#<?= htmlspecialchars($g->num_contrato) ?></td>
+                                                    <td><?= htmlspecialchars($g->tipo) ?></td>
+                                                    <td><?= htmlspecialchars($g->fornecedor_nome ?? 'N/D') ?></td>
+                                                    <td><?= date('d/m/Y', strtotime($g->data_inicio)) ?></td>
+                                                    <td><?= date('d/m/Y', strtotime($g->data_fim)) ?></td>
+                                                    <td>
+                                                        <span class="badge <?= $expirado ? 'bg-danger' : 'bg-success' ?> text-white px-2 rounded-pill">
+                                                            <?= $expirado ? 'Expirado' : 'Ativa e Válida' ?>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="../garantias/detalhes.php?id=<?= urlencode(aes_encrypt($g->id)) ?>"
+                                                            class="btn btn-sm btn-outline-secondary rounded-2" title="Ver detalhes">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
-                </div>
+                    </div>
 
                 <?php endif; ?>
 
